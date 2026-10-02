@@ -91,7 +91,7 @@ const unitOfLesson = (id) => COURSE.find((u) => u.lessons.includes(+id));
 
 /* ================= Storage ================= */
 const KEY = "stepbystep.v1";
-const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, toeic: { mocks: [], parts: {} } });
+const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, toeic: { mocks: [], parts: {} } });
 function load() {
   try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
   catch (e) { return defaults(); }
@@ -259,6 +259,11 @@ function bestVoice() {
   if (S.voice) { const v = voices.find((x) => x.voiceURI === S.voice); if (v) return v; }
   return ranked()[0] || null;
 }
+/* The best voice for one accent ("en-GB", "en-US"…), or null if this browser has none. */
+function voiceByLang(l) {
+  const re = new RegExp("^" + l.replace("-", "[-_]"), "i");
+  return ranked().find((v) => re.test(v.lang)) || null;
+}
 /* A different voice for each speaker in a dialogue (female names → female voice when possible). */
 function voiceFor(speaker, i) {
   const r = ranked();
@@ -308,6 +313,7 @@ async function playLines(lines, btn) {
   return seq === playSeq;
 }
 const sayBtn = (text, label = "Listen") => `<button class="speak" data-say="${esc(text)}" aria-label="${label}: ${esc(text)}" title="${label}">${ic("volume-2")}</button>`;
+const ipaSpan = (t) => `<span class="ipa no-tx">/${esc(t)}/</span>`;
 const slowBtn = (text) => `<button class="speak" data-say="${esc(text)}" data-slow="1" aria-label="Listen slowly" title="Listen slowly">${ic("snail")}</button>`;
 
 /* ================= Translation on click ================= */
@@ -364,6 +370,8 @@ function lookup(raw, gloss) {
 }
 /* Wrap every English word of the page in a clickable span. */
 const SKIP = "button, a, input, textarea, select, option, script, style, svg, .fr-text, .fr, .no-tx, .popover, .w, .kbd, .tag, .pill, .seg, label, .speaker, .fr-ui";
+/* Not real words: single letters (except a and I), suffixes and prefixes quoted alone (-tion, thir-), endings after a digit (2nd). */
+const fragmentAt = (parts, k) => /^[b-hj-z]$/i.test(parts[k]) || /(^|[\s(“"‘«,\/])[-–]$|\d$/.test(parts[k - 1] || "") || /^[-–](?![A-Za-z])/.test(parts[k + 1] || "");
 function wordify(root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode: (n) => {
@@ -379,12 +387,19 @@ function wordify(root) {
     const parts = n.nodeValue.split(WORD_RE);
     if (parts.length < 2) return;
     const frag = document.createDocumentFragment();
+    /* Text left unwrapped stays in one node with its context (so "-tion" is still a suffix on the next pass),
+       and a node where nothing is clickable isn't touched (no endless repaint). */
+    let buf = "", wrapped = 0;
     parts.forEach((part, k) => {
       if (!part) return;
       /* French interface: only the English words we can translate are clickable. */
-      if (k % 2 === 1 && (!isFr() || lookup(part))) { const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); }
-      else frag.appendChild(document.createTextNode(part));
+      if (k % 2 === 1 && !fragmentAt(parts, k) && (!isFr() || lookup(part))) {
+        if (buf) { frag.appendChild(document.createTextNode(buf)); buf = ""; }
+        const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); wrapped++;
+      } else buf += part;
     });
+    if (!wrapped) return;
+    if (buf) frag.appendChild(document.createTextNode(buf));
     n.parentNode.replaceChild(frag, n);
   });
 }
@@ -439,7 +454,7 @@ function showPop(w) {
 }
 document.addEventListener("click", (e) => {
   const say = e.target.closest("[data-say]");
-  if (say) { e.preventDefault(); speak(say.dataset.say, say, say.dataset.slow ? { rate: 0.6 } : {}); return; }
+  if (say) { e.preventDefault(); const o = say.dataset.slow ? { rate: 0.6 } : {}; if (say.dataset.lang) o.voice = voiceByLang(say.dataset.lang) || undefined; speak(say.dataset.say, say, o); return; }
   const frb = e.target.closest(".fr-btn");
   if (frb) {
     e.preventDefault(); e.stopPropagation();
@@ -489,6 +504,9 @@ function scoreMsg(score, total) {
           {type:'match', pairs}                                      match English and French
           {type:'say', en, fr}                                       say it out loud
           {type:'dict', text}                                        dictation
+          {type:'stress', parts, a, word?, sayText?, ctx?}           tap the stressed syllable (word) or word (sentence)
+   mcq extras: voice (a SpeechSynthesisVoice for say), exHtml (trusted HTML after the explanation), ipaO (options in IPA).
+   type extras: say (text read aloud, e.g. a word spelled out).
    Items from a lesson quiz carry lessonId + qi: a wrong answer goes into the mistakes review.
    done(score, total, results[]) */
 function runQuiz(el, items, done) {
@@ -538,11 +556,17 @@ function runQuiz(el, items, done) {
       el.innerHTML = `${head}
         <div class="quiz-q">${instr(q.q, q.q_fr)}</div>
         ${q.big ? `<div class="prompt-fr no-tx">${esc(q.big)}</div>` : ""}
+        ${q.say ? `<div class="row" style="gap:10px;margin-bottom:12px"><button type="button" class="btn" id="tPlay">${ic("volume-2")} ${T("Listen")}</button><button type="button" class="btn" id="tSlow">${ic("snail")} ${T("Slowly")}</button></div>` : ""}
         ${q.sent ? gapHtml(q.sent) : ""}
         <form id="tForm" autocomplete="off"><input class="type-input" id="tAns" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" placeholder="${T("Type your answer in English…")}">
           <div class="hint-line no-tx" id="tHintLine" hidden></div>
           <div class="row" style="margin-top:12px"><button class="btn btn-dark">${T("Check")}</button><button type="button" class="btn" id="tHint">${ic("lightbulb")} ${T("Hint")}</button><button type="button" class="btn" id="tSkip">${T("I don't know")}</button></div></form>
         <div class="fb"></div>`;
+      if (q.say) {
+        const play = (r) => speak(q.say, $("#tPlay"), r ? { rate: r } : {});
+        setTimeout(() => play(), 200);
+        $("#tPlay").onclick = () => play(); $("#tSlow").onclick = () => play(0.6);
+      }
       let hints = 0;
       $("#tHint").onclick = () => {
         hints++;
@@ -665,6 +689,23 @@ function runQuiz(el, items, done) {
       }
       return;
     }
+    if (q.type === "stress") {
+      const isWord = !!q.word;
+      el.innerHTML = `${head}
+        <div class="quiz-q">${q.q ? instr(q.q, q.q_fr) : T("Where is the stress in “{w}”? Tap the strongest syllable.", { w: esc(q.word) })}</div>
+        ${q.ctx ? `<div class="stress-ctx en no-tx">${esc(q.ctx)}</div>` : ""}
+        <div class="syl-row no-tx${isWord ? "" : " words"}">${q.parts.map((p, k) => `<button type="button" class="syl" data-k="${k}">${esc(p)}</button>`).join(isWord ? '<span class="syl-dot">·</span>' : "")}</div>
+        ${isWord ? `<div class="row" style="justify-content:center;margin-top:14px"><button type="button" class="btn btn-sm" id="stPlay">${ic("volume-2")} ${T("Listen")}</button></div>` : ""}
+        <div class="fb"></div>`;
+      if ($("#stPlay")) $("#stPlay").onclick = () => speak(q.sayText || q.word, $("#stPlay"));
+      $$(".syl", el).forEach((b) => (b.onclick = () => {
+        const k = +b.dataset.k, ok = k === q.a;
+        $$(".syl", el).forEach((x) => { const j = +x.dataset.k; x.disabled = true; if (j === q.a) x.classList.add("correct"); else if (j === k) x.classList.add("wrong"); });
+        const shown = q.parts.map((p, j) => (j === q.a ? `<b class="st">${esc(p)}</b>` : esc(p))).join(isWord ? "" : " ");
+        finishItem(ok, `<div class="feedback ${ok ? "ok" : "ko"}">${ok ? ic("circle-check") + ` <b>${T("Well done!")}</b>` : ic("circle-x") + ` <b>${T("Not quite.")}</b>`} <span class="en no-tx">${shown}</span>${isWord ? " " + sayBtn(q.sayText || q.word) : ""}${q.ex ? `<div style="margin-top:6px">${instr(q.ex, q.ex_fr)}</div>` : ""}</div>`, q);
+      }));
+      return;
+    }
     if (q.type === "order") {
       let bank = q.words.map((w, k) => ({ w, k }));
       for (let t = 0; t < 5 && bank.length > 1; t++) { bank = shuffle(bank); if (bank.some((b, k) => b.k !== k)) break; }
@@ -696,17 +737,17 @@ function runQuiz(el, items, done) {
       ${q.pre || ""}
       <div class="quiz-q">${instr(q.q, q.q_fr)}</div>
       ${q.say ? `<div class="row" style="gap:10px;margin-bottom:14px"><button class="btn" id="qPlay">${ic("volume-2")} ${T("Listen")}</button><button class="btn" id="qSlow">${ic("snail")} ${T("Slowly")}</button></div>` : ""}
-      <div class="options">${order.map((k) => `<button class="option" data-k="${k}">${esc(q.o[k])}</button>`).join("")}</div>
+      <div class="options">${order.map((k) => `<button class="option${q.ipaO ? " ipa" : ""}" data-k="${k}">${esc(q.o[k])}</button>`).join("")}</div>
       <div class="fb"></div>`;
     if (q.say) {
-      const play = (r) => speak(q.say, $("#qPlay"), r ? { rate: r } : {});
+      const play = (r) => speak(q.say, $("#qPlay"), Object.assign(r ? { rate: r } : {}, q.voice ? { voice: q.voice } : {}));
       setTimeout(() => play(), 200);
       $("#qPlay").onclick = () => play(); $("#qSlow").onclick = () => play(0.6);
     }
     $$(".option", el).forEach((b) => (b.onclick = () => {
       const k = +b.dataset.k, ok = k === q.a;
       $$(".option", el).forEach((x) => { const j = +x.dataset.k; x.disabled = true; if (j === q.a) x.classList.add("correct"); else if (j === k) x.classList.add("wrong"); });
-      finishItem(ok, `<div class="feedback ${ok ? "ok" : "ko"}">${ok ? ic("circle-check") + ` <b>${T("Well done!")}</b>` : ic("circle-x") + ` <b>${T("Not quite.")}</b>`} ${q.ex ? instr(q.ex, q.ex_fr) : ""}${q.say ? " " + sayBtn(q.say) : ""}</div>`, q);
+      finishItem(ok, `<div class="feedback ${ok ? "ok" : "ko"}">${ok ? ic("circle-check") + ` <b>${T("Well done!")}</b>` : ic("circle-x") + ` <b>${T("Not quite.")}</b>`} ${q.ex ? instr(q.ex, q.ex_fr) : ""}${q.say && !q.exHtml ? " " + sayBtn(q.say) : ""}${q.exHtml || ""}</div>`, q);
     }));
   }
   show();
@@ -893,6 +934,7 @@ function viewHome() {
   const pool = Array.from(WORDS.values()).filter((w) => w.theme !== "mine" && VOCAB.find((t) => t.id === w.theme)?.level === cur);
   const list = pool.length ? pool : Array.from(WORDS.values());
   const wod = list[today().split("-").join("") % list.length];
+  const pronNext = PRON().find((c) => !pronDone(c.id) && LV.indexOf(c.level) <= LV.indexOf(cur)) || PRON().find((c) => !pronDone(c.id));
   const week = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date(); d.setDate(d.getDate() - i);
@@ -961,6 +1003,7 @@ function viewHome() {
       <p class="fr" style="margin:0 0 6px"><b>${esc(wod.fr)}</b></p>
       <p class="en" style="font-style:italic;margin-bottom:12px">“${esc(wod.ex)}”</p>
       <div class="row" style="justify-content:center">${sayBtn(wod.en)} ${sayBtn(wod.ex, T("Listen to the example"))}</div>
+      ${pronNext ? `<p class="small" style="margin:14px 0 0"><a href="#/prononciation/${pronNext.id}">${ic("audio-lines")} ${T("Pronunciation: {t}", { t: esc(loc(pronNext, "title")) })}</a></p>` : ""}
     </section>
 
     <section class="card" id="ext">
@@ -1137,6 +1180,7 @@ function viewUnit(id) {
         ${sp ? `<div class="row step-link"><span style="flex:1"><b>${T("Repeat:")}</b> ${esc(loc(sp, "title"))}</span><a class="btn btn-sm btn-dark" href="#/oral/${sp.id}">${ic("mic")} ${T("Practise")}</a></div>`
             : `<div class="row step-link"><span style="flex:1"><b>${T("Repeat the key sentences of the unit")}</b></span><a class="btn btn-sm btn-dark" href="#/repeter/${u.id}">${ic("mic")} ${T("Practise")}</a></div>`}
         ${RP().filter((x) => u.lessons.includes(x.lesson)).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Role-play")}:</b> ${esc(loc(x, "title"))}</span><a class="btn btn-sm" href="#/dialogue/${x.id}">${ic("messages-square")} ${T("Talk")}</a></div>`).join("")}
+        ${PRON().filter((x) => (x.units || []).includes(u.id)).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Pronunciation:")}</b> ${esc(loc(x, "title"))} ${pronDone(x.id) ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/prononciation/${x.id}">${ic("audio-lines")} ${T("Open")}</a></div>`).join("")}
         ${pr ? `<div class="row step-link"><span style="flex:1"><b>${T("Speak freely:")}</b> <span class="en">${esc(pr.q)}</span></span><a class="btn btn-sm" href="#/parler/${pr.id}">${ic("message-circle")} ${T("Speak")}</a></div>` : ""}
         <div class="row step-link"><span style="flex:1"><b>${T("Real conversation:")}</b> ${T("talk about this unit with Claude, out loud")}</span><a class="btn btn-sm" href="#/conversation/unit/${u.id}">${ic("bot")} ${T("Talk")}</a></div>`)}
       ${stepCard(st[4], 5, `<p style="margin:0 0 10px">${instr(u.writing.task, u.writing.task_fr)}</p><div class="row step-link"><span style="flex:1" class="muted small">${T("{n} words · model answer included", { n: u.writing.words })}</span><a class="btn btn-sm btn-dark" href="#/ecrit/${u.id}">${ic("pen-line")} ${T("Write")}</a></div>`)}
@@ -1446,7 +1490,10 @@ function viewLessons() {
 }
 function renderBody(html) {
   return html
-    .replace(/<s-en>([\s\S]*?)<\/s-en>/g, (_, t) => `<span class="en"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, ""))}`)
+    .replace(/<s-en>([\s\S]*?)<\/s-en>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
+    .replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`)
+    .replace(/<st>/g, '<span class="st">').replace(/<\/st>/g, "</span>")
+    .replace(/<ipa>([\s\S]*?)<\/ipa>/g, (_, t) => ipaSpan(t))
     .replace(/<div class="tip">/g, `<div class="tip">${ic("lightbulb", "box-ic")}`)
     .replace(/<div class="warn">/g, `<div class="warn">${ic("triangle-alert", "box-ic")}`);
 }
@@ -2233,7 +2280,8 @@ function viewSpeaking() {
     <h1>${T("Speaking and listening")}</h1>
     <p class="muted">${T("To speak, you need to hear, then <b>dare to speak out loud</b>. Start by repeating sentences (shadowing), train your ear, then learn to speak freely.")}</p>
     ${SR ? "" : `<div class="card" style="background:var(--yellow-soft);border-color:var(--yellow)">${ic("triangle-alert")} ${T("Your browser doesn't support speech recognition. Use <b>Chrome</b> or <b>Safari</b> to get a score. You can still listen and record yourself.")}</div>`}
-    <div class="grid grid-2" style="margin-top:20px">
+    <a class="card ear-cta pron-cta" href="#/prononciation">${tile("audio-lines", "A1")}<div style="flex:1"><h3 style="margin:0">${T("Pronunciation course")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} chapters from A1 to C2: all the sounds and the phonetic alphabet, stress, rhythm, linking, intonation and accents.", { n: PRON().length })}</p></div><span class="muted small">${T("{a} / {b}", { a: PRON().filter((c) => pronDone(c.id)).length, b: PRON().length })}</span>${ic("arrow-right")}</a>
+    <div class="grid grid-2">
       <a class="card ear-cta" href="#/oreille">${tile("ear", "B1")}<div style="flex:1"><h3 style="margin:0">${T("Train your ear")}</h3><p class="muted small" style="margin:4px 0 0">${T("Ship or sheep? Think or sink? Recognise very similar words, spoken by different voices.")}</p></div>${ic("arrow-right")}</a>
       <a class="card ear-cta" href="#/conversation">${tile("messages-square", "B2")}<div style="flex:1"><h3 style="margin:0">${T("Talk with someone")}</h3><p class="muted small" style="margin:4px 0 0">${T("Real conversations out loud: with Claude at any time, and with real people. Role-plays, debates and exam simulations, A1 to C2.")}</p></div>${ic("arrow-right")}</a>
       <a class="card ear-cta" href="#/ecoute">${tile("headphones", "C1")}<div style="flex:1"><h3 style="margin:0">${T("Listening plan")}</h3><p class="muted small" style="margin:4px 0 0">${T("Real podcasts, series and videos for your level, and how to listen to them.")}</p></div>${ic("arrow-right")}</a>
@@ -2255,7 +2303,7 @@ function viewSpeaking() {
         <h3 class="en" style="margin:10px 0 4px">${esc(p.q)}</h3>
       </a>`, { started: (its) => its.some((p) => S.prompts[p.id]) })}
     <div class="section-title"><h2>${T("Difficult sounds for French speakers")}</h2></div>
-    <p class="muted">${T("Listen to each pair: the two words don't mean the same thing! Practise hearing the difference first, then producing it.")}</p>
+    <p class="muted">${T("Listen to each pair: the two words don't mean the same thing! Practise hearing the difference first, then producing it.")} <a href="#/prononciation">${T("All the sounds, in detail: the pronunciation course")} ${ic("arrow-right")}</a></p>
     <div class="grid grid-2">
       ${SOUNDS.map((s) => `
         <div class="card">
@@ -2470,6 +2518,12 @@ function viewPrompt(id) {
 function viewEar() {
   const pairs = [];
   SOUNDS.forEach((s) => { if (!/stress/i.test(s.title)) s.pairs.forEach((p) => pairs.push({ pair: p, sound: loc(s, "title") })); });
+  /* + the minimal pairs of the pronunciation course (single words only). */
+  const seen = new Set(pairs.map((x) => x.pair.join("|").toLowerCase()));
+  PRON().forEach((c) => (c.pairs || []).forEach((p) => {
+    const k = p.join("|").toLowerCase();
+    if (!seen.has(k) && p.every((w) => w.length > 1 && !/\s/.test(w))) { seen.add(k); pairs.push({ pair: p, sound: loc(c, "title") }); }
+  }));
   const pool = voices.filter((v) => /en[-_](GB|US|AU|IE|CA|NZ|ZA|IN)/i.test(v.lang));
   const qs = shuffle(pairs).slice(0, 12).map((x) => ({ ...x, answer: Math.random() < 0.5 ? 0 : 1, voice: pool.length ? pool[Math.floor(Math.random() * pool.length)] : null }));
   let i = 0, score = 0;
@@ -2507,6 +2561,169 @@ function viewEar() {
   }
   if (!voices.length) { app.innerHTML = `${back("#/oral", "Speaking")}<div class="card empty">${T("No English voice is available in this browser.")}</div>`; return; }
   render();
+}
+
+/* ================= Pronunciation course =================
+   27 chapters A1 → C2 (js/data/pronunciation*.js): an explanation, key words with their IPA, minimal pairs,
+   sentences to repeat, and a practice built from the chapter: understand, hear, read the IPA, find the stress, speak, write. */
+const PRON = () => window.PRON || [];
+const pronById = (id) => PRON().find((c) => c.id === id);
+const pronNum = (c) => PRON().indexOf(c) + 1;
+const pronDone = (id) => (S.pron || {})[id];
+/* words: [word, ipa, french, text to read?, "en-GB" | "en-US"?] */
+const wordSay = (w, slow) => `<button class="speak" data-say="${esc(w[3] || w[0])}"${w[4] ? ` data-lang="${w[4]}"` : ""}${slow ? ' data-slow="1"' : ""} aria-label="${T(slow ? "Slowly" : "Listen")}: ${esc(w[0])}" title="${T(slow ? "Slowly" : "Listen")}">${ic(slow ? "snail" : "volume-2")}</button>`;
+const pairBtns = (p) => `<div class="pair">${p.map((w, k) => `${k ? '<span class="muted">≠</span>' : ""}<button class="btn btn-sm" data-say="${esc(w)}">${ic("volume-2")} ${esc(w)}</button>`).join("")}</div>`;
+function pronPractice(ch) {
+  const items = (ch.quiz || []).map((q) => Object.assign({ type: "mcq", from: "Understand" }, q));
+  /* Hear: minimal pairs, each said by a different English voice (high-variability training). */
+  const pool = voices.filter((v) => /en[-_](GB|US|AU|IE|CA|NZ|ZA|IN)/i.test(v.lang));
+  const pick = () => (pool.length ? pool[Math.floor(Math.random() * pool.length)] : null);
+  shuffle(ch.pairs || []).slice(0, 4).forEach((p) => {
+    const a = Math.random() < 0.5 ? 0 : 1;
+    items.push({ type: "mcq", say: p[a], voice: pick(), q: "Listen. Which one do you hear?", q_fr: "Écoute. Lequel entends-tu ?", o: p.slice(), a, exHtml: pairBtns(p), from: "Train your ear" });
+  });
+  /* Read the IPA: word → transcription, and transcription → word. */
+  const ws = (ch.words || []).filter((w) => w[1]);
+  const chips = (list) => `<div class="ipa-chips">${list.map((x) => `<span class="ipa-chip"><b class="en">${esc(x[0])}</b> ${ipaSpan(x[1])} ${wordSay(x)}</span>`).join("")}</div>`;
+  shuffle(ws).slice(0, 3).forEach((w, k) => {
+    const others = shuffle(ws.filter((x) => x[1] !== w[1] && x[0] !== w[0])).slice(0, 2);
+    if (others.length < 2) return;
+    const all = [w, ...others];
+    if (k % 2 === 0) items.push({ type: "mcq", q: `Which one is pronounced /${w[1]}/?`, q_fr: `Lequel se prononce /${w[1]}/ ?`, o: all.map((x) => x[0]), a: 0, exHtml: chips(all), from: "Read the phonetics" });
+    else items.push({ type: "mcq", q: `How is “${w[0]}” pronounced?`, q_fr: `Comment se prononce « ${w[0]} » ?`, o: all.map((x) => "/" + x[1] + "/"), a: 0, ipaO: true, exHtml: chips(all), from: "Read the phonetics" });
+  });
+  shuffle(ch.stress || []).slice(0, ch.stressN || 3).forEach((s) => items.push({ type: "stress", word: s[0], parts: s[1].split("|"), a: s[2], sayText: s[3] || s[0], from: "Word stress" }));
+  /* Accents: the same sentence by a British or an American voice, when the browser has both. */
+  const gb = voiceByLang("en-GB"), us = voiceByLang("en-US");
+  if (ch.accent && gb && us) shuffle(ch.accent).slice(0, 3).forEach((s) => {
+    const isUS = Math.random() < 0.5;
+    items.push({ type: "mcq", say: s, voice: isUS ? us : gb, q: "Listen. Is this voice British or American?", q_fr: "Écoute. Cette voix est-elle britannique ou américaine ?", o: [T("British"), T("American")], a: isUS ? 1 : 0,
+      ex: "Listen for the r after vowels, the t between two vowels, and the vowels of can't, ask and hot.", ex_fr: "Écoute le r après les voyelles, le t entre deux voyelles, et les voyelles de can't, ask et hot.",
+      exHtml: `<div class="row" style="margin-top:8px"><button class="btn btn-sm" data-say="${esc(s)}" data-lang="en-GB">${ic("volume-2")} ${T("British")}</button><button class="btn btn-sm" data-say="${esc(s)}" data-lang="en-US">${ic("volume-2")} ${T("American")}</button></div>`, from: "Accents" });
+  });
+  const pr = ch.practice || [];
+  pr.slice(0, 2).forEach(([en, f]) => items.push({ type: "say", en, fr: f, from: "Say it" }));
+  if (pr[2]) items.push({ type: "dict", text: pr[2][0], from: "Listen and write" });
+  return items;
+}
+function pronCard(c) {
+  const r = pronDone(c.id);
+  return `<a class="card lesson-item ${r ? "done" : ""}" href="#/prononciation/${c.id}">
+    <span class="lesson-num">${r ? ic("check") : pronNum(c)}</span>
+    <span style="flex:1;min-width:0"><span class="row" style="gap:6px;margin-bottom:4px">${ic(c.icon, "muted")}${c.ipa ? `<span class="ipa no-tx small muted">${esc(c.ipa)}</span>` : ""}${r ? `<span class="small muted">${T("{a}/{b} in the practice", { a: r.best, b: r.total })}</span>` : ""}</span>
+    <h3 style="margin:0">${esc(loc(c, "title"))}</h3><span class="muted small">${esc(loc(c, "subtitle"))}</span></span>
+  </a>`;
+}
+function viewPronCourse() {
+  const all = PRON();
+  const done = all.filter((c) => pronDone(c.id)).length;
+  app.innerHTML = `
+    ${back("#/oral", "Speaking")}
+    <h1>${T("Pronunciation course")}</h1>
+    <p class="muted">${T("A complete course in English pronunciation, from A1 to C2: the sounds and the phonetic alphabet, word stress, rhythm, linking, intonation and accents. In each chapter: a clear explanation, the key words in phonetics, pairs to train your ear, sentences to repeat and about fifteen exercises.")}</p>
+    <div class="grid grid-2" style="margin:20px 0">
+      <div class="card">
+        <div class="row"><b>${T("{a} / {b} chapters", { a: done, b: all.length })}</b></div>
+        <div class="progress" style="margin-top:10px"><div style="width:${pct(done, all.length)}%"></div></div>
+        <div class="row" style="margin-top:14px;gap:8px"><a class="btn btn-sm btn-dark" href="#/prononciation/api">${ic("table")} ${T("The 44 sounds (IPA chart)")}</a><a class="btn btn-sm" href="#/oreille">${ic("ear")} ${T("Train your ear")}</a></div>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 8px">${ic("lightbulb")} ${T("How to work on a chapter")}</h3>
+        <ol class="small" style="margin:0;padding-left:20px">
+          <li>${T("<b>Listen</b> to the examples several times.")}</li>
+          <li>${T("<b>Notice</b> what's different from French.")}</li>
+          <li>${T("<b>Imitate</b> out loud, exaggerating at first.")}</li>
+          <li>${T("<b>Record yourself</b> and compare with the model.")}</li>
+        </ol>
+      </div>
+    </div>
+    <section class="card teacher" style="margin-bottom:8px">
+      <div class="row" style="flex-wrap:nowrap;align-items:flex-start">${ic("graduation-cap", "c-accent")}<p style="margin:0" class="small">${T("The aim is to be easy to understand, not to lose your accent. A large meta-analysis (Lee, Jang and Plonsky, 2015) shows that explicit pronunciation teaching works, and research on intelligibility (Munro and Derwing, 1995) shows that a foreign accent doesn't stop you from being perfectly understood. So the course puts clarity first: stress, vowel length and consonants.")}</p></div>
+    </section>
+    ${levelGroups(all, pronCard, { started: (its) => its.some((c) => pronDone(c.id)), stat: (its) => T("{a} / {b} done", { a: its.filter((c) => pronDone(c.id)).length, b: its.length }) })}`;
+}
+function viewPronIPA() {
+  app.innerHTML = `
+    ${back("#/prononciation", "Pronunciation course")}
+    <h1>${T("The 44 sounds of English")}</h1>
+    <p class="muted">${T("The phonetic alphabet (IPA) used in dictionaries, for standard British English. Tap a symbol to hear an example word; the link takes you to the chapter that teaches the sound.")}</p>
+    ${(window.PRON_IPA || []).map((g) => `
+      <div class="section-title"><h2>${esc(loc(g, "title"))}</h2><span class="spacer"></span><span class="muted small">${g.items.length}</span></div>
+      <div class="ipa-grid">${g.items.map(([sym, ex, exIpa, ch, n, nf]) => {
+        const c = ch && pronById(ch);
+        return `<div class="card ipa-cell">
+          <button class="ipa-sym" data-say="${esc(ex)}" aria-label="${T("Listen")}: ${esc(ex)}"><span class="ipa">${esc(sym)}</span></button>
+          <div><b class="en">${esc(ex)}</b> ${ipaSpan(exIpa)}</div>
+          <p class="muted small" style="margin:6px 0 4px">${instr(n, nf)}</p>
+          ${c ? `<a class="small" href="#/prononciation/${c.id}">${T("Chapter {n}", { n: pronNum(c) })} ${ic("arrow-right")}</a>` : ""}
+        </div>`;
+      }).join("")}</div>`).join("")}`;
+}
+function viewPronChapter(id) {
+  const c = pronById(id);
+  if (!c) return viewPronCourse();
+  const all = PRON(), i = all.indexOf(c), prev = all[i - 1], next = all[i + 1];
+  const r = pronDone(c.id);
+  let showFr = isFr() && !!c.body_fr;
+  app.innerHTML = `
+    ${back("#/prononciation", "Pronunciation course")}
+    <article class="card lesson-body">
+      <div class="row" style="margin-bottom:8px">${levelTag(c.level)}<span class="muted small">${T("Chapter {a} of {b}", { a: i + 1, b: all.length })}</span><span class="spacer"></span>${c.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${showFr ? (isFr() ? "En anglais" : "In English") : "En français"}</button>` : ""}</div>
+      <div class="row" style="flex-wrap:nowrap;align-items:center">${tile(c.icon, c.level)}<h1 style="margin:0">${esc(loc(c, "title"))}</h1></div>
+      <p class="muted" style="margin-top:10px">${esc(loc(c, "subtitle"))}${c.ipa ? ` <span class="ipa no-tx">${esc(c.ipa)}</span>` : ""}</p>
+      <div id="lbody" class="${showFr ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? c.body_fr : c.body)}</div>
+    </article>
+    ${(c.words || []).length ? `<section class="card">
+      <h2>${ic("volume-2")} ${T("Key words")}</h2>
+      <p class="muted small">${T("Listen to each word, look at its transcription and say it out loud. The snail = slow version.")}</p>
+      <ul class="examples">${c.words.map((w) => `<li>${wordSay(w)}${wordSay(w, 1)}<div style="flex:1;min-width:0"><span class="en">${esc(w[0])}</span> ${ipaSpan(w[1])}${w[2] ? `<div class="fr">${esc(w[2])}</div>` : ""}</div></li>`).join("")}</ul>
+    </section>` : ""}
+    ${(c.pairs || []).length ? `<section class="card">
+      <h2>${ic("ear")} ${T("Minimal pairs")}</h2>
+      <p class="muted small">${T("Two words that differ by a single sound. Listen to both, then say them, exaggerating the difference.")}</p>
+      ${c.pairs.map(pairBtns).join("")}
+    </section>` : ""}
+    <section class="card">
+      <h2>${ic("mic")} ${T("Say it")}</h2>
+      <p class="muted small">${T("Sentences full of today's sounds. Listen, repeat, then practise with the microphone and record yourself.")}</p>
+      <ul class="examples">${c.practice.map(([en, f]) => `<li>${sayBtn(en)}${slowBtn(en)}<div style="flex:1"><div class="en">${esc(en)}</div><div class="fr">${esc(f)}</div></div></li>`).join("")}</ul>
+      <a class="btn btn-dark" style="margin-top:12px" href="#/prononciation/${c.id}/repeter">${ic("mic")} ${T("Practise with the microphone")}</a>
+    </section>
+    <section class="card" id="quizBox">
+      <h2>${ic("list-checks")} ${T("Practice")}</h2>
+      <p class="muted">${T("About fifteen exercises: understand the rule, recognise the sounds by ear, read the phonetics, find the stress, then speak and write what you hear.")}</p>
+      ${r ? `<p class="small">${T("Your best score:")} <b>${r.best} / ${r.total}</b></p>` : ""}
+      <button class="btn btn-primary" id="startQuiz">${T("Start the practice")}</button>
+    </section>
+    <div class="row" style="margin-top:16px">
+      ${prev ? `<a class="btn" href="#/prononciation/${prev.id}">${ic("arrow-left")} ${T("Previous")}</a>` : ""}
+      <span class="spacer"></span>
+      ${next ? `<a class="btn btn-dark" href="#/prononciation/${next.id}">${T("Next chapter")} ${ic("arrow-right")}</a>` : `<a class="btn btn-dark" href="#/prononciation">${T("All chapters")} ${ic("arrow-right")}</a>`}
+    </div>`;
+  if ($("#frToggle")) $("#frToggle").onclick = () => {
+    showFr = !showFr;
+    $("#lbody").innerHTML = renderBody(showFr ? c.body_fr : c.body);
+    $("#lbody").classList.toggle("fr", showFr);
+    if (showFr) $("#lbody").setAttribute("lang", "fr"); else $("#lbody").removeAttribute("lang");
+    $("#frToggle").innerHTML = showFr ? `${ic("languages")} ${isFr() ? "En anglais" : "In English"}` : `${ic("languages")} En français`;
+  };
+  $("#startQuiz").onclick = () => {
+    const box = $("#quizBox");
+    runQuiz(box, pronPractice(c), (score, total) => {
+      if (!S.pron) S.pron = {};
+      const before = S.pron[c.id];
+      S.pron[c.id] = { best: Math.max(score, before ? before.best : 0), total, date: before ? before.date : today() };
+      addXP(before ? score : 10 + score * 2, "speak");
+      box.innerHTML = `
+        <div class="result-big">${score} / ${total}</div>
+        <p style="text-align:center">${scoreMsg(score, total)}</p>
+        <div class="row" style="justify-content:center">
+          <button class="btn" id="retry">${T("Practise again")}</button>
+          ${next ? `<a class="btn btn-primary" href="#/prononciation/${next.id}">${T("Next chapter")} ${ic("arrow-right")}</a>` : ""}
+        </div>`;
+      $("#retry").onclick = () => { viewPronChapter(id); $("#startQuiz").click(); $("#quizBox").scrollIntoView({ block: "start" }); };
+    });
+  };
 }
 
 /* ================= Dictation ================= */
@@ -2622,6 +2839,7 @@ function viewToeic() {
       }).join("")}
     </div>
     <a class="card ear-cta" style="margin-top:20px" href="#/ecoute">${tile("headphones", "B2")}<div style="flex:1"><h3 style="margin:0">${T("Real listening for the TOEIC")}</h3><p class="muted small" style="margin:4px 0 0">${T("Podcasts and series with American, British, Canadian and Australian accents: see your listening plan.")}</p></div>${ic("arrow-right")}</a>
+    <div class="card" style="margin-top:12px"><div class="row" style="flex-wrap:nowrap;align-items:flex-start">${tile("globe", "C1")}<div style="flex:1"><h3 style="margin:0">${T("Two classic Listening traps")}</h3><p class="muted small" style="margin:4px 0 10px">${T("The four accents of the test, and numbers that sound alike (13 or 30?). Two pronunciation chapters train your ear for them.")}</p><a class="btn btn-sm" href="#/prononciation/p-accents">${ic("globe")} ${T("Accents of English")}</a> <a class="btn btn-sm" href="#/prononciation/p-numbers">${ic("calculator")} ${T("Numbers, dates and prices")}</a></div></div></div>
     <div class="section-title"><h2>${ic("briefcase")} ${T("Business vocabulary")}</h2></div>
     <div class="grid grid-3">${VOCAB.filter((t) => t.toeic).map(themeCard).join("")}</div>
     <p class="muted small" style="margin-top:20px">${T("The practice questions here are original, written in the official format. For official practice tests, ETS publishes preparation books (“Official Guide to the TOEIC Test”).")}</p>`;
@@ -3207,7 +3425,7 @@ function viewBooks() {
 }
 
 /* ================= Router ================= */
-const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
+const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
 function route() {
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
   cleanups = [];
@@ -3249,6 +3467,12 @@ function route() {
     dialogue: () => viewDialogue(b, c),
     erreurs: viewMistakes,
     oreille: viewEar,
+    prononciation: () => {
+      if (b === "api") return viewPronIPA();
+      const ch = pronById(b);
+      if (ch && c === "repeter") return viewSpeak({ title: ch.title, title_fr: ch.title_fr, phrases: ch.practice }, `#/prononciation/${ch.id}`, loc(ch, "title"));
+      return ch ? viewPronChapter(b) : viewPronCourse();
+    },
     ecoute: () => viewListening(b),
     conversation: () => viewConversation(b, c),
     dictee: () => viewDictee(b),

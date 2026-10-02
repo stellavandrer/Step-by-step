@@ -645,3 +645,38 @@ details.card > summary::-webkit-details-marker { display: none; }
 .stack-tight > .conv-item + .conv-item { border-top: 1px solid var(--line); }
 .conv-item .step-link { padding: 10px 0; }
 .conv-item .cx-panel { margin: 0 0 12px; }
+
+/* Pronunciation course */
+.ipa { font-family: "Charis SIL", "Doulos SIL", "Gentium Plus", "Segoe UI", "Lucida Sans Unicode", "Arial Unicode MS", system-ui, sans-serif; font-weight: 400; font-style: normal; letter-spacing: .01em; }
+span.ipa { color: var(--blue); }
+.examples span.ipa, .ipa-chip span.ipa { white-space: nowrap; }
+.option.ipa { font-size: 19px; color: var(--ink); }
+.st { text-transform: uppercase; color: var(--accent); }
+.syl-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; margin: 10px 0 4px; }
+.syl {
+  font-family: var(--serif); font-size: 26px; padding: 10px 16px; min-width: 56px; color: var(--ink);
+  border: 2px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer;
+}
+.syl-row.words .syl { font-size: 20px; padding: 8px 12px; min-width: 0; }
+.syl:hover:not([disabled]) { border-color: var(--blue); }
+.syl.correct { border-color: var(--green); background: var(--green-soft); }
+.syl.wrong { border-color: var(--red); background: var(--red-soft); }
+.syl[disabled] { cursor: default; }
+.syl-dot { color: var(--ink-soft); font-size: 22px; }
+.stress-ctx { text-align: center; font-style: italic; color: var(--ink-soft); margin: 0 0 8px; }
+.ipa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+.ipa-grid > .card { margin: 0; }
+.ipa-cell { padding: 14px; }
+.ipa-sym {
+  display: flex; align-items: center; justify-content: center; width: 100%; height: 64px; margin-bottom: 10px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); color: var(--ink); cursor: pointer;
+}
+.ipa-sym .ipa { font-size: 34px; color: var(--ink); }
+.ipa-sym:hover, .ipa-sym.playing { border-color: var(--accent); }
+.ipa-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.ipa-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 3px 3px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.pron-cta { margin-top: 20px; }
+@media (max-width: 560px) {
+  .ipa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .syl { font-size: 22px; padding: 8px 12px; min-width: 44px; }
+}
