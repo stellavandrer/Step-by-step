@@ -1,0 +1,33 @@
+/* French titles for the vocabulary topics and the TOEIC parts (used when the interface is in French). */
+window.VOCAB_TITLES_FR = {
+  nombres: "Nombres, argent et quantités", couleurs: "Couleurs et formes", pays: "Pays et nationalités", metiers: "Les métiers", animaux: "Les animaux",
+  vacances: "Hôtels et vacances", cuisine: "La cuisine", sport: "Sport et forme", services: "Argent et services", etudes: "Études et formation",
+  logement: "Le logement", caractere: "La personnalité", sante: "Santé et bien-être", business: "Affaires et économie", science: "Science et recherche",
+  design: "Art et design", psycho: "L'esprit et le comportement", medias: "Actualité et politique", getput: "Get, take, put : leurs mille sens", nuanceverbs: "Des verbes nuancés",
+  "toeic-office": "TOEIC : bureau et administration", "toeic-hr": "TOEIC : ressources humaines", "toeic-finance": "TOEIC : finance et achats", "toeic-travel": "TOEIC : voyages d'affaires et événements",
+  "toeic-marketing": "TOEIC : marketing et ventes", "toeic-production": "TOEIC : production et maintenance",
+  jours: "Jours, mois et saisons", heure: "L'heure et la fréquence", routine: "La routine quotidienne", lieux: "Les lieux en ville", fruitsleg: "Fruits et légumes",
+  boissons: "Boissons et en-cas", prepositions: "Où est-ce ? Les prépositions", motsq: "Mots interrogatifs et petits mots", adjectifs2: "Encore des adjectifs", verbes2: "Encore des verbes du quotidien",
+  objets: "Les objets de la maison", gens: "Les gens", transports: "Les transports", classe: "Apprendre l'anglais", ecole: "À l'école",
+  accessoires: "Vêtements et accessoires", apparence: "Décrire l'apparence", menage: "Les tâches ménagères", aeroport: "À l'aéroport", hotel: "À l'hôtel",
+  nature: "Nature et campagne", bobos: "Les petits problèmes de santé", ordi: "Ordinateurs et téléphones", argent: "L'argent", villeA2: "La vie en ville",
+  sorties: "Sorties et divertissements", repas: "Repas et restaurants", verbesA2: "Des verbes utiles", tempsA2: "Les expressions de temps", fetes: "Fêtes et grandes occasions",
+  supermarche: "Au supermarché : contenants et quantités", etapes: "Les étapes de la vie", animauxA2: "Animaux de compagnie et animaux sauvages", problemes: "Quand ça ne va pas à la maison",
+  voyageB1: "Expériences de voyage", crime: "Délinquance et justice", environnement: "L'environnement", sentimentsB1: "Sentiments et réactions", culture: "Films et livres",
+  sportB1: "Sport et compétitions", familleB1: "Famille et relations", nutrition: "Alimentation et nutrition", finances: "Finances personnelles", reseaux: "Internet et réseaux sociaux",
+  route: "Sur la route", phrasal3: "Encore des phrasal verbs", loisirsB1: "Loisirs et centres d'intérêt", meteoB1: "Météo et climat", reclamations: "Achats et service client",
+  gestes: "Langage corporel et gestes", emploiB1: "Chercher un emploi", bureau: "La vie de bureau", cuisineB1: "Cuisine et saveurs", mode: "Mode et style",
+  musique: "La musique", ecrans: "Télé, séries et streaming", urgences: "Accidents et urgences", expressionsB1: "Expressions du quotidien", verbprep: "Verbes et prépositions",
+  adjB1: "Adjectifs utiles du B1", voisinage: "Voisinage et vie de quartier", carriere: "Carrière et monde du travail", etudesB2: "Études et enseignement", medecine: "Santé et médecine",
+  techB2: "Technologie et innovation", climat: "Climat et développement durable", societeB2: "Politique et société", logementB2: "Logement et immobilier", caractereB2: "Caractère et personnalité",
+  emotionsB2: "Les émotions fortes", phrasal4: "Phrasal verbs du travail et de la vie", idiomsB2: "Expressions : temps, argent et travail", collocB2: "Collocations avec make, do, take, have", adjB2: "Des adjectifs précis",
+  verbesB2: "Verbes utiles du B2", arts: "Art et architecture", tourisme: "Tourisme et galères de voyage", consommation: "Économie et consommation", urbain: "La vie urbaine",
+  communication: "Communication et langage", nuancesB2: "Des adverbes pour nuancer", alimentation: "Les enjeux de l'alimentation", relationsB2: "Les relations : hauts et bas", crimeB2: "Crimes et sanctions",
+  corpsIdioms: "Expressions avec les parties du corps", presse: "Journalisme et presse", academic: "L'anglais universitaire", lawC1: "Droit et justice", economyC1: "Économie et finance",
+  politicsC1: "Politique et pouvoir", researchC1: "Science et recherche", mindC1: "L'esprit et le comportement", environmentC1: "Environnement : les grands enjeux", literature: "Littérature et critique",
+  leadership: "Management et leadership", idiomsC1: "Expressions idiomatiques avancées", phrasalC1: "Phrasal verbs avancés", adjC1: "Adjectifs recherchés", verbsC1: "Des verbes précis",
+  ethics: "Société et éthique", collocC1: "Collocations avancées", linkersC1: "Connecteurs soutenus", feelingsC1: "Les nuances des sentiments", conversationC1: "Expressions naturelles de conversation",
+  globalC1: "Mondialisation et culture", digitalC1: "La société numérique", characterC1: "Les nuances du caractère", changeC1: "Changement et évolution", trendsC1: "Décrire des données avec précision",
+  conflictC1: "Conflits et résolution", nuanceC1b: "Des adverbes nuancés", wordsC1: "Des alternatives élégantes"
+};
+window.TOEIC_PARTS_FR = { 1: "Photographies", 2: "Questions-réponses", 3: "Conversations", 4: "Exposés", 5: "Phrases incomplètes", 6: "Textes à compléter", 7: "Compréhension écrite" };
