@@ -66,6 +66,23 @@ window.BOOKS = [
   { title: "Pride and Prejudice", author: "Jane Austen", color: "#8c3a5b", icon: "feather",
     desc: "Elizabeth Bennet et Mr Darcy, l'histoire d'amour la plus célèbre de la littérature anglaise.",
     why: "Un défi : l'anglais date de 1813. Regarde d'abord une adaptation, puis lis-le : l'ironie d'Austen est un régal." }
+]},
+{ level: "C2", label: "Vers le C2 : les grands textes", note: "Des classiques exigeants, des romans contemporains primés et un essai sur l'art d'écrire. À ce niveau, tu lis comme une lectrice native cultivée : parfois lentement, un crayon à la main, pour le plaisir de la langue.", items: [
+  { title: "Middlemarch", author: "George Eliot", color: "#5a4a78", icon: "book-open",
+    desc: "La vie d'une petite ville anglaise au XIXe siècle et les ambitions déçues de ses habitants. Souvent cité parmi les plus grands romans de langue anglaise.",
+    why: "Une prose dense, ironique, des phrases longues et une analyse psychologique très fine : le vrai test du C2." },
+  { title: "Mrs Dalloway", author: "Virginia Woolf", color: "#b05a6e", icon: "flower",
+    desc: "Une journée à Londres en 1923, à travers les pensées de plusieurs personnages.",
+    why: "Le grand exemple du flux de conscience : idéal pour apprendre à suivre une pensée sans repères explicites." },
+  { title: "Wolf Hall", author: "Hilary Mantel", color: "#7a2e2e", icon: "castle",
+    desc: "L'ascension de Thomas Cromwell à la cour d'Henri VIII. Prix Booker 2009.",
+    why: "Un récit historique au présent, avec des dialogues vifs et un vocabulaire politique d'une grande richesse." },
+  { title: "Atonement", author: "Ian McEwan", color: "#2f4f6f", icon: "pen-line",
+    desc: "Une erreur d'enfance, en 1935, et ses conséquences sur toute une vie.",
+    why: "Un style précis et élégant, et une réflexion sur la fiction elle-même : parfait pour l'analyse littéraire." },
+  { title: "Politics and the English Language", author: "George Orwell (essai)", color: "#3a3a3a", icon: "quote",
+    desc: "Le célèbre essai de 1946 sur le langage creux, le jargon et la clarté.",
+    why: "Court et percutant : il t'apprendra à écrire clairement en anglais, et à repérer le langage qui cache plus qu'il ne dit." }
 ]}
 ];
 

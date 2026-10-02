@@ -2,13 +2,14 @@
    url = official page (checked); q = a web search, used when the address may change.
    accent: UK, US, AU (Australia), CA (Canada), mix. The TOEIC uses American, British, Canadian and Australian speakers. */
 window.LISTENING = {
-  goals: { A1: 15, A2: 20, B1: 30, B2: 40, C1: 45 },
+  goals: { A1: 15, A2: 20, B1: 30, B2: 40, C1: 45, C2: 60 },
   subtitles: {
     A1: ["Learner recordings with exercises. For series: episodes you already know in French, with English subtitles.", "Des enregistrements pour apprenants, avec exercices. Pour les séries : des épisodes que tu connais déjà en français, avec sous-titres anglais."],
     A2: ["Always English subtitles, not French ones: they help your ear link sounds and words.", "Toujours les sous-titres en anglais, pas en français : ils aident ton oreille à relier les sons et les mots."],
     B1: ["English subtitles. For an episode you've already seen, try a few minutes without.", "Sous-titres anglais. Pour un épisode déjà vu, essaie quelques minutes sans."],
     B2: ["Subtitles only when you need them. Listen to podcasts without the transcript first.", "Sous-titres seulement quand tu en as besoin. Écoute les podcasts d'abord sans la transcription."],
-    C1: ["No subtitles. Turn them on only to check a passage you didn't understand.", "Pas de sous-titres. Active-les seulement pour vérifier un passage que tu n'as pas compris."]
+    C1: ["No subtitles. Turn them on only to check a passage you didn't understand.", "Pas de sous-titres. Active-les seulement pour vérifier un passage que tu n'as pas compris."],
+    C2: ["No subtitles at all. Listen to fast, overlapping conversations and lectures, and notice irony and implied meaning.", "Aucun sous-titre. Écoute des conversations rapides où les gens se coupent la parole, des conférences, et repère l'ironie et les sous-entendus."]
   },
   intensive: [
     ["Listen without any text. What's the topic? Who is speaking?", "Écoute sans aucun texte. De quoi ça parle ? Qui parle ?"],
@@ -139,6 +140,27 @@ window.LISTENING = {
       where: "Free website", where_fr: "Site gratuit",
       why: "Demanding recordings (lectures, debates, interviews) with exercises on detail and implied meaning.", why_fr: "Des enregistrements exigeants (conférences, débats, entretiens) avec des exercices sur les détails et les sous-entendus.",
       how: "One listening only before the exercises, like in an exam.", how_fr: "Une seule écoute avant les exercices, comme à un examen." },
+    /* C2 */
+    { id: "inourtime", level: "C2", type: "podcast", name: "In Our Time (BBC Radio 4)", accent: "UK", length: "45–50 min", q: "In Our Time BBC Radio 4 podcast",
+      where: "Free on podcast apps (availability may vary by country)", where_fr: "Gratuit sur les applis de podcast (selon le pays)",
+      why: "A presenter and three academics discuss one subject from history, science, philosophy or the arts: real university-level spoken English.", why_fr: "Un présentateur et trois universitaires discutent d'un sujet d'histoire, de science, de philosophie ou d'art : un vrai anglais oral de niveau universitaire.",
+      how: "Choose a subject you know a little about, and note how the experts disagree politely.", how_fr: "Choisis un sujet que tu connais un peu, et repère comment les experts expriment poliment leurs désaccords." },
+    { id: "philbites", level: "C2", type: "podcast", name: "Philosophy Bites", accent: "UK", length: "15–20 min", q: "Philosophy Bites podcast",
+      where: "Free on podcast apps", where_fr: "Gratuit sur les applis de podcast",
+      why: "Short interviews with philosophers, each on a single idea: dense, precise arguments.", why_fr: "De courts entretiens avec des philosophes, chacun sur une seule idée : des raisonnements denses et précis.",
+      how: "After listening, summarise the argument in three sentences, out loud.", how_fr: "Après l'écoute, résume l'argument en trois phrases, à voix haute." },
+    { id: "lse", level: "C2", type: "podcast", name: "LSE: Public lectures and events", accent: "mix", length: "60–90 min", q: "LSE Public lectures and events podcast",
+      where: "Free on podcast apps", where_fr: "Gratuit sur les applis de podcast",
+      why: "Public lectures by researchers and writers from the London School of Economics, followed by questions from the audience.", why_fr: "Des conférences publiques de chercheurs et d'écrivains de la London School of Economics, suivies des questions du public.",
+      how: "Listen to the Q&A carefully: it's a masterclass in handling difficult questions.", how_fr: "Écoute bien les questions-réponses : c'est une leçon magistrale pour répondre aux questions difficiles." },
+    { id: "yesminister", level: "C2", type: "series", name: "Yes, Minister / Yes, Prime Minister", accent: "UK", length: "30 min", q: "Yes Minister series",
+      where: "Streaming or DVD (depends on your country)", where_fr: "Streaming ou DVD (selon le pays)",
+      why: "A classic BBC satire of politicians and civil servants: long, deliberately evasive sentences and brilliant irony.", why_fr: "Une satire culte de la BBC sur les politiques et les hauts fonctionnaires : de longues phrases volontairement évasives et une ironie brillante.",
+      how: "Try to rephrase the civil servant's long answers in one simple sentence.", how_fr: "Essaie de reformuler en une phrase simple les longues réponses du haut fonctionnaire." },
+    { id: "succession", level: "C2", type: "series", name: "Succession", accent: "US · UK", length: "60 min", q: "Succession series streaming",
+      where: "Streaming (depends on your country)", where_fr: "Streaming (selon le pays)",
+      why: "A media dynasty fighting for power: fast, sharp, often vulgar dialogue full of business jargon and cruel wit.", why_fr: "Une dynastie des médias qui se bat pour le pouvoir : des dialogues rapides, acérés, souvent crus, pleins de jargon d'affaires et d'esprit cruel.",
+      how: "Without subtitles if you can; note the insults and the corporate euphemisms.", how_fr: "Sans sous-titres si tu peux ; note les piques et les euphémismes du monde de l'entreprise." },
     /* Extra resources for the TOEIC (business English) */
     { id: "bizpod", level: "B1", type: "podcast", name: "Business English Pod", accent: "mix", length: "15–20 min", toeic: true, q: "Business English Pod podcast",
       where: "Free on podcast apps", where_fr: "Gratuit sur les applis de podcast",

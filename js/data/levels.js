@@ -1,4 +1,4 @@
-/* Les niveaux du Cadre européen (CECRL), de A1 à C1.
+/* Les niveaux du Cadre européen (CECRL), de A1 à C2.
    hours = heures d'apprentissage guidé cumulées, ordre de grandeur indiqué par Cambridge English. */
 window.LEVELS = [
 { id: "A1", name: "Découverte", hours: 100, toeic: "120–225", words: 500, exams: "—", icon: "sprout",
@@ -15,5 +15,8 @@ window.LEVELS = [
   beyond: ["Une conversation par semaine avec un ou une anglophone", "Lire la presse et des romans contemporains", "Écrire en anglais : emails, posts, journal de bord"] },
 { id: "C1", name: "Autonome", hours: 750, toeic: "945+", words: 4000, exams: "C1 Advanced · IELTS 7–8", icon: "trophy",
   can: ["Comprendre des textes longs et exigeants, et saisir les sous-entendus", "T'exprimer spontanément et couramment, sans chercher tes mots", "Utiliser l'anglais avec souplesse au travail, en société ou pour étudier", "Adapter ton registre : familier, professionnel, soutenu"],
-  beyond: ["Vivre une partie de ta vie en anglais : livres, podcasts, actualités, réseaux", "Un séjour long dans un pays anglophone, si possible", "Te faire corriger à l'écrit par un professeur pour polir les dernières erreurs"] }
+  beyond: ["Vivre une partie de ta vie en anglais : livres, podcasts, actualités, réseaux", "Un séjour long dans un pays anglophone, si possible", "Te faire corriger à l'écrit par un professeur pour polir les dernières erreurs"] },
+{ id: "C2", name: "Maîtrise", hours: 1100, toeic: "—", words: 5000, exams: "C2 Proficiency · IELTS 8.5–9", icon: "gem",
+  can: ["Comprendre sans effort pratiquement tout ce que tu lis ou entends, y compris l'ironie, les sous-entendus et les références culturelles", "T'exprimer spontanément, très couramment et avec précision, en rendant les nuances les plus fines", "Résumer et reformuler des informations venant de sources diverses en un exposé cohérent", "Écrire des textes complexes et élégants : essais, critiques, rapports, textes littéraires"],
+  beyond: ["Lire la littérature anglaise classique et contemporaine dans le texte", "Débattre, présenter et négocier en anglais presque comme dans ta langue", "Passer le C2 Proficiency de Cambridge pour certifier ton niveau"] }
 ];

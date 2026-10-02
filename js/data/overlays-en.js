@@ -145,7 +145,10 @@ window.LEVELS_EN = {
     beyond: ["One conversation a week with an English speaker", "Read the press and contemporary novels", "Write in English: emails, posts, a journal"] },
   C1: { name: "Advanced",
     can: ["Understand long, demanding texts and implicit meaning", "Express yourself fluently and spontaneously, without searching for words", "Use English flexibly at work, socially or to study", "Adapt your register: informal, professional, formal"],
-    beyond: ["Live part of your life in English: books, podcasts, news, social media", "A long stay in an English-speaking country, if possible", "Have a teacher correct your writing to polish the last mistakes"] }
+    beyond: ["Live part of your life in English: books, podcasts, news, social media", "A long stay in an English-speaking country, if possible", "Have a teacher correct your writing to polish the last mistakes"] },
+  C2: { name: "Proficient",
+    can: ["Understand with ease virtually everything you hear or read, including irony, implied meaning and cultural references", "Express yourself spontaneously, very fluently and precisely, conveying the finest shades of meaning", "Summarise information from different sources into a coherent presentation", "Write complex, elegant texts: essays, reviews, reports, literary pieces"],
+    beyond: ["Read classic and contemporary English literature in the original", "Debate, present and negotiate in English almost as in your own language", "Take the Cambridge C2 Proficiency to certify your level"] }
 };
 
 window.METHODS_EN = [
@@ -229,6 +232,14 @@ window.BOOKS_EN = [
       { desc: "The great novel about surveillance and the manipulation of language.", why: "Clear, precise prose, and political vocabulary you'll find everywhere in the press." },
       { desc: "A history of humanity, from prehistory to today.", why: "Ideal for the vocabulary of abstract ideas and argument: exactly what C1 requires." },
       { desc: "Elizabeth Bennet and Mr Darcy, the most famous love story in English literature.", why: "A challenge: the English dates from 1813. Watch an adaptation first, then read it: Austen's irony is a delight." }
+    ] },
+  { label: "Towards C2: the great texts", note: "Demanding classics, prize-winning contemporary novels and an essay on the art of writing. At this level, you read like an educated native reader: sometimes slowly, pencil in hand, for the pleasure of the language.",
+    items: [
+      { desc: "Life in a small English town in the 19th century and the disappointed ambitions of its inhabitants. Often cited among the greatest novels in English.", why: "Dense, ironic prose, long sentences and very subtle psychology: the real C2 test." },
+      { desc: "One day in London in 1923, through the thoughts of several characters.", why: "The great example of stream of consciousness: ideal for learning to follow thought without explicit signposts." },
+      { desc: "Thomas Cromwell's rise at the court of Henry VIII. Booker Prize 2009.", why: "Historical fiction in the present tense, with lively dialogue and very rich political vocabulary." },
+      { desc: "A childhood mistake, in 1935, and its consequences over a whole life.", why: "Precise, elegant style, and a reflection on fiction itself: perfect for literary analysis." },
+      { desc: "Orwell's famous 1946 essay on empty language, jargon and clarity.", why: "Short and sharp: it will teach you to write clearly in English, and to spot language that hides more than it says." }
     ] }
 ];
 

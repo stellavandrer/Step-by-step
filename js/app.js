@@ -53,7 +53,7 @@ const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.
     });
   });
   /* Order lessons: by level, and lessons with "after" right after their anchor. */
-  const order = ["A1", "A2", "B1", "B2", "C1"];
+  const order = ["A1", "A2", "B1", "B2", "C1", "C2"];
   const base = LESSONS.filter((l) => l.after == null).sort((a, b) => order.indexOf(a.level) - order.indexOf(b.level));
   LESSONS.filter((l) => l.after != null).forEach((x) => {
     let i = base.findIndex((l) => l.id === x.after);
@@ -169,7 +169,7 @@ function currentUnit() { return COURSE.find((u) => !unitDone(u)) || COURSE[COURS
 function currentLevel() {
   for (const L of LV) if (!(S.exams[L] >= 70) && COURSE.some((u) => u.level === L && !unitDone(u))) return L;
   for (const L of LV) if (!(S.exams[L] >= 70)) return L;
-  return "C1";
+  return LV[LV.length - 1];
 }
 function levelGroups(items, render, opts = {}) {
   const cur = currentLevel();
@@ -924,7 +924,7 @@ function viewHome() {
   </section>
 
   <section class="card" style="margin-bottom:16px">
-    <div class="row"><h2 style="margin:0">${T("Your path to C1")}</h2><span class="spacer"></span><a class="btn btn-sm" href="#/parcours">${T("Details")} ${ic("arrow-right")}</a></div>
+    <div class="row"><h2 style="margin:0">${T("Your path to {l}", { l: LV[LV.length - 1] })}</h2><span class="spacer"></span><a class="btn btn-sm" href="#/parcours">${T("Details")} ${ic("arrow-right")}</a></div>
     <div class="path">${LV.map((L) => {
       const st = levelStats(L);
       const done = st.pct >= 0.999;
@@ -1068,7 +1068,7 @@ function viewCourse() {
   const cu = currentUnit();
   app.innerHTML = `
     <h1>${T("My English course")}</h1>
-    <p class="muted">${T("A complete course from A1 to C1, organised like a textbook: each unit is a full lesson with vocabulary, grammar, reading or listening, speaking, writing, dictation and a test. At the end of each level, an exam checks that you're ready for the next one.")}</p>
+    <p class="muted">${T("A complete course from A1 to C2, organised like a textbook: each unit is a full lesson with vocabulary, grammar, reading or listening, speaking, writing, dictation and a test. At the end of each level, an exam checks that you're ready for the next one.")}</p>
     <a class="card unit-next" href="#/unite/${cu.id}">
       ${tile(cu.icon, cu.level)}
       <div style="flex:1;min-width:0"><span class="muted small">${T("Continue")} · ${cu.level} · ${T("Unit")} ${unitNum(cu)}</span><h2 style="margin:2px 0 0">${esc(loc(cu, "title"))}</h2></div>
@@ -1335,11 +1335,11 @@ function hoursCard(target) {
   let eta = "";
   if (perDay >= 2 && h < target) {
     const d = new Date(); d.setDate(d.getDate() + Math.round(((target - h) * 60) / perDay));
-    eta = T("At your pace over the last two weeks (<b>{m} min a day</b> on average), you would reach C1 around <b>{d}</b>. Every extra minute brings that date closer.", { m: Math.round(perDay), d: d.toLocaleDateString(locale(), { month: "long", year: "numeric" }) });
+    eta = T("At your pace over the last two weeks (<b>{m} min a day</b> on average), you would reach {l} around <b>{d}</b>. Every extra minute brings that date closer.", { l: LV[LV.length - 1], m: Math.round(perDay), d: d.toLocaleDateString(locale(), { month: "long", year: "numeric" }) });
   }
   return `
     <section class="card hours-card">
-      <div class="row">${tile("clock", "A2")}<div style="flex:1"><h2 style="margin:0">${T("{h} of English", { h: fmtH(h) })}</h2><span class="muted small">${T("out of about {t} h for C1 · {a} in the app, {b} outside", { t: target, a: fmtH((S.siteSec || 0) / 3600), b: fmtH((S.extMin || 0) / 60) })}</span></div></div>
+      <div class="row">${tile("clock", "A2")}<div style="flex:1"><h2 style="margin:0">${T("{h} of English", { h: fmtH(h) })}</h2><span class="muted small">${T("out of about {t} h for {l} · {a} in the app, {b} outside", { l: LV[LV.length - 1], t: target, a: fmtH((S.siteSec || 0) / 3600), b: fmtH((S.extMin || 0) / 60) })}</span></div></div>
       <div class="progress" style="margin:14px 0 10px"><div style="width:${Math.min(100, (h / target) * 100)}%"></div></div>
       <p class="small" style="margin:0">${eta || T("The counter runs on its own when you work in the app. Add your series and podcasts in English from the home page (“Outside the app”).")}</p>
     </section>`;
@@ -1353,12 +1353,12 @@ function viewParcours() {
     return (y ? Tn(y, "{n} year", "{n} years") : "") + (y && m ? T(" and ") : "") + (m ? Tn(m, "{n} month", "{n} months") : "");
   };
   app.innerHTML = `
-    <h1>${T("My path to C1")}</h1>
-    <p class="muted">${T("Levels A1 → C1 come from the Common European Framework (CEFR), used everywhere: schools, exams, job offers. <b>A</b> = basic user, <b>B</b> = independent user, <b>C</b> = proficient user.")}</p>
+    <h1>${T("My path to {l}", { l: LV[LV.length - 1] })}</h1>
+    <p class="muted">${T("Levels A1 → C2 come from the Common European Framework (CEFR), used everywhere: schools, exams, job offers. <b>A</b> = basic user, <b>B</b> = independent user, <b>C</b> = proficient user.")}</p>
     ${hoursCard(C1H)}
     <section class="card" style="margin:20px 0">
       <h2>${T("How long does it take?")}</h2>
-      <p>${T("Cambridge English estimates that it takes about <b>{h} hours of guided learning</b> to reach C1 from zero. It's an order of magnitude, not a promise: everything you do in English counts (series, podcasts, conversations).", { h: C1H })}</p>
+      <p>${T("Cambridge English estimates that it takes about <b>{h} hours of guided learning</b> to reach {l} from zero. It's an order of magnitude, not a promise: everything you do in English counts (series, podcasts, conversations).", { h: C1H, l: LV[LV.length - 1] })}</p>
       <div class="seg" role="group" aria-label="${T("Time per day")}" id="minSeg">
         ${[15, 30, 45, 60, 90].map((m) => `<button data-m="${m}" class="${m === 30 ? "on" : ""}">${T("{n} min/day", { n: m })}</button>`).join("")}
       </div>
@@ -1426,7 +1426,7 @@ function viewLessons() {
   const dueM = dueMistakes().length;
   app.innerHTML = `
     <h1>${T("Lessons")}</h1>
-    <p class="muted">${T("All the grammar and everyday English from A1 to C1. They're included in the course units, but you can also open them here at any time.")}</p>
+    <p class="muted">${T("All the grammar and everyday English from A1 to C2. They're included in the course units, but you can also open them here at any time.")}</p>
     <div class="grid grid-2" style="margin:20px 0">
       <div class="card"><div class="row"><b>${T("{a} / {b} lessons", { a: done, b: LESSONS.length })}</b><span class="spacer"></span><span class="muted small">${T("Current level: {l}", { l: currentLevel() })}</span></div><div class="progress" style="margin-top:10px"><div style="width:${(done / LESSONS.length) * 100}%"></div></div></div>
       <div class="card">
@@ -2511,7 +2511,7 @@ function viewEar() {
 
 /* ================= Dictation ================= */
 function dictPool(L) {
-  const maxW = { A1: 8, A2: 11, B1: 14, B2: 18, C1: 22 }[L] || 14;
+  const maxW = { A1: 8, A2: 11, B1: 14, B2: 18, C1: 22, C2: 26 }[L] || 14;
   const out = [];
   LESSONS.filter((l) => l.level === L).forEach((l) => l.examples.forEach(([en]) => out.push(en)));
   SPEAKING.filter((c) => c.level === L).forEach((c) => c.phrases.forEach(([en]) => out.push(en)));
@@ -2604,7 +2604,7 @@ function viewToeic() {
       <section class="card">
         <h2>${ic("chart-column")} ${T("Scores and CEFR levels")}</h2>
         <table class="irr-table"><tr><th>${T("Level")}</th><th>${T("Listening")}</th><th>${T("Reading")}</th><th>${T("Total")}</th></tr>
-          ${LV.map((L) => `<tr><td>${levelTag(L)}</td><td>${TOEIC.cefr.listening[L]}+</td><td>${TOEIC.cefr.reading[L]}+</td><td>${TOEIC.cefr.listening[L] + TOEIC.cefr.reading[L]}+</td></tr>`).join("")}
+          ${LV.filter((L) => TOEIC.cefr.listening[L] != null).map((L) => `<tr><td>${levelTag(L)}</td><td>${TOEIC.cefr.listening[L]}+</td><td>${TOEIC.cefr.reading[L]}+</td><td>${TOEIC.cefr.listening[L] + TOEIC.cefr.reading[L]}+</td></tr>`).join("")}
         </table>
         <p class="muted small" style="margin:8px 0 0">${T("Minimum scores per section according to ETS, the organisation that creates the TOEIC.")}</p>
       </section>
@@ -3069,7 +3069,7 @@ const nWords = (t) => (t.trim() ? t.trim().split(/\s+/).length : 0);
 function correctionPrompt(o) {
   const fr = isFr() || ["A1", "A2", "B1"].includes(o.level);
   const lines = fr ? [
-    `Bonjour ! Tu es mon professeur d'anglais. Je suis francophone, j'ai le niveau ${o.level} (CECRL) et je vise le niveau C1 et le TOEIC.`,
+    `Bonjour ! Tu es mon professeur d'anglais. Je suis francophone, j'ai le niveau ${o.level} (CECRL) et je vise le niveau C2 et le TOEIC.`,
     "",
     `Exercice : ${o.kind_fr}`,
     `Consigne : ${o.task_fr ? `${o.task_fr} (en anglais : ${o.task})` : o.task}`,
@@ -3090,7 +3090,7 @@ function correctionPrompt(o) {
     "",
     "Ne remplace pas ce qui est déjà correct par des tournures plus recherchées : je veux voir mes vraies erreurs."
   ] : [
-    `Hi! You're my English teacher. I'm a French speaker at ${o.level} level (CEFR), aiming for C1 and the TOEIC.`,
+    `Hi! You're my English teacher. I'm a French speaker at ${o.level} level (CEFR), aiming for C2 and the TOEIC.`,
     "",
     `Task type: ${o.kind}`,
     `Instructions: ${o.task}`,

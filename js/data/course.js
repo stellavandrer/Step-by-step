@@ -1,4 +1,4 @@
-/* The course: 32 units from A1 to C1, organised like a textbook.
+/* The course: units from A1 to C2, organised like a textbook (C2 units in course-c2.js).
    Each unit = objectives + teacher's note + vocabulary + grammar + reading/listening
    + speaking + writing + dictation + end-of-unit test. */
 
@@ -351,8 +351,8 @@ window.COURSE = [
     checklist: ["I used at least three participle clauses", "No dangling participles: the subject is the same in both clauses", "I used one nuanced modal (bound to, may well, needn't have, might as well)", "I show emotions rather than naming them"],
     model: "Having lived in the same flat for twenty-two years, Margaret knew every crack in its ceiling. Built in the 1930s, the building had survived a war, two floods and countless tenants, but it would not survive the property developers who had bought it in the spring. The letter, printed on expensive paper, gave her three months. Not knowing what else to do, she made a cup of tea and sat by the window, watching the street she had watched for two decades. The baker was pulling down his shutters; a boy was chasing a pigeon that was clearly not in the mood. She had been bound to leave one day, of course. Everyone was. But she had always imagined that day would be hers to choose. Folding the letter carefully, she placed it under the sugar bowl, as if a little weight might keep it from being true. Later, she would realise that she needn't have worried so much. Change, like the tenants before her, had a way of arriving quietly and staying longer than expected." } },
 { id: "c1-5", level: "C1", icon: "graduation-cap", title: "Arguing like an expert", title_fr: "Argumenter comme une experte",
-  intro: "Last unit of the course! Experts rarely say “this is true”. They say “the evidence suggests”, “it would seem that”, “to some extent”. Hedging makes you more credible, not less. After this unit: the C1 exam. You've come a long way!",
-  intro_fr: "Dernière unité du cours ! Les experts disent rarement « c'est vrai ». Ils disent « les données suggèrent », « il semblerait que », « dans une certaine mesure ». Nuancer te rend plus crédible, pas moins. Après cette unité : l'examen C1. Quel chemin parcouru !",
+  intro: "Last unit of C1! Experts rarely say “this is true”. They say “the evidence suggests”, “it would seem that”, “to some extent”. Hedging makes you more credible, not less. After this unit: the C1 exam, then the final level, C2. You've come a long way!",
+  intro_fr: "Dernière unité du C1 ! Les experts disent rarement « c'est vrai ». Ils disent « les données suggèrent », « il semblerait que », « dans une certaine mesure ». Nuancer te rend plus crédible, pas moins. Après cette unité : l'examen C1, puis le dernier niveau, le C2. Quel chemin parcouru !",
   can: ["Hedge your statements (it would seem that, to some extent, arguably)", "Disagree politely and precisely", "Write a balanced discursive essay"],
   can_fr: ["Nuancer tes affirmations (it would seem that, to some extent, arguably)", "Exprimer un désaccord poliment et précisément", "Rédiger un essai argumentatif nuancé"],
   lessons: [53], vocab: ["hedging"], reading: "multitasking", prompt: "p8",
