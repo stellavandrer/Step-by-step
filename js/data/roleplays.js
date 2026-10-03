@@ -24,7 +24,7 @@ window.ROLEPLAYS = [
     { p: "Thank you. How do you spell that?", fr: "Merci. Ça s'écrit comment ?" },
     { y: ["S, T, E, double L, A.", "Yes, I spell it.", "It spells like the French."], fr: "S, T, E, deux L, A.", why: "Spell letter by letter. “Double L” is very natural." },
     { p: "Great. And what's your email address?", fr: "Parfait. Et quelle est ton adresse e-mail ?" },
-    { y: ["It's stella at gmail dot com.", "It's stella arobase gmail point com.", "It's stella at gmail point com."], fr: "C'est stella@gmail.com.", why: "In English, @ = at and . = dot." },
+    { y: ["It's stella at example dot com.", "It's stella arobase example point com.", "It's stella at example point com."], fr: "C'est stella@example.com.", why: "In English, @ = at and . = dot." },
     { p: "Perfect, you're all set! Enjoy your workout.", fr: "Parfait, c'est tout bon ! Bonne séance." },
     { y: ["Thank you very much. Bye!", "Thank you very much. Hello!", "Thanks you very much. Bye!"], fr: "Merci beaucoup. Au revoir !", why: "Thank you or thanks (never “thanks you”). Bye to leave." }
   ] },

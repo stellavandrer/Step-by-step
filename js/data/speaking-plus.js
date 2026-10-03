@@ -11,7 +11,7 @@ window.SPEAKING.push(
   ["As far as I'm concerned, it's not worth it.", "En ce qui me concerne, ça n'en vaut pas la peine."]
 ]},
 { id: "work", level: "B1", icon: "briefcase", title: "Au travail", phrases: [
-  ["I've been working as a designer for ten years.", "Je suis designer depuis dix ans."],
+  ["I've been working in this field for several years.", "Je travaille dans ce domaine depuis plusieurs années."],
   ["Could we schedule a call for next week?", "Pourrait-on prévoir un appel la semaine prochaine ?"],
   ["I'll send you the files by Friday.", "Je t'envoie les fichiers d'ici vendredi."],
   ["Let me check and get back to you.", "Je vérifie et je reviens vers toi."],

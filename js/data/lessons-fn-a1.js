@@ -87,7 +87,7 @@ window.LESSONS.push(
 <tr><td>-</td><td>dash / hyphen</td></tr>
 <tr><td>_</td><td>underscore</td></tr>
 </table>
-<p>stella.m@mail.com = <s-en>stella dot m at mail dot com</s-en></p>
+<p>stella.m@example.com = <s-en>stella dot m at example dot com</s-en></p>
 `,
   body_fr: `
 <h2>Les lettres qui diffèrent du français</h2>
@@ -111,7 +111,7 @@ window.LESSONS.push(
 <tr><td>-</td><td>dash / hyphen</td></tr>
 <tr><td>_</td><td>underscore</td></tr>
 </table>
-<p>stella.m@mail.com = <s-en>stella dot m at mail dot com</s-en></p>
+<p>stella.m@example.com = <s-en>stella dot m at example dot com</s-en></p>
 `,
   examples: [
     ["How do you spell your name?", "Comment s'écrit ton nom ?"],

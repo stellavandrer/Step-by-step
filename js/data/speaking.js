@@ -3,7 +3,7 @@ window.SPEAKING = [
 { id: "intro", level: "A1", icon: "user-round", title: "Se présenter", phrases: [
   ["Hi, my name is Stella.", "Salut, je m'appelle Stella."],
   ["I'm from France.", "Je viens de France."],
-  ["I live in Paris.", "J'habite à Paris."],
+  ["I live in France.", "J'habite en France."],
   ["I'm a designer.", "Je suis designer."],
   ["Nice to meet you.", "Enchantée."],
   ["I'm learning English.", "J'apprends l'anglais."],

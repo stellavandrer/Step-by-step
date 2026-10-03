@@ -53,7 +53,7 @@ window.LESSONS.push(
   body: `
 <p>Phoning is difficult in a foreign language because you can't see the person. These phrases will help you a lot.</p>
 <h2>Starting a call</h2>
-<p><s-en>Hello, this is Stella Martin.</s-en> (not “I am Stella” on the phone)</p>
+<p><s-en>Hello, this is Stella.</s-en> (not “I am Stella” on the phone)</p>
 <p><s-en>Could I speak to Mr Jones, please?</s-en> · <s-en>Is Sarah there, please?</s-en></p>
 <h2>What the other person says</h2>
 <p><s-en>Speaking.</s-en> (= it's me) · <s-en>Hold on, please.</s-en> · <s-en>I'll put you through.</s-en> · <s-en>I'm afraid she's not available at the moment.</s-en></p>
@@ -66,7 +66,7 @@ window.LESSONS.push(
   body_fr: `
 <p>Téléphoner est difficile dans une langue étrangère parce qu'on ne voit pas la personne. Ces phrases vont beaucoup t'aider.</p>
 <h2>Commencer un appel</h2>
-<p><s-en>Hello, this is Stella Martin.</s-en> (Bonjour, c'est Stella Martin. On ne dit pas « I am Stella » au téléphone.)</p>
+<p><s-en>Hello, this is Stella.</s-en> (Bonjour, c'est Stella. On ne dit pas « I am Stella » au téléphone.)</p>
 <p><s-en>Could I speak to Mr Jones, please?</s-en> (Pourrais-je parler à M. Jones ?) · <s-en>Is Sarah there, please?</s-en> (Sarah est là ?)</p>
 <h2>Ce que dit l'autre personne</h2>
 <p><s-en>Speaking.</s-en> (C'est moi.) · <s-en>Hold on, please.</s-en> (Ne quittez pas.) · <s-en>I'll put you through.</s-en> (Je vous la passe.) · <s-en>I'm afraid she's not available at the moment.</s-en> (Elle n'est pas disponible pour le moment.)</p>

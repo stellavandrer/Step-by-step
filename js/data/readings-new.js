@@ -101,19 +101,19 @@ window.READINGS.push(
   intro: "A conversation at work. Questions (who / what), object pronouns, present perfect.",
   intro_fr: "Une conversation au travail. Questions (who / what), pronoms compléments, present perfect.",
   paragraphs: [
-    { speaker: "Kate", en: "Hi, you must be Stella! I'm Kate, from the marketing team. Welcome!", fr: "Salut, tu dois être Stella ! Je suis Kate, de l'équipe marketing. Bienvenue !" },
-    { speaker: "Stella", en: "Thanks! Nice to meet you. It's my first day, so everything is new for me.", fr: "Merci ! Enchantée. C'est mon premier jour, donc tout est nouveau pour moi." },
+    { speaker: "Kate", en: "Hi, you must be Clara! I'm Kate, from the marketing team. Welcome!", fr: "Salut, tu dois être Clara ! Je suis Kate, de l'équipe marketing. Bienvenue !" },
+    { speaker: "Clara", en: "Thanks! Nice to meet you. It's my first day, so everything is new for me.", fr: "Merci ! Enchantée. C'est mon premier jour, donc tout est nouveau pour moi." },
     { speaker: "Kate", en: "Don't worry, everyone is really friendly here. Who did you meet this morning?", fr: "Ne t'inquiète pas, tout le monde est vraiment sympa ici. Qui as-tu rencontré ce matin ?" },
-    { speaker: "Stella", en: "I met Paul, my manager. He showed me the office and introduced me to the design team.", fr: "J'ai rencontré Paul, mon responsable. Il m'a montré le bureau et m'a présentée à l'équipe design." },
+    { speaker: "Clara", en: "I met Paul, my manager. He showed me the office and introduced me to the design team.", fr: "J'ai rencontré Paul, mon responsable. Il m'a montré le bureau et m'a présentée à l'équipe design." },
     { speaker: "Kate", en: "Great. Have you had lunch yet? We usually go to the Italian place across the street.", fr: "Super. Tu as déjà déjeuné ? D'habitude, on va à l'italien en face." },
-    { speaker: "Stella", en: "Not yet. I'd love to come with you.", fr: "Pas encore. J'adorerais venir avec vous." },
+    { speaker: "Clara", en: "Not yet. I'd love to come with you.", fr: "Pas encore. J'adorerais venir avec vous." },
     { speaker: "Kate", en: "Perfect. Oh, and who gave you that old laptop? Ask IT for a new one. They're on the second floor.", fr: "Parfait. Oh, et qui t'a donné ce vieil ordinateur portable ? Demande-en un nouveau au service informatique. Ils sont au deuxième étage." }
   ],
   glossary: { "colleague": "collègue", "marketing": "marketing", "team": "équipe", "welcome": "bienvenue", "first": "premier", "everything": "tout", "worry": "s'inquiéter", "everyone": "tout le monde", "friendly": "sympathique", "met": "ai rencontré (meet)", "manager": "responsable", "showed": "a montré", "office": "bureau", "introduced": "a présenté", "lunch": "déjeuner", "yet": "déjà / pas encore", "usually": "d'habitude", "across": "de l'autre côté (across the street = en face)", "laptop": "ordinateur portable", "floor": "étage" },
   questions: [
     { q: "Which team does Kate work in?", o: ["Design", "Marketing", "IT"], a: 1 },
-    { q: "Who introduced Stella to the design team?", o: ["Kate", "Paul", "IT"], a: 1 },
-    { q: "Has Stella had lunch?", o: ["Yes, at the Italian place", "No, not yet", "She doesn't eat lunch"], a: 1 },
+    { q: "Who introduced Clara to the design team?", o: ["Kate", "Paul", "IT"], a: 1 },
+    { q: "Has Clara had lunch?", o: ["Yes, at the Italian place", "No, not yet", "She doesn't eat lunch"], a: 1 },
     { q: "Where is the IT department?", o: ["On the first floor", "On the second floor", "Across the street"], a: 1 }
   ]
 },
@@ -212,15 +212,15 @@ window.READINGS.push(
   intro_fr: "Une annonce et un e-mail au propriétaire. Relatives, questions indirectes, prépositions.",
   paragraphs: [
     { en: "FLAT TO RENT. Bright two-bedroom flat in a quiet street that is only five minutes from the station. Fully furnished, with a balcony which overlooks the park. £1,200 per month, bills not included. Available from 1 June. Contact James.", fr: "APPARTEMENT À LOUER. Appartement lumineux de deux chambres dans une rue calme à seulement cinq minutes de la gare. Entièrement meublé, avec un balcon qui donne sur le parc. 1 200 £ par mois, charges non comprises. Disponible à partir du 1er juin. Contacter James." },
-    { en: "Dear James, I saw your advert for the flat on Elm Road and I'm very interested in it. I'm a graphic designer who works from home, so I'm looking for a place that is quiet and bright.", fr: "Bonjour James, j'ai vu votre annonce pour l'appartement d'Elm Road et il m'intéresse beaucoup. Je suis graphiste et je travaille à domicile, donc je cherche un endroit calme et lumineux." },
+    { en: "Dear James, I saw your advert for the flat on Elm Road and I'm very interested in it. I'm a translator who works from home, so I'm looking for a place that is quiet and bright.", fr: "Bonjour James, j'ai vu votre annonce pour l'appartement d'Elm Road et il m'intéresse beaucoup. Je suis traductrice et je travaille à domicile, donc je cherche un endroit calme et lumineux." },
     { en: "I have a few questions. Could you tell me how much the bills usually are? I'd also like to know whether pets are allowed, because I have a very calm old cat. Finally, do you know if the internet connection is fast? It depends on that for my work.", fr: "J'ai quelques questions. Pourriez-vous me dire à combien s'élèvent habituellement les charges ? J'aimerais aussi savoir si les animaux sont acceptés, car j'ai un vieux chat très calme. Enfin, savez-vous si la connexion internet est rapide ? Mon travail en dépend." },
-    { en: "I'm available for a visit any day next week. I look forward to hearing from you. Best regards, Stella", fr: "Je suis disponible pour une visite n'importe quel jour la semaine prochaine. Dans l'attente de votre réponse. Bien cordialement, Stella" }
+    { en: "I'm available for a visit any day next week. I look forward to hearing from you. Best regards, Claire", fr: "Je suis disponible pour une visite n'importe quel jour la semaine prochaine. Dans l'attente de votre réponse. Bien cordialement, Claire" }
   ],
-  glossary: { "rent": "louer", "bright": "lumineux", "quiet": "calme", "station": "gare", "fully": "entièrement", "furnished": "meublé", "balcony": "balcon", "overlooks": "donne sur", "bills": "charges, factures", "included": "compris", "available": "disponible", "advert": "annonce", "interested": "intéressé(e)", "designer": "graphiste, designer", "pets": "animaux de compagnie", "allowed": "autorisés", "calm": "calme", "connection": "connexion", "depends": "dépend", "visit": "visite", "regards": "salutations (Best regards = Bien cordialement)" },
+  glossary: { "rent": "louer", "bright": "lumineux", "quiet": "calme", "station": "gare", "fully": "entièrement", "furnished": "meublé", "balcony": "balcon", "overlooks": "donne sur", "bills": "charges, factures", "included": "compris", "available": "disponible", "advert": "annonce", "interested": "intéressé(e)", "translator": "traducteur, traductrice", "pets": "animaux de compagnie", "allowed": "autorisés", "calm": "calme", "connection": "connexion", "depends": "dépend", "visit": "visite", "regards": "salutations (Best regards = Bien cordialement)" },
   questions: [
     { q: "Where is the flat?", o: ["Next to the park, far from the station", "In a quiet street five minutes from the station", "In the city centre"], a: 1 },
-    { q: "Why does Stella need a quiet, bright place?", o: ["She works from home", "She has children", "She doesn't like noise at night"], a: 0 },
-    { q: "Which question does Stella NOT ask?", o: ["How much the bills are", "Whether pets are allowed", "Whether there is a parking space"], a: 2 }
+    { q: "Why does Claire need a quiet, bright place?", o: ["She works from home", "She has children", "She doesn't like noise at night"], a: 0 },
+    { q: "Which question does Claire NOT ask?", o: ["How much the bills are", "Whether pets are allowed", "Whether there is a parking space"], a: 2 }
   ]
 },
 {
@@ -228,19 +228,19 @@ window.READINGS.push(
   intro: "A conversation in a design agency. Phrasal verbs, say / tell, make / do.",
   intro_fr: "Une conversation dans une agence de design. Phrasal verbs, say / tell, make / do.",
   paragraphs: [
-    { speaker: "Ben", en: "Morning, Stella! Did you have a good weekend?", fr: "Bonjour, Stella ! Tu as passé un bon week-end ?" },
-    { speaker: "Stella", en: "Yes, thanks, very relaxing. So, what's the plan for this week?", fr: "Oui, merci, très reposant. Alors, quel est le programme de la semaine ?" },
+    { speaker: "Ben", en: "Morning, Mia! Did you have a good weekend?", fr: "Bonjour, Mia ! Tu as passé un bon week-end ?" },
+    { speaker: "Mia", en: "Yes, thanks, very relaxing. So, what's the plan for this week?", fr: "Oui, merci, très reposant. Alors, quel est le programme de la semaine ?" },
     { speaker: "Ben", en: "Well, the client called on Friday. They've changed their mind about the logo. They told me they want something simpler.", fr: "Eh bien, le client a appelé vendredi. Ils ont changé d'avis pour le logo. Ils m'ont dit qu'ils voulaient quelque chose de plus simple." },
-    { speaker: "Stella", en: "Again? We need to sort this out. Did they say why?", fr: "Encore ? Il faut qu'on règle ça. Ils ont dit pourquoi ?" },
+    { speaker: "Mia", en: "Again? We need to sort this out. Did they say why?", fr: "Encore ? Il faut qu'on règle ça. Ils ont dit pourquoi ?" },
     { speaker: "Ben", en: "Not really. I think we should set up a call with them and find out exactly what they're looking for.", fr: "Pas vraiment. Je pense qu'on devrait organiser un appel avec eux et découvrir exactement ce qu'ils cherchent." },
-    { speaker: "Stella", en: "Good idea. In the meantime, I'll come up with two or three new versions. I don't want to give up on the colours, though. They work really well.", fr: "Bonne idée. En attendant, je vais proposer deux ou trois nouvelles versions. Je ne veux pas renoncer aux couleurs, par contre. Elles fonctionnent vraiment bien." },
+    { speaker: "Mia", en: "Good idea. In the meantime, I'll come up with two or three new versions. I don't want to give up on the colours, though. They work really well.", fr: "Bonne idée. En attendant, je vais proposer deux ou trois nouvelles versions. Je ne veux pas renoncer aux couleurs, par contre. Elles fonctionnent vraiment bien." },
     { speaker: "Ben", en: "Agreed. Let's make a decision together on Wednesday. Oh, and we've run out of coffee, so I'm going to pick some up. Do you want anything?", fr: "D'accord. Prenons une décision ensemble mercredi. Oh, et on n'a plus de café, donc je vais en chercher. Tu veux quelque chose ?" }
   ],
   glossary: { "weekend": "week-end", "relaxing": "reposant", "plan": "programme, plan", "client": "client", "changed": "ont changé", "mind": "avis (change your mind)", "logo": "logo", "simpler": "plus simple", "sort": "(sort out = régler)", "set": "(set up = organiser, mettre en place)", "find": "(find out = découvrir)", "exactly": "exactement", "meantime": "(in the meantime = en attendant)", "versions": "versions", "give": "(give up = abandonner, renoncer)", "colours": "couleurs", "though": "par contre, pourtant", "agreed": "d'accord", "decision": "décision", "run": "(run out of = ne plus avoir de)", "pick": "(pick up = aller chercher)" },
   questions: [
     { q: "What did the client say?", o: ["They love the logo", "They want something simpler", "They want to cancel the project"], a: 1 },
     { q: "What does Ben suggest?", o: ["Setting up a call with the client", "Changing the colours", "Finding a new client"], a: 0 },
-    { q: "What will Stella do in the meantime?", o: ["Go and buy coffee", "Come up with new versions", "Call the client"], a: 1 }
+    { q: "What will Mia do in the meantime?", o: ["Go and buy coffee", "Come up with new versions", "Call the client"], a: 1 }
   ]
 },
 {

@@ -172,8 +172,8 @@ window.LESSONS.push(
 <tr><td>Do you have any questions for us?</td><td>Your interest in the company</td></tr>
 </table>
 <h2>Useful answers</h2>
-<p><s-en>I've been working as a designer for ten years.</s-en> (present perfect continuous!)</p>
-<p><s-en>I have experience in branding and web design.</s-en> · <s-en>I'm good at working under pressure.</s-en></p>
+<p><s-en>I've been working in this field for several years.</s-en> (present perfect continuous!)</p>
+<p><s-en>I have experience in managing projects.</s-en> · <s-en>I'm good at working under pressure.</s-en></p>
 <p><s-en>I'm passionate about visual communication.</s-en> · <s-en>I'd like to develop my management skills.</s-en></p>
 <p>Weakness: <s-en>I sometimes spend too much time on details, but I've learnt to set clear deadlines.</s-en></p>
 <div class="tip">Always prepare one or two questions for the end: <s-en>What does a typical day look like?</s-en> · <s-en>What are the next steps?</s-en></div>
@@ -190,21 +190,21 @@ window.LESSONS.push(
 <tr><td>Do you have any questions for us?</td><td>Ton intérêt pour l'entreprise</td></tr>
 </table>
 <h2>Des réponses utiles</h2>
-<p><s-en>I've been working as a designer for ten years.</s-en> (Je suis designer depuis dix ans : present perfect continu !)</p>
-<p><s-en>I have experience in branding and web design.</s-en> (J'ai de l'expérience en…) · <s-en>I'm good at working under pressure.</s-en> (Je travaille bien sous pression.)</p>
+<p><s-en>I've been working in this field for several years.</s-en> (Je travaille dans ce domaine depuis plusieurs années : present perfect continu !)</p>
+<p><s-en>I have experience in managing projects.</s-en> (J'ai de l'expérience en…) · <s-en>I'm good at working under pressure.</s-en> (Je travaille bien sous pression.)</p>
 <p><s-en>I'm passionate about visual communication.</s-en> · <s-en>I'd like to develop my management skills.</s-en> (J'aimerais développer mes compétences en management.)</p>
 <p>Défaut : <s-en>I sometimes spend too much time on details, but I've learnt to set clear deadlines.</s-en> (Je passe parfois trop de temps sur les détails, mais j'ai appris à me fixer des échéances claires.)</p>
 <div class="tip">Prépare toujours une ou deux questions pour la fin : <s-en>What does a typical day look like?</s-en> (À quoi ressemble une journée type ?) · <s-en>What are the next steps?</s-en> (Quelles sont les prochaines étapes ?)</div>
 `,
   examples: [
     ["Tell me a little about yourself.", "Parlez-moi un peu de vous."],
-    ["I've been working in design for ten years.", "Je travaille dans le design depuis dix ans."],
+    ["I've been working in this field for ten years.", "Je travaille dans ce domaine depuis dix ans."],
     ["I'm good at working with clients.", "Je suis à l'aise avec les clients."],
     ["I'd like to develop my skills in animation.", "J'aimerais développer mes compétences en animation."],
     ["What are the next steps?", "Quelles sont les prochaines étapes ?"]
   ],
   quiz: [
-    { q: "Translate: « Je suis designer depuis dix ans. »", o: ["I am designer since ten years.", "I've been working as a designer for ten years.", "I work as designer for ten years."], a: 1, ex: "« Depuis » → present perfect (continuous) + for.", ex_fr: "« Depuis » → present perfect (continu) + for." },
+    { q: "Translate: « Je travaille ici depuis dix ans. »", o: ["I am working here since ten years.", "I've been working here for ten years.", "I work here for ten years."], a: 1, ex: "« Depuis » → present perfect (continuous) + for.", ex_fr: "« Depuis » → present perfect (continu) + for." },
     { q: "“What are your strengths?” asks about:", q_fr: "« What are your strengths? » porte sur :", o: ["your salary", "your best qualities", "your physical strength"], a: 1, ex: "Strengths = points forts.", ex_fr: "Strengths = points forts." },
     { q: "Complete: “I'm good ___ working in a team.”", q_fr: "Complète : « I'm good ___ working in a team. »", o: ["in", "at", "for"], a: 1, ex: "Good at + -ing.", ex_fr: "Good at + -ing." },
     { q: "A good question to ask at the end:", q_fr: "Une bonne question à poser à la fin :", o: ["How much holiday do I get?", "What does a typical day look like?", "Can I leave now?"], a: 1, ex: "Show interest in the job itself.", ex_fr: "Montre de l'intérêt pour le poste lui-même." }

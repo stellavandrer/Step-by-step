@@ -143,7 +143,7 @@ window.PRON = [
 </ul>`,
   words: [["A", "eɪ", "", "letter A"], ["E", "iː", ""], ["I", "aɪ", ""], ["G", "dʒiː", ""], ["J", "dʒeɪ", ""], ["H", "eɪtʃ", ""], ["R", "ɑː", ""], ["W", "ˈdʌbəljuː", ""], ["Y", "waɪ", ""], ["Q", "kjuː", ""], ["U", "juː", ""], ["Z (UK)", "zed", "", "zed"]],
   pairs: [["E", "I"], ["G", "J"], ["Y", "I"], ["K", "Q"]],
-  practice: [["Could you spell that, please?", "Pouvez-vous l'épeler, s'il vous plaît ?"], ["How do you spell your surname?", "Comment s'écrit ton nom de famille ?"], ["Is that G for Golf or J for Juliet?", "C'est G comme Golf ou J comme Juliet ?"], ["My email is stella at gmail dot com.", "Mon e-mail est stella arobase gmail point com."]],
+  practice: [["Could you spell that, please?", "Pouvez-vous l'épeler, s'il vous plaît ?"], ["How do you spell your surname?", "Comment s'écrit ton nom de famille ?"], ["Is that G for Golf or J for Juliet?", "C'est G comme Golf ou J comme Juliet ?"], ["My email is stella at example dot com.", "Mon e-mail est stella arobase example point com."]],
   quiz: [
     { q: "Which letter is pronounced /iː/, like “see”?", q_fr: "Quelle lettre se prononce /iː/, comme « see » ?", o: ["E", "I", "A"], a: 0, ex: "E = /iː/. I = /aɪ/, A = /eɪ/.", ex_fr: "E = /iː/. I = /aɪ/, A = /eɪ/." },
     { q: "Which letter is pronounced /aɪ/, like “my”?", q_fr: "Quelle lettre se prononce /aɪ/, comme « my » ?", o: ["I", "E", "A"], a: 0 },
