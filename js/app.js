@@ -91,7 +91,7 @@ const unitOfLesson = (id) => COURSE.find((u) => u.lessons.includes(+id));
 
 /* ================= Storage ================= */
 const KEY = "stepbystep.v1";
-const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, toeic: { mocks: [], parts: {} } });
+const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, place: {}, cando: {}, toeic: { mocks: [], parts: {} } });
 function load() {
   try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
   catch (e) { return defaults(); }
@@ -165,10 +165,12 @@ function levelStats(L) {
   if (S.exams[L] >= 70) pct = 1;
   return { ud, ut: units.length, ld, lt: ls.length, wd, wt: ws.length, rd, rt: rs.length, pct };
 }
-function currentUnit() { return COURSE.find((u) => !unitDone(u)) || COURSE[COURSE.length - 1]; }
+/* After the placement test, the course can start at a higher level: the levels below are skipped, not completed. */
+const placedOut = (L) => !!S.startAt && LV.indexOf(L) < LV.indexOf(S.startAt);
+function currentUnit() { return COURSE.find((u) => !unitDone(u) && !placedOut(u.level)) || COURSE.find((u) => !unitDone(u)) || COURSE[COURSE.length - 1]; }
 function currentLevel() {
-  for (const L of LV) if (!(S.exams[L] >= 70) && COURSE.some((u) => u.level === L && !unitDone(u))) return L;
-  for (const L of LV) if (!(S.exams[L] >= 70)) return L;
+  for (const L of LV) if (!placedOut(L) && !(S.exams[L] >= 70) && COURSE.some((u) => u.level === L && !unitDone(u))) return L;
+  for (const L of LV) if (!placedOut(L) && !(S.exams[L] >= 70)) return L;
   return LV[LV.length - 1];
 }
 function levelGroups(items, render, opts = {}) {
@@ -369,7 +371,7 @@ function lookup(raw, gloss) {
   return null;
 }
 /* Wrap every English word of the page in a clickable span. */
-const SKIP = "button, a, input, textarea, select, option, script, style, svg, .fr-text, .fr, .no-tx, .popover, .w, .kbd, .tag, .pill, .seg, label, .speaker, .fr-ui";
+const SKIP = "button, a, input, textarea, select, option, script, style, svg, .fr-text, .fr, .no-tx, .popover, .w, .kbd, .tag, .pill, .seg, label, .speaker, .fr-ui, .lv-scale, .report-big, .report-lv, .result-big";
 /* Not real words: single letters (except a and I), suffixes and prefixes quoted alone (-tion, thir-), endings after a digit (2nd). */
 const fragmentAt = (parts, k) => /^[b-hj-z]$/i.test(parts[k]) || /(^|[\s(“"‘«,\/])[-–]$|\d$/.test(parts[k - 1] || "") || /^[-–](?![A-Za-z])/.test(parts[k + 1] || "");
 function wordify(root) {
@@ -996,12 +998,14 @@ function viewHome() {
     <div class="path">${LV.map((L) => {
       const st = levelStats(L);
       const done = st.pct >= 0.999;
-      return `<a class="path-step ${L === cur ? "cur" : ""} ${done ? "done" : ""}" href="#/cours">
+      const skip = !done && placedOut(L);
+      return `<a class="path-step ${L === cur ? "cur" : ""} ${done ? "done" : ""} ${skip ? "placed" : ""}" href="#/cours"${skip ? ` title="${T("Skipped after the placement test")}"` : ""}>
         <span class="path-dot">${done ? ic("check") : L}</span>
         <span class="path-bar"><i style="width:${Math.round(st.pct * 100)}%"></i></span>
         <span class="small">${esc(lvName(L))}</span></a>`;
     }).join("")}</div>
     <p class="muted small" style="margin:0">${T("You're working on level <b>{l}</b>. Each level has its units, then a level exam.", { l: `${cur} · ${esc(lvName(cur))}` })}</p>
+    <p class="small" style="margin:8px 0 0">${Object.keys(placeState()).some((k) => PLACE_SECS.some((x) => x.id === k)) || Object.keys(S.cando || {}).length ? `<a href="#/bilan">${ic("chart-column")} ${T("My skills report")}</a>` : `<a href="#/placement">${ic("compass")} ${T("Not sure where to start? Take the placement test")}</a>`}</p>
   </section>
 
   <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
@@ -1143,13 +1147,14 @@ function viewCourse() {
       <div style="flex:1;min-width:0"><span class="muted small">${T("Continue")} · ${cu.level} · ${T("Unit")} ${unitNum(cu)}</span><h2 style="margin:2px 0 0">${esc(loc(cu, "title"))}</h2></div>
       ${ic("arrow-right")}
     </a>
-    <a class="card ear-cta" href="#/competences">${tile("graduation-cap", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Academic skills, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} chapters taught as in a university English course: note-taking, essays, data, presentations, seminars, sources, critical thinking, reports, mediation, synthesis, research writing, exams.", { n: ACAD().length })}</p></div><span class="muted small">${ACAD().filter((c) => acadDone(c.id)).length} / ${ACAD().length}</span>${ic("arrow-right")}</a>
+    <a class="card ear-cta" href="#/placement">${tile("compass", "A2")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Placement test and skills report")}</h3><p class="muted small" style="margin:4px 0 0">${T("An adaptive test in each skill, can-do grids and a report of your level in listening, reading, speaking, writing, grammar and vocabulary.")}</p></div>${ic("arrow-right")}</a>
+    <a class="card ear-cta" href="#/competences" style="margin-top:12px">${tile("graduation-cap", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Academic skills, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} chapters taught as in a university English course: note-taking, essays, data, presentations, seminars, sources, critical thinking, reports, mediation, synthesis, research writing, exams.", { n: ACAD().length })}</p></div><span class="muted small">${ACAD().filter((c) => acadDone(c.id)).length} / ${ACAD().length}</span>${ic("arrow-right")}</a>
     ${LV.map((L) => {
       const units = COURSE.filter((u) => u.level === L);
       const done = units.filter(unitDone).length;
       const ex = S.exams[L];
       return `<details class="level-block" ${L === currentLevel() || done ? "open" : ""}>
-        <summary><span class="lvl-sum">${levelTag(L)}<b>${esc(lvName(L))}</b><span class="muted small">${T("{a} / {b} units", { a: done, b: units.length })}${ex != null ? ` · ${T("exam")} ${ex}%` : ""}</span></span>${ic("chevron-down", "chev")}</summary>
+        <summary><span class="lvl-sum">${levelTag(L)}<b>${esc(lvName(L))}</b><span class="muted small">${T("{a} / {b} units", { a: done, b: units.length })}${ex != null ? ` · ${T("exam")} ${ex}%` : ""}${placedOut(L) && done < units.length ? ` · ${T("Skipped after the placement test")}` : ""}</span></span>${ic("chevron-down", "chev")}</summary>
         <div class="grid grid-2">
           ${units.map((u) => {
             const st = unitSteps(u);
@@ -1428,6 +1433,7 @@ function viewParcours() {
     <h1>${T("My path to {l}", { l: LV[LV.length - 1] })}</h1>
     <p class="muted">${T("Levels A1 → C2 come from the Common European Framework (CEFR), used everywhere: schools, exams, job offers. <b>A</b> = basic user, <b>B</b> = independent user, <b>C</b> = proficient user.")}</p>
     ${hoursCard(C1H)}
+    <a class="card ear-cta" href="#/bilan">${tile("chart-column", "B1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("My skills report")}</h3><p class="muted small" style="margin:4px 0 0">${T("Your level in each skill, with the placement test, Claude's assessment and the can-do grids.")}</p></div>${ic("arrow-right")}</a>
     <section class="card" style="margin:20px 0">
       <h2>${T("How long does it take?")}</h2>
       <p>${T("Cambridge English estimates that it takes about <b>{h} hours of guided learning</b> to reach {l} from zero. It's an order of magnitude, not a promise: everything you do in English counts (series, podcasts, conversations).", { h: C1H, l: LV[LV.length - 1] })}</p>
@@ -1449,6 +1455,7 @@ function viewParcours() {
           <div>
             <h3>${T("At this level, you can…")}</h3>
             <ul class="checklist">${L.can.map((c, i) => `<li>${ic("check")}<span>${instr(c, L.can_fr && L.can_fr[i])}</span></li>`).join("")}</ul>
+            <p class="small" style="margin:6px 0 0"><a href="#/grilles">${ic("list-checks")} ${T("The full can-do grid, skill by skill")}</a></p>
           </div>
           <div>
             <h3>${T("Your progress")}</h3>
@@ -2994,6 +3001,571 @@ function viewAcadChapter(id) {
   }));
 }
 
+/* ================= Placement test, can-do grids, skills report =================
+   As at university: an adaptive test per skill (one level up after a set that goes well, one level down
+   after a set that doesn't, and it stops at the boundary), a vocabulary-size check with pseudo-words
+   (Meara's yes/no method), writing and speaking assessed with Claude against the CEFR criteria,
+   and self-assessment grids. Levels are indexes: -1 = before A1 ("Pre-A1"), 0 = A1 … 5 = C2. */
+const PL = () => window.PLACEMENT || { grammar: {}, reading: {}, listening: {}, pseudo: [], writing: {}, speaking: {} };
+const CD = () => window.CANDO || [];
+const lvIdx = (L) => LV.indexOf(L);
+const lvLabel = (i) => (i < 0 ? "Pre-A1" : LV[Math.min(i, LV.length - 1)]);
+const lvTag = (L) => (lvIdx(L) < 0 ? `<span class="tag">Pre-A1</span>` : levelTag(L));
+const placeState = () => (S.place = S.place || {});
+const niceDate = (d) => new Date(d + "T12:00:00").toLocaleDateString(locale(), { day: "numeric", month: "long", year: "numeric" });
+const PLACE_SECS = [
+  { id: "grammar", icon: "book-open", title: "Grammar and vocabulary", min: 10, d: "Choose the word or phrase that completes each sentence." },
+  { id: "vocab", icon: "layers", title: "Vocabulary size", min: 5, d: "Say which words you know. Careful: some of them don't exist!" },
+  { id: "reading", icon: "book-open-text", title: "Reading", min: 15, d: "Read short texts and answer questions about them." },
+  { id: "listening", icon: "headphones", title: "Listening", min: 10, d: "Listen to conversations and talks, twice at most." },
+  { id: "writing", icon: "pen-line", title: "Writing", min: 25, d: "Write a text, then Claude estimates your level with the CEFR criteria." },
+  { id: "speaking", icon: "mic", title: "Speaking", min: 15, d: "Speak on a topic, then take a short oral exam with Claude." }
+];
+const PLACE_RATE = { A1: 0.8, A2: 0.85, B1: 0.92, B2: 1, C1: 1, C2: 1.05 };
+const SELF_OPTS = [
+  ["pre", "I'm a complete beginner."],
+  ["A1", "I know some words and very simple phrases."],
+  ["A2", "I can manage simple, everyday situations."],
+  ["B1", "I can cope with most everyday situations and talk about familiar topics."],
+  ["B2", "I can discuss many topics with some fluency."],
+  ["C1", "I'm at ease in almost any situation, even complex ones."]
+];
+/* Where the adaptive test starts: the grammar result if there is one, else what you said about yourself. */
+function placeStart(sec) {
+  const st = placeState();
+  if (sec !== "grammar" && st.grammar) return LV[Math.min(Math.max(0, lvIdx(st.grammar.level)), 4)];
+  if (st.self && st.self !== "pre") return LV[Math.min(lvIdx(st.self), 4)];
+  return st.self === "pre" ? "A1" : currentLevel();
+}
+function savePlace(sec, data) {
+  const st = placeState();
+  st[sec] = data;
+  st.history = st.history || [];
+  let h = st.history.find((x) => x.date === today());
+  if (!h) { h = { date: today() }; st.history.push(h); }
+  h[sec] = data.level;
+  addXP(10);
+}
+/* One set of screens for one level. Reading and listening alternate between the two texts of a level. */
+function placeBlock(sec, L) {
+  const P = PL();
+  const mk = (q, o, extra) => Object.assign({ q, o, a: 0, order: shuffle(o.map((_, k) => k)) }, extra || {});
+  if (sec === "grammar") return shuffle(P.grammar[L] || []).slice(0, 6).map(([q, o, f, f_fr]) => ({ qs: [mk(q, o, { f, f_fr })] }));
+  const pool = (P[sec] || {})[L] || [];
+  if (!pool.length) return [];
+  const st = placeState(); st.seen = st.seen || {};
+  const key = sec + ":" + L;
+  const idx = st.seen[key] == null ? Math.floor(Math.random() * pool.length) : (st.seen[key] + 1) % pool.length;
+  st.seen[key] = idx;
+  const it = pool[idx];
+  if (sec === "reading") return [{ text: it, qs: it.qs.map(([q, o]) => mk(q, o)) }];
+  if (it.set) return it.set.map((m) => ({ audio: m.lines, qs: [mk(m.q, m.o)] }));
+  return [{ audio: it.lines, title: it.title, qs: it.qs.map(([q, o]) => mk(q, o)) }];
+}
+const gapQ = (q) => esc(q).replace(/_{3,}/, '<span class="gap">&nbsp;</span>');
+/* Screens without feedback (it's a test), with "I don't know" so that nobody has to guess. */
+function runPlaceScreens(el, screens, meta, done) {
+  let s = 0, ok = 0, n = 0;
+  const answers = [];
+  function show() {
+    stopAudio();
+    if (s >= screens.length) return done(ok, n, answers);
+    const sc = screens[s];
+    const many = sc.qs.length > 1;
+    let left = 2;
+    el.innerHTML = `
+      <div class="row small muted"><span>${esc(meta.title)}</span><span class="spacer"></span><span>${T("Set {n}", { n: meta.step })} · ${s + 1} / ${screens.length}</span></div>
+      <div class="progress" style="margin:8px 0 18px"><div style="width:${(s / screens.length) * 100}%"></div></div>
+      ${sc.text ? `<div class="doc en place-text"><b>${esc(sc.text.title)}</b>${sc.text.paras.map((p) => `<p>${esc(p)}</p>`).join("")}</div>` : ""}
+      ${sc.audio ? `<div class="listen-box"><p class="small" style="margin:0 0 10px">${sc.title ? `<b>${esc(sc.title)}</b> · ` : ""}${T(many ? "Read the questions, then listen." : "Read the question, then listen.")}</p><div class="row"><button class="btn btn-primary" id="pPlay">${ic("play")} ${T("Listen")}</button><span class="muted small" id="pLeft">${T("You can listen twice.")}</span></div></div>` : ""}
+      ${sc.qs.map((q, k) => `<div class="tq pq-${k}"><p class="quiz-q en"${many ? ' style="font-size:17px"' : ""}>${many ? `${k + 1}. ` : ""}${gapQ(q.q)}</p>
+        ${q.order.map((j) => `<button class="option en" data-q="${k}" data-k="${j}">${esc(q.o[j])}</button>`).join("")}
+        <button class="option option-idk" data-q="${k}" data-k="-1">${T("I don't know")}</button></div>`).join("")}
+      <div class="row" style="margin-top:16px"><button class="btn btn-dark" id="pNext" disabled>${T(s + 1 < screens.length ? "Next" : "Continue")} ${ic("arrow-right")}</button></div>`;
+    const chosen = sc.qs.map(() => null);
+    $$(".option", el).forEach((b) => (b.onclick = () => {
+      const k = +b.dataset.q;
+      chosen[k] = +b.dataset.k;
+      $$(`.pq-${k} .option`, el).forEach((x) => x.classList.toggle("chosen", x === b));
+      $("#pNext").disabled = chosen.some((c) => c === null);
+      if (!$("#pNext").disabled && !many) $("#pNext").focus();
+    }));
+    if (sc.audio) $("#pPlay").onclick = async () => {
+      const btn = $("#pPlay");
+      if (left <= 0 || btn.disabled) return;
+      left--;
+      btn.disabled = true;
+      $("#pLeft").textContent = T(left ? "Listening…" : "Last listen.");
+      await playLines(sc.audio, btn, meta.rate);
+      if ($("#pPlay") === btn) { btn.disabled = left <= 0; $("#pLeft").textContent = T(left > 0 ? "You can listen once more." : "No more listens."); }
+    };
+    $("#pNext").onclick = () => {
+      sc.qs.forEach((q, k) => { const good = chosen[k] === q.a; n++; if (good) ok++; answers.push(Object.assign({}, q, { chosen: chosen[k], ok: good, screen: sc })); });
+      s++; show();
+    };
+  }
+  show();
+}
+function runStaircase(el, sec, start, done) {
+  const passed = [], failed = [], answers = [];
+  const need = sec === "grammar" ? 4 : 3;
+  const title = T(PLACE_SECS.find((x) => x.id === sec).title);
+  let i = Math.max(0, lvIdx(start));
+  const finish = () => { save(); done(passed.length ? Math.max(...passed) : -1, answers); };
+  const step = () => {
+    const L = LV[i];
+    const screens = placeBlock(sec, L);
+    if (!screens.length) return finish();
+    runPlaceScreens(el, screens, { title, step: passed.length + failed.length + 1, rate: PLACE_RATE[L] }, (ok, n, ans) => {
+      ans.forEach((a) => (a.L = L));
+      answers.push(...ans);
+      if (ok >= need) { passed.push(i); if (i + 1 >= LV.length || failed.includes(i + 1)) return finish(); i++; }
+      else { failed.push(i); if (i === 0 || passed.includes(i - 1)) return finish(); i--; }
+      step();
+    });
+  };
+  step();
+}
+function placeReview(answers) {
+  const miss = answers.filter((a) => !a.ok);
+  if (!miss.length) return `<p class="muted" style="text-align:center">${T("No mistakes at all. Impressive!")}</p>`;
+  const shown = new Set();
+  return `<details class="card place-review"><summary><b>${Tn(miss.length, "See the {n} question I missed", "See the {n} questions I missed")}</b></summary>
+    ${miss.map((a) => {
+      let ctx = "";
+      if (!shown.has(a.screen) && a.screen.text) ctx = `<details class="script"><summary>${esc(a.screen.text.title)}</summary>${a.screen.text.paras.map((p) => `<p class="en">${esc(p)}</p>`).join("")}</details>`;
+      if (!shown.has(a.screen) && a.screen.audio) ctx = `<details class="script"><summary>${T("Transcript")}</summary>${a.screen.audio.map(([sp, t]) => `<p class="en">${sp ? `<b>${esc(sp)}:</b> ` : ""}${esc(t)} ${sayBtn(t)}</p>`).join("")}</details>`;
+      shown.add(a.screen);
+      const mine = a.chosen === -1 || a.chosen == null ? T("I don't know") : a.o[a.chosen];
+      const q = /_{3,}/.test(a.q) ? esc(a.q).replace(/_{3,}/, `<b class="c-green">${esc(a.o[0])}</b>`) : `${esc(a.q)}<br>${ic("check", "c-green")} <b>${esc(a.o[0])}</b>`;
+      return `<div class="review-item">${ctx}<p class="en" style="margin:10px 0 2px">${levelTag(a.L)} ${q}</p>
+        <p class="small muted" style="margin:0">${T("My answer:")} <span class="en">${esc(mine)}</span>${a.f ? ` · ${esc(isFr() ? a.f_fr : a.f)}` : ""}</p></div>`;
+    }).join("")}
+  </details>`;
+}
+function placeResult(el, sec, lvl, answers, min) {
+  const ok = answers.filter((a) => a.ok).length;
+  const L = lvLabel(lvl);
+  el.classList.remove("no-tx");
+  const next = PLACE_SECS[PLACE_SECS.findIndex((x) => x.id === sec) + 1];
+  el.innerHTML = `
+    <div class="result-big">${L}</div>
+    <p style="text-align:center;margin:0">${lvl < 0 ? T("You're at the very start, and that's fine: the course begins at A1.") : T("Your level in this part: <b>{l}</b> · {n}", { l: L, n: esc(lvName(L)) })}</p>
+    <p class="muted small" style="text-align:center">${T("{a} correct answers out of {b}, in {m} min.", { a: ok, b: answers.length, m: min })} ${lvl < LV.length - 1 ? T("Next level to aim for: {l}.", { l: LV[lvl + 1] }) : ""}</p>
+    ${placeReview(answers)}
+    <div class="row" style="justify-content:center;margin-top:16px"><a class="btn" href="#/placement">${T("Back to the placement test")}</a>${next ? `<a class="btn btn-primary" href="#/placement/${next.id}">${T(next.title)} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/bilan">${T("My skills report")} ${ic("arrow-right")}</a>`}</div>`;
+}
+const PLACE_RULES = {
+  grammar: ["The test adapts to you: after a set that goes well, the next one is harder; otherwise it's easier. It stops when it has found your level.", "Six sentences per set, from A1 to C2. Most people answer between 12 and 24 questions."],
+  reading: ["One text per set, with four questions. The texts get longer and harder as you go up.", "Read at your natural pace: there's no time limit, but don't read each text three times."],
+  listening: ["Read the questions first, then listen. You can listen twice, as in real exams.", "Use headphones if you can, and don't slow the voice down: the speed is part of the level."]
+};
+function viewPlaceSection(sec) {
+  const meta = PLACE_SECS.find((x) => x.id === sec);
+  if (!meta) return viewPlacement();
+  if (sec === "vocab") return viewPlaceVocab();
+  if (sec === "writing" || sec === "speaking") return viewPlaceProduce(sec);
+  const prev = placeState()[sec];
+  app.innerHTML = `
+    ${back("#/placement", "Placement test")}
+    <h1>${ic(meta.icon)} ${T(meta.title)}</h1>
+    <p class="muted">${T(meta.d)} ${T("About {m} minutes.", { m: meta.min })}${prev ? ` ${T("Last result: {l} on {d}.", { l: prev.level, d: niceDate(prev.date) })}` : ""}</p>
+    <section class="card no-tx" id="placeBox">
+      <ul class="checklist">${[...PLACE_RULES[sec], "If you don't know, choose “I don't know”: a lucky guess makes the result less accurate.", "No dictionary and no translation: the test measures what you can do on your own today."].map((r) => `<li>${ic("check")}<span>${T(r)}</span></li>`).join("")}</ul>
+      ${sec === "listening" && !synth ? `<div class="note-warn">${T("Your browser can't read texts aloud, so the listening test isn't available here. Try Safari or Chrome.")}</div>` : `<button class="btn btn-primary" id="go">${T("Start")}</button>`}
+    </section>`;
+  if (!$("#go")) return;
+  $("#go").onclick = () => {
+    const t0 = Date.now();
+    runStaircase($("#placeBox"), sec, placeStart(sec), (lvl, answers) => {
+      const min = Math.max(1, Math.round((Date.now() - t0) / 60000));
+      const focus = [];
+      answers.filter((a) => !a.ok && a.f).forEach((a) => { if (!focus.some(([f]) => f === a.f)) focus.push([a.f, a.f_fr]); });
+      savePlace(sec, { level: lvLabel(lvl), date: today(), ok: answers.filter((a) => a.ok).length, n: answers.length, min, focus });
+      placeResult($("#placeBox"), sec, lvl, answers, min);
+    });
+  };
+}
+
+/* Vocabulary size: 10 words per level from the course lists + 20 pseudo-words. Saying "I know it" to a
+   word that doesn't exist reveals guessing, and the score is corrected for it. */
+function vocabSample() {
+  const P = PL();
+  const fake = new Set(P.pseudo || []), seen = new Set(), items = [];
+  LV.forEach((L) => {
+    const pool = [];
+    VOCAB.filter((t) => t.level === L && !t.toeic).forEach((t) => t.words.forEach(([en]) => { const w = String(en).trim(); if (/^[a-z]{3,}$/.test(w) && !fake.has(w) && !seen.has(w)) { seen.add(w); pool.push(w); } }));
+    shuffle(pool).slice(0, 10).forEach((w) => items.push({ w, L }));
+  });
+  (P.pseudo || []).forEach((w) => items.push({ w, L: null }));
+  return shuffle(items);
+}
+function vocabScore(items, res) {
+  const nFake = items.filter((x) => !x.L).length;
+  const fa = items.filter((x, k) => !x.L && res[k]).length;
+  const f = nFake ? fa / nFake : 0;
+  const per = {};
+  let size = 0, prev = 0;
+  LEVELS.forEach((lv) => {
+    const its = items.map((x, k) => [x, res[k]]).filter(([x]) => x.L === lv.id);
+    const h = its.length ? its.filter(([, r]) => r).length / its.length : 0;
+    const c = f >= 1 ? 0 : Math.max(0, (h - f) / (1 - f));
+    per[lv.id] = Math.round(c * 100);
+    size += c * (lv.words - prev);
+    prev = lv.words;
+  });
+  size = Math.round(size / 50) * 50;
+  /* A level needs enough words in total AND a fair share (40%, with only 10 words per level) of each level up to it. */
+  let level = -1;
+  for (let i = 0; i < LEVELS.length; i++) { if (size >= 0.8 * LEVELS[i].words && per[LEVELS[i].id] >= 40) level = i; else break; }
+  return { level: lvLabel(level), size, fa, nFake, per };
+}
+function viewPlaceVocab() {
+  const prev = placeState().vocab;
+  app.innerHTML = `
+    ${back("#/placement", "Placement test")}
+    <h1>${ic("layers")} ${T("Vocabulary size")}</h1>
+    <p class="muted">${T("80 words, one at a time: about 5 minutes. The words come from the course lists, from A1 to C2, and some are invented.")}${prev ? ` ${T("Last result: {l} on {d}.", { l: prev.level, d: niceDate(prev.date) })}` : ""}</p>
+    <section class="card no-tx" id="vBox">
+      <ul class="checklist">${["Answer “I know this word” only if you could give its meaning or use it in a sentence. Having seen it somewhere isn't enough.", "Some words don't exist in English. If you say you know them, your score goes down: it's how the test corrects for guessing.", "Answer quickly, following your first impression."].map((r) => `<li>${ic("check")}<span>${T(r)}</span></li>`).join("")}</ul>
+      <button class="btn btn-primary" id="go">${T("Start")}</button>
+    </section>`;
+  $("#go").onclick = () => {
+    const el = $("#vBox"), items = vocabSample(), res = [];
+    const t0 = Date.now();
+    let i = 0;
+    const answer = (y) => { if (i >= items.length) return; res.push(y); i++; show(); };
+    const key = (e) => { if (!$("#vYes")) return; if (e.key === "ArrowRight") answer(true); else if (e.key === "ArrowLeft") answer(false); };
+    document.addEventListener("keydown", key);
+    onCleanup(() => document.removeEventListener("keydown", key));
+    const show = () => {
+      if (i >= items.length) { document.removeEventListener("keydown", key); return finish(); }
+      el.innerHTML = `
+        <div class="row small muted"><span>${T("Vocabulary size")}</span><span class="spacer"></span><span>${i + 1} / ${items.length}</span></div>
+        <div class="progress" style="margin:8px 0 18px"><div style="width:${(i / items.length) * 100}%"></div></div>
+        <div class="vocab-word en">${esc(items[i].w)}</div>
+        <div class="row vocab-btns"><button class="btn" id="vNo">${ic("x")} ${T("I don't know this word")}</button><button class="btn btn-dark" id="vYes">${ic("check")} ${T("I know this word")}</button></div>
+        <p class="muted small kbd-hint" style="text-align:center;margin:12px 0 0">${T("On a keyboard: ← I don't know this word · → I know this word")}</p>`;
+      $("#vYes").onclick = () => answer(true);
+      $("#vNo").onclick = () => answer(false);
+    };
+    const finish = () => {
+      const r = vocabScore(items, res);
+      const min = Math.max(1, Math.round((Date.now() - t0) / 60000));
+      savePlace("vocab", { level: r.level, date: today(), size: r.size, fa: r.fa, per: r.per, min });
+      save();
+      el.classList.remove("no-tx");
+      const real = items.map((x, k) => [x, res[k]]).filter(([x]) => x.L);
+      el.innerHTML = `
+        <div class="result-big">≈ ${r.size.toLocaleString(locale())}</div>
+        <p style="text-align:center;margin:0">${T("words known from the course lists · level <b>{l}</b>", { l: r.level })}</p>
+        <div class="sections">${LV.map((L) => `<div class="sec"><span>${L}</span><div class="progress"><div style="width:${r.per[L]}%"></div></div><b>${r.per[L]}%</b></div>`).join("")}</div>
+        <p class="small ${r.fa >= 4 ? "note-warn" : "muted"}" style="margin-top:14px">${Tn(r.fa, "You said you knew {n} word that doesn't exist (out of {t}).", "You said you knew {n} words that don't exist (out of {t}).", { t: r.nFake })} ${r.fa >= 4 ? T("That's quite a lot: the result is less reliable. Take the test again later, answering more strictly.") : T("The score has been corrected for it.")}</p>
+        <p class="muted small">${T("This estimate only counts the words in this course (about {n} up to C2). A C2 speaker knows many more, but these are the ones that matter most for each level.", { n: LEVELS[LEVELS.length - 1].words.toLocaleString(locale()) })}</p>
+        <details class="card place-review"><summary><b>${T("The words I said I didn't know")}</b></summary><p class="en">${real.filter(([, y]) => !y).map(([x]) => `${esc(x.w)} <span class="muted small">${x.L}</span>`).join(" · ") || "—"}</p><p class="small muted">${T("The invented words were:")} <span class="no-tx">${(PL().pseudo || []).join(", ")}</span></p></details>
+        <div class="row" style="justify-content:center;margin-top:16px"><a class="btn" href="#/placement">${T("Back to the placement test")}</a><a class="btn btn-primary" href="#/placement/reading">${T("Reading")} ${ic("arrow-right")}</a></div>`;
+    };
+    show();
+  };
+}
+
+/* Writing and speaking: a task per level, then Claude assesses with the CEFR / Cambridge criteria.
+   The app can't mark free production reliably, so it says so and lets a real assessor do it. */
+function levelPrompt(o) {
+  const frP = isFr() || lvIdx(o.level) <= 2;
+  if (o.sec === "writing") return (frP ? [
+    "Bonjour ! Joue le rôle d'un examinateur expérimenté des examens d'anglais de Cambridge, qui connaît parfaitement le CECRL. Je suis francophone et je passe un test de placement : j'ai besoin d'une estimation honnête de mon niveau à l'écrit, pas d'encouragements.",
+    "",
+    `Sujet (niveau visé : ${o.level}) : « ${o.task} »`,
+    `En français : ${o.task_fr}`,
+    `Longueur demandée : ${o.words} mots. Mon texte en fait ${nWords(o.text)}.`,
+    "",
+    "Mon texte :", '"""', o.text.trim(), '"""',
+    "",
+    "1. Évalue mon texte avec les quatre critères des examens Cambridge : contenu, efficacité de la communication, organisation, langue (étendue et correction). Pour chacun : le niveau CECRL (A1 à C2) et une phrase de justification avec un exemple tiré de mon texte.",
+    "2. Donne mon niveau global à l'écrit (A1, A2, B1, B2, C1 ou C2), en précisant s'il est solide ou fragile (par exemple « B1, proche du B2 »).",
+    "3. Les trois erreurs ou faiblesses qui m'empêchent d'atteindre le niveau supérieur, avec la correction.",
+    "4. Ce que je dois travailler en priorité pour monter d'un niveau.",
+    "",
+    "Si mon texte est trop court ou hors sujet, dis-le et précise que l'estimation est moins fiable. Ne surestime pas mon niveau."
+  ] : [
+    "Hi! Please act as an experienced Cambridge English examiner who knows the CEFR inside out. I'm a French speaker taking a placement test: I need an honest estimate of my writing level, not encouragement.",
+    "",
+    `Task (target level: ${o.level}): ${o.task}`,
+    `Expected length: ${o.words} words. My text has ${nWords(o.text)}.`,
+    "",
+    "My text:", '"""', o.text.trim(), '"""',
+    "",
+    "1. Assess my text with the four Cambridge criteria: Content, Communicative Achievement, Organisation and Language (range and accuracy). For each: the CEFR level (A1 to C2) and one sentence of justification with an example from my text.",
+    "2. Give my overall writing level (A1, A2, B1, B2, C1 or C2) and say whether it is secure or borderline (e.g. “B2, close to C1”).",
+    "3. The three mistakes or weaknesses that keep me from the next level, with corrections.",
+    "4. What I should work on first to go up a level.",
+    "",
+    "If my text is too short or off-topic, say so and say that the estimate is less reliable. Don't overestimate my level."
+  ]).join("\n");
+  return (frP ? [
+    "Bonjour ! Fais-moi passer un court examen oral d'anglais, comme un examinateur expérimenté des examens Cambridge, pour estimer mon niveau CECRL. Je suis francophone. Je te parle avec le mode vocal ou la dictée : ne tiens pas compte de la ponctuation ni des erreurs de transcription.",
+    "",
+    "Déroulé, en anglais, environ 10 minutes :",
+    "1. Quelques questions personnelles simples pour démarrer.",
+    `2. Mon exposé (niveau visé : ${o.level}). Donne-moi ce sujet en anglais : « ${o.task} » (en français : ${o.task_fr}) Laisse-moi parler sans m'interrompre, puis pose-moi deux questions de relance.`,
+    "3. Une discussion plus abstraite sur le même thème. Adapte la difficulté à mes réponses : monte si je m'en sors bien, simplifie si je bloque.",
+    "Une seule question à la fois. Pendant l'examen, ne me corrige pas et ne donne pas de note.",
+    "",
+    "À la fin, en français :",
+    "- mon niveau CECRL pour chaque critère : étendue (vocabulaire et structures), correction, aisance, interaction, cohérence ;",
+    "- mon niveau global à l'oral (A1 à C2), en précisant s'il est solide ou fragile ;",
+    "- trois phrases que j'ai dites, avec une version corrigée ou plus naturelle ;",
+    "- la priorité pour monter d'un niveau.",
+    "",
+    "La transcription ne permet pas de juger ma prononciation : laisse ce critère de côté. Sois honnête et ne surestime pas mon niveau."
+  ] : [
+    "Hi! Please give me a short English speaking exam, like an experienced Cambridge English examiner, to estimate my CEFR level. I'm a French speaker. I'm talking to you with voice mode or dictation, so ignore punctuation and transcription errors.",
+    "",
+    "Format, in English, about 10 minutes:",
+    "1. A few simple personal questions to warm up.",
+    `2. My long turn (target level: ${o.level}): ${o.task} Let me speak without interrupting, then ask me two follow-up questions.`,
+    "3. A more abstract discussion on the same theme. Adapt the difficulty to my answers: go up if I cope well, simplify if I get stuck.",
+    "One question at a time. During the exam, don't correct me and don't give marks.",
+    "",
+    "At the end:",
+    "- my CEFR level for each criterion: range (vocabulary and structures), accuracy, fluency, interaction, coherence;",
+    "- my overall speaking level (A1 to C2), and whether it's secure or borderline;",
+    "- three sentences I said, with a corrected or more natural version;",
+    "- the priority for going up a level.",
+    "",
+    "A transcript can't show my pronunciation, so leave that criterion aside. Be honest and don't overestimate my level."
+  ]).join("\n");
+}
+function viewPlaceProduce(sec, chosen) {
+  const st = placeState();
+  const tasks = PL()[sec] || {};
+  const est = st.grammar ? Math.max(0, lvIdx(st.grammar.level)) : Math.max(0, lvIdx(placeStart("grammar")));
+  const L = chosen || st[sec + "Task"] || LV[Math.min(est, LV.length - 1)];
+  const tk = tasks[L];
+  if (!tk) return viewPlacement();
+  const prev = st[sec];
+  const W = sec === "writing";
+  const key = "pw:" + L;
+  app.innerHTML = `
+    ${back("#/placement", "Placement test")}
+    <h1>${ic(W ? "pen-line" : "mic")} ${T(W ? "Writing" : "Speaking")}</h1>
+    <p class="muted">${T(W ? "A machine can count mistakes, but judging a text takes an examiner. You write here, then Claude assesses your text with the criteria of the Cambridge exams, which are aligned with the CEFR." : "Speaking can only be judged by listening to you. First you practise the task and record yourself; then Claude gives you a short oral exam and estimates your level with the CEFR criteria.")}</p>
+    ${prev ? `<div class="card" style="background:var(--blue-soft);border-color:transparent">${ic("badge-check")} ${T("Last result: {l} on {d}.", { l: prev.level, d: niceDate(prev.date) })}</div>` : ""}
+    <section class="card">
+      <p class="small muted" style="margin:0 0 6px">${T("Choose the task for your level (suggested: {l}).", { l: LV[Math.min(est, LV.length - 1)] })}</p>
+      <div class="seg" id="taskLv">${LV.filter((x) => tasks[x]).map((x) => `<button data-l="${x}" class="${x === L ? "on" : ""}">${x}</button>`).join("")}</div>
+      <h2 style="margin:16px 0 6px">${T("Your task")} ${levelTag(L)}</h2>
+      <p class="en" style="font-size:18px">${instr(tk.task, tk.task_fr)}</p>
+      ${W ? `<p class="muted small">${T("Length: {w} words. Write without a dictionary or translator: the aim is to see your real level.", { w: tk.words })}</p>
+        <textarea class="field note" id="pwText" rows="12" lang="en" spellcheck="false" placeholder="${T("Write your text here…")}">${esc(S.notes[key] || "")}</textarea>
+        <p class="muted small" id="pwCount"></p>` : `<ol class="steps-list">
+          <li>${T("Take one minute to prepare: note three or four key words, no full sentences.")}</li>
+          <li>${T("Record yourself doing the task, without stopping. Then listen: where did you hesitate? Which words were missing?")}</li>
+          <li>${T("Then take the oral exam with Claude, in voice mode: Claude asks the questions and gives you a level at the end.")}</li></ol>
+        ${recorderHtml()}`}
+    </section>
+    <section class="card">
+      <h3 style="margin-top:0">${ic("sparkles")} ${T(W ? "Assessment by Claude" : "Oral exam with Claude")}</h3>
+      <div class="row"><button class="btn btn-primary" id="lpBtn">${ic("copy")} ${T(W ? "Copy the message for Claude" : "Copy the exam instructions")}</button><a class="btn btn-sm btn-dark" href="https://claude.ai/new" target="_blank" rel="noopener">${ic("external-link")} ${T("Open Claude")}</a></div>
+      <p class="muted small">${T(W ? "Paste the message in Claude: it contains your text, the task and the assessment criteria." : "Paste the message in Claude, then switch to voice mode and answer out loud.")} ${T("Nothing is sent automatically.")}</p>
+      <details id="lpShow"><summary class="small">${T("See the message")}</summary><textarea class="field cx-prompt" id="lpText" rows="9" readonly></textarea></details>
+      <hr class="sep">
+      <label class="small" for="lpLevel"><b>${T("The level Claude gave me")}</b></label>
+      <div class="row" style="margin-top:8px"><select class="field" id="lpLevel" style="max-width:200px"><option value="">—</option>${["Pre-A1", ...LV].map((x) => `<option value="${x}" ${prev && prev.level === x ? "selected" : ""}>${x}</option>`).join("")}</select><button class="btn btn-sm btn-dark" id="lpSave">${ic("save")} ${T("Save")}</button></div>
+    </section>`;
+  $$("#taskLv button").forEach((b) => (b.onclick = () => { st[sec + "Task"] = b.dataset.l; save(); viewPlaceProduce(sec, b.dataset.l); }));
+  const ctx = () => ({ sec, level: L, task: tk.task, task_fr: tk.task_fr, words: tk.words, text: W ? $("#pwText").value : "" });
+  const refresh = () => { $("#lpText").value = levelPrompt(ctx()); if (W) $("#pwCount").textContent = Tn(nWords($("#pwText").value), "{n} word", "{n} words") + " · " + T("goal: {w}", { w: tk.words }); };
+  refresh();
+  if (W) $("#pwText").oninput = () => { S.notes[key] = $("#pwText").value; save(); refresh(); };
+  else bindRecorder();
+  $("#lpBtn").onclick = async () => {
+    if (W && nWords($("#pwText").value) < 15) { toast(T("Write your text first (at least a few sentences)")); return; }
+    refresh();
+    const ok = await copyText($("#lpText").value);
+    toast(ok ? T("Message copied") : T("Copy the message by hand"));
+    if (!ok) $("#lpShow").open = true;
+  };
+  $("#lpSave").onclick = () => {
+    const v = $("#lpLevel").value;
+    if (!v) { toast(T("Choose a level first")); return; }
+    savePlace(sec, { level: v, date: today(), task: L, by: "claude" });
+    toast(T("Saved in your skills report"));
+    viewPlaceProduce(sec, L);
+  };
+}
+
+/* The recommended starting point: the middle of the objective results, then the next level up
+   (the units of a level teach what you need to reach it). */
+function placeRecommend() {
+  const st = placeState();
+  if (!st.grammar) return null;
+  const vals = ["grammar", "vocab", "reading", "listening"].filter((k) => st[k]).map((k) => lvIdx(st[k].level)).sort((a, b) => a - b);
+  const mid = vals[Math.floor((vals.length - 1) / 2)];
+  return { have: lvLabel(mid), start: LV[Math.min(mid + 1, LV.length - 1)], n: vals.length };
+}
+function viewPlacement() {
+  const st = placeState();
+  const rec = placeRecommend();
+  const cur = currentLevel();
+  app.innerHTML = `
+    <h1>${T("Placement test")}</h1>
+    <p class="muted">${T("As at university, a placement test tells you where to start and draws your profile skill by skill. Six parts, about 1 hour 20 in total: do them one at a time, in any order, on different days if you like.")}</p>
+    ${st.self ? "" : `<section class="card">
+      <h2 style="margin-top:0">${T("Before you start")}</h2>
+      <p>${T("How would you describe your English today? The test starts there, then adjusts.")}</p>
+      <div class="options" id="selfOpts">${SELF_OPTS.map(([k, t]) => `<button class="option" data-self="${k}">${T(t)}</button>`).join("")}</div>
+    </section>`}
+    ${st.self === "pre" && !st.grammar ? `<div class="card" style="background:var(--yellow-soft);border-color:var(--yellow)">${ic("lightbulb")} ${T("No need to take the test now: start with Unit 1, the course is made for you. Come back at the end of level A1 to measure your progress. You can still try the first part to see how it works.")}</div>` : ""}
+    ${st.self ? `<p class="small muted">${T("Your starting point: {t}", { t: T((SELF_OPTS.find(([k]) => k === st.self) || SELF_OPTS[0])[1]) })} <button class="btn btn-sm btn-ghost" id="selfReset">${T("Change")}</button></p>` : ""}
+    <div class="grid grid-2" style="margin-top:12px">
+      ${PLACE_SECS.map((x) => {
+        const r = st[x.id];
+        return `<a class="card place-card" href="#/placement/${x.id}">
+          <div class="row">${tile(x.icon, r && lvIdx(r.level) >= 0 ? r.level : "A1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T(x.title)}</h3><span class="muted small">${T("about {m} min", { m: x.min })}</span></div>${r ? lvTag(r.level) : ""}</div>
+          <p class="muted small" style="margin:10px 0 0">${T(x.d)}</p>
+          <p class="small" style="margin:8px 0 0">${r ? `${ic("rotate-ccw")} ${T("Done on {d} · take it again", { d: niceDate(r.date) })}` : `${ic("play")} ${T("Start")}`}</p>
+        </a>`;
+      }).join("")}
+    </div>
+    ${rec ? `<section class="card" style="margin-top:16px">
+      <h2 style="margin-top:0">${ic("compass")} ${T("Where to start")}</h2>
+      <p>${T("Your results suggest level <b>{l}</b>. The units of a level teach what you need to reach it, so the course for you starts at <b>{s}</b>.", { l: rec.have, s: rec.start })}${rec.n < 3 ? ` ${T("Do the reading and listening parts too: the recommendation will be more reliable.")}` : ""}</p>
+      ${S.startAt ? `<p class="small">${T("The course currently starts at {l} (after the placement test).", { l: S.startAt })}</p>` : ""}
+      <div class="row">${lvIdx(rec.start) > lvIdx(cur) && S.startAt !== rec.start ? `<button class="btn btn-primary" id="startAt">${T("Start the course at {l}", { l: rec.start })}</button>` : `<a class="btn btn-primary" href="#/unite/${currentUnit().id}">${T("Continue the course: {l}, unit {n}", { l: currentUnit().level, n: unitNum(currentUnit()) })}</a>`}${S.startAt ? `<button class="btn" id="startReset">${T("Start from A1 again")}</button>` : ""}</div>
+      <p class="muted small" style="margin:10px 0 0">${T("If the first units feel too easy, go straight to the unit test; if they feel too hard, go back a level. The level exams remain open whatever you choose.")}</p>
+    </section>` : ""}
+    <div class="row" style="margin-top:16px"><a class="btn" href="#/bilan">${ic("chart-column")} ${T("My skills report")}</a><a class="btn" href="#/grilles">${ic("list-checks")} ${T("Can-do grids")}</a></div>`;
+  $$("[data-self]").forEach((b) => (b.onclick = () => { st.self = b.dataset.self; save(); viewPlacement(); }));
+  if ($("#selfReset")) $("#selfReset").onclick = () => { delete st.self; save(); viewPlacement(); };
+  if ($("#startAt")) $("#startAt").onclick = () => { S.startAt = rec.start; save(); toast(T("The course now starts at {l}", { l: rec.start })); location.hash = "#/cours"; };
+  if ($("#startReset")) $("#startReset").onclick = () => { delete S.startAt; save(); toast(T("The course starts at A1 again")); viewPlacement(); };
+}
+
+/* Can-do grids: 0 = not yet, 1 = with help, 2 = yes. A level counts as reached at 75%,
+   and only if the levels below are reached too. */
+function candoScore(ids, L) {
+  let sum = 0, n = 0;
+  ids.forEach((id) => { const sk = CD().find((x) => x.id === id); ((sk && sk.levels[L]) || []).forEach((_, k) => { n++; sum += [0, 0.5, 1][(S.cando || {})[`${id}:${L}:${k}`] || 0]; }); });
+  return n ? sum / n : 0;
+}
+function candoLevel(ids) {
+  let best = -1;
+  for (let i = 0; i < LV.length; i++) { if (candoScore(ids, LV[i]) >= 0.75) best = i; else break; }
+  return best;
+}
+const candoTouched = (ids) => Object.keys(S.cando || {}).some((k) => ids.includes(k.split(":")[0]));
+const CANDO_VALS = [[0, "Not yet"], [1, "With help"], [2, "Yes"]];
+function viewCando(skill) {
+  S.cando = S.cando || {};
+  const sk = CD().find((x) => x.id === skill) || CD()[0];
+  if (!sk) return viewPlacement();
+  const levelLine = (L) => { const p = Math.round(candoScore([sk.id], L) * 100); return `<span class="muted small cd-stat" data-l="${L}">${p}%${p >= 75 ? ` · ${T("reached")}` : ""}</span>`; };
+  app.innerHTML = `
+    ${back("#/bilan", "My skills report")}
+    <h1>${T("Can-do grids")}</h1>
+    <p class="muted">${T("What you can do in English at each level, skill by skill. Be honest: answer “Yes” only if you could do it tomorrow, without preparing. Come back every month or two: watching the boxes fill up is a great motivator.")}</p>
+    <div class="seg cd-tabs" role="tablist">${CD().map((x) => `<a href="#/grilles/${x.id}" class="${x.id === sk.id ? "on" : ""}">${ic(x.icon)} ${esc(loc(x, "title"))}</a>`).join("")}</div>
+    <p class="small" style="margin:14px 0 0" id="cdSum"></p>
+    ${LV.map((L) => `<details class="level-block" ${L === LV[Math.max(0, candoLevel([sk.id]) + 1)] || L === currentLevel() ? "open" : ""}>
+      <summary><span class="lvl-sum">${levelTag(L)}<b>${esc(lvName(L))}</b>${levelLine(L)}</span>${ic("chevron-down", "chev")}</summary>
+      <div class="stack" style="margin-top:12px">${sk.levels[L].map(([en, f], k) => {
+        const id = `${sk.id}:${L}:${k}`, v = S.cando[id] || 0;
+        return `<div class="card cd-item"><p style="margin:0 0 10px">${instr(en, f)}</p><div class="seg cd-seg" data-id="${id}" data-l="${L}">${CANDO_VALS.map(([n, t]) => `<button data-v="${n}" class="${v === n ? "on" : ""}">${T(t)}</button>`).join("")}</div></div>`;
+      }).join("")}</div>
+    </details>`).join("")}
+    <p class="muted small" style="margin-top:16px">${T("Statements written for this app, based on the CEFR self-assessment grid (Council of Europe, 2001) and its Companion Volume (2020).")}</p>`;
+  const sum = () => { const l = candoLevel([sk.id]); $("#cdSum").innerHTML = l < 0 ? T("Self-assessed level: not yet A1. Tick what you can already do.") : T("Self-assessed level in {s}: <b>{l}</b>", { s: esc(loc(sk, "title")), l: LV[l] }); };
+  sum();
+  $$(".cd-seg button").forEach((b) => (b.onclick = () => {
+    const seg = b.parentElement, v = +b.dataset.v;
+    if (v) S.cando[seg.dataset.id] = v; else delete S.cando[seg.dataset.id];
+    save();
+    $$("button", seg).forEach((x) => x.classList.toggle("on", x === b));
+    const stat = $(`.cd-stat[data-l="${seg.dataset.l}"]`);
+    if (stat) stat.outerHTML = levelLine(seg.dataset.l);
+    sum();
+  }));
+}
+
+/* Skills report: test, self-assessment and Claude's assessment, side by side. */
+const REPORT = [
+  { id: "listening", icon: "ear", title: "Listening", cando: ["li"], go: (L) => [`#/ecoute/${L}`, "Listening plan"] },
+  { id: "reading", icon: "book-open-text", title: "Reading", cando: ["re"], go: () => ["#/lecture", "Reading"] },
+  { id: "speaking", icon: "mic", title: "Speaking", cando: ["si", "sp"], go: (L) => (lvIdx(L) >= 3 ? ["#/conversation", "Speak with someone"] : ["#/oral", "Speaking"]) },
+  { id: "writing", icon: "pen-line", title: "Writing", cando: ["wr"], go: (L) => (lvIdx(L) >= 3 ? ["#/competences", "Academic skills"] : [`#/ecrit/${currentUnit().id}`, "Writing"]) },
+  { id: "grammar", icon: "book-open", title: "Grammar", cando: [], go: () => ["#/lecons", "Lessons"] },
+  { id: "vocab", icon: "layers", title: "Vocabulary", cando: [], go: () => ["#/vocabulaire", "Vocabulary"] }
+];
+function skillEstimate(r) {
+  const t = placeState()[r.id];
+  const test = t ? lvIdx(t.level) : null;
+  const self = r.cando.length && candoTouched(r.cando) ? candoLevel(r.cando) : null;
+  return { t, test, self, est: test != null ? test : self };
+}
+function skillEvidence(id) {
+  const sum = (k) => Object.values(S.days).reduce((a, d) => a + (d[k] || 0), 0);
+  const n = (o) => Object.keys(o || {}).length;
+  const ac = (kind) => ACAD().filter((c) => c.kind === kind && acadDone(c.id)).length;
+  if (id === "listening") return T("In the app: {a} dictation sentences, {b} of listening outside the app, {c} pronunciation chapters.", { a: sum("dictee"), b: fmtH((S.extMin || 0) / 60), c: n(S.pron) });
+  if (id === "reading") return T("In the app: {a} texts read, {b} academic reading chapters.", { a: n(S.readings), b: ac("read") });
+  if (id === "speaking") return T("In the app: {a} sentences said into the microphone, {b} role-plays, {c} conversations.", { a: n(S.spoken), b: n(S.dialogues), c: (S.convos || []).length });
+  if (id === "writing") return T("In the app: {a} unit texts, {b} corrections kept, {c} academic writing tasks.", { a: Object.values(S.units).filter((u) => u.wdone).length, b: n(S.corrections), c: Object.values(S.acad || {}).filter((x) => x.wrote).length });
+  if (id === "grammar") return T("In the app: {a} lessons out of {b}, level exams passed: {c}.", { a: n(S.lessons), b: LESSONS.length, c: LV.filter((L) => S.exams[L] >= 70).join(", ") || "—" });
+  return T("In the app: {a} words learnt, {b} mastered.", { a: Object.values(S.srs).filter((x) => x.box >= 1).length, b: mastered() });
+}
+function viewReport() {
+  const st = placeState();
+  const rows = REPORT.map((r) => Object.assign({ r }, skillEstimate(r)));
+  const known = rows.filter((x) => x.est != null);
+  const sorted = known.map((x) => x.est).sort((a, b) => a - b);
+  const overall = sorted.length ? sorted[Math.floor((sorted.length - 1) / 2)] : null;
+  const best = known.length > 1 ? known.reduce((a, b) => (b.est > a.est ? b : a)) : null;
+  const weak = known.length > 1 ? known.reduce((a, b) => (b.est < a.est ? b : a)) : null;
+  const hist = (st.history || []).slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+  const lastDate = hist.length ? hist[0].date : null;
+  const scale = (x) => `<div class="lv-scale">${LV.map((L, i) => `<span class="${x.est != null && i <= x.est ? "on" : ""}${x.est === i ? " est" : ""}">${L}${x.test === i ? `<i class="mk mk-test" title="${T("Test")}"></i>` : ""}${x.self === i ? `<i class="mk mk-self" title="${T("Self-assessment")}"></i>` : ""}</span>`).join("")}</div>`;
+  app.innerHTML = `
+    <h1>${T("My skills report")}</h1>
+    <p class="muted">${T("Where you are in each skill, from three sources: the placement test, Claude's assessment of your writing and speaking, and your own self-assessment. Different levels in different skills is completely normal: almost everyone understands more than they can say.")}</p>
+    ${!known.length ? `<section class="card ear-cta">${tile("compass", "A2")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Nothing here yet")}</h3><p class="muted small" style="margin:4px 0 0">${T("Take the placement test, or fill in the can-do grids: your report will appear here.")}</p></div><a class="btn btn-primary" href="#/placement">${T("Placement test")}</a></section>` : `
+    <section class="card report-head">
+      <div class="report-big">${lvLabel(overall)}</div>
+      <div style="flex:1;min-width:0">
+        <h2 style="margin:0">${T("Overall level: {l}", { l: lvLabel(overall) })}</h2>
+        <p class="muted small" style="margin:4px 0 0">${T("The middle of your skills, not an average: one weak skill doesn't pull everything down.")}</p>
+        ${best && weak && best.est !== weak.est ? `<p class="small" style="margin:8px 0 0">${ic("trending-up", "c-green")} ${T("Strongest: {s} ({l})", { s: T(best.r.title), l: lvLabel(best.est) })} · ${ic("target", "c-accent")} ${T("To work on: {s} ({l})", { s: T(weak.r.title), l: lvLabel(weak.est) })}</p>` : ""}
+      </div>
+    </section>`}
+    <div class="stack" style="margin-top:16px">
+      ${rows.map((x) => {
+        const L = lvLabel(x.est == null ? lvIdx(currentLevel()) : x.est);
+        const [href, label] = x.r.go(L === "Pre-A1" ? "A1" : L);
+        const gap = x.test != null && x.self != null && Math.abs(x.test - x.self) >= 2;
+        const focus = x.r.id === "grammar" && x.t && x.t.focus && x.t.focus.length ? `<p class="small" style="margin:8px 0 0"><b>${T("Points to review:")}</b> ${x.t.focus.slice(0, 6).map(([f, ff]) => esc(isFr() ? ff : f)).join(" · ")}</p>` : "";
+        return `<section class="card skill-row">
+          <div class="row">${tile(x.r.icon, x.est != null && x.est >= 0 ? LV[x.est] : "A1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T(x.r.title)}</h3>
+            <span class="muted small">${x.test != null ? `${T(x.r.id === "writing" || x.r.id === "speaking" ? "Claude:" : "Test:")} <b>${lvLabel(x.test)}</b> (${niceDate(x.t.date)})` : T(x.r.id === "writing" || x.r.id === "speaking" ? "Not assessed by Claude yet" : "Not tested yet")}${x.r.cando.length ? ` · ${T("Self-assessment:")} <b>${x.self != null ? lvLabel(x.self) : "—"}</b>` : ""}${x.r.id === "vocab" && x.t ? ` · ≈ ${x.t.size.toLocaleString(locale())} ${T("words")}` : ""}</span></div>
+            ${x.est != null ? `<span class="report-lv">${lvLabel(x.est)}</span>` : ""}</div>
+          ${scale(x)}
+          <p class="muted small" style="margin:6px 0 0">${skillEvidence(x.r.id)}</p>
+          ${focus}
+          ${gap ? `<p class="small note-warn" style="margin-top:8px">${T(x.self > x.test ? "Your self-assessment is higher than your result. That's common: trust the result for now, and check again in a few weeks." : "Your result is higher than your self-assessment: you can do more than you think!")}</p>` : ""}
+          <div class="row" style="margin-top:10px">${x.t ? "" : `<a class="btn btn-sm" href="#/placement/${x.r.id}">${T(x.r.id === "writing" || x.r.id === "speaking" ? "Get assessed" : "Take the test")}</a>`}${x.r.cando.length ? `<a class="btn btn-sm" href="#/grilles/${x.r.cando[0]}">${T("Can-do grid")}</a>` : ""}<a class="btn btn-sm btn-dark" href="${href}">${T("Practise: {s}", { s: T(label) })} ${ic("arrow-right")}</a></div>
+        </section>`;
+      }).join("")}
+    </div>
+    <p class="muted small" style="margin-top:10px"><i class="mk mk-test mk-inline"></i> ${T("Test or Claude")} &nbsp; <i class="mk mk-self mk-inline"></i> ${T("Self-assessment")} &nbsp; ${T("Coloured bar: the level kept for the report (the test when there is one).")}</p>
+    ${hist.length ? `<section class="card" style="margin-top:16px">
+      <h2 style="margin-top:0">${ic("history")} ${T("History")}</h2>
+      <div class="table-wrap"><table class="irr-table"><tr><th>${T("Date")}</th>${PLACE_SECS.map((x) => `<th>${T(x.title)}</th>`).join("")}</tr>
+      ${hist.map((h) => `<tr><td>${niceDate(h.date)}</td>${PLACE_SECS.map((x) => `<td>${h[x.id] ? esc(h[x.id]) : "—"}</td>`).join("")}</tr>`).join("")}</table></div>
+      <p class="muted small" style="margin:10px 0 0">${T("Take the test again in about three months (from {d}), or when you finish a level: that's how you'll see your progress.", { d: niceDate(addDays(90, lastDate)) })}</p>
+    </section>` : ""}
+    <div class="row" style="margin-top:16px"><a class="btn" href="#/placement">${ic("compass")} ${T("Placement test")}</a><a class="btn" href="#/grilles">${ic("list-checks")} ${T("Can-do grids")}</a></div>`;
+}
+
 /* ================= Dictation ================= */
 function dictPool(L) {
   const maxW = { A1: 8, A2: 11, B1: 14, B2: 18, C1: 22, C2: 26 }[L] || 14;
@@ -3695,7 +4267,7 @@ function viewBooks() {
 }
 
 /* ================= Router ================= */
-const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", competences: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
+const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
 function route() {
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
   cleanups = [];
@@ -3738,6 +4310,9 @@ function route() {
     erreurs: viewMistakes,
     oreille: viewEar,
     competences: () => (b ? viewAcadChapter(b) : viewAcadHub()),
+    placement: () => (b ? viewPlaceSection(b) : viewPlacement()),
+    bilan: viewReport,
+    grilles: () => viewCando(b),
     prononciation: () => {
       if (b === "api") return viewPronIPA();
       const ch = pronById(b);

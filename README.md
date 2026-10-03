@@ -7,6 +7,7 @@ My personal language course. For now: **English, from A1 to C2**, with TOEIC pre
 - A structured course: units, grammar lessons, vocabulary with spaced repetition, texts, dictations, role-plays, writing tasks, unit tests and level exams.
 - A pronunciation course: 27 chapters from A1 to C2 (the 44 sounds and the IPA chart, word and sentence stress, rhythm, linking, intonation, accents), with ear training and exercises.
 - Academic skills, B2 to C2: 16 chapters as in a university English (EAP) course (note-taking from a lecture, paraphrasing, essays, data, presentations, seminars, academic style, sources, critical thinking, reports, mediation, synthesis, research writing, editing, exams), each with a real task, a model answer and a correction by Claude.
+- Placement test and skills report: an adaptive test (grammar and vocabulary, reading, listening) that goes up or down a level after each set, a vocabulary-size check with invented words to correct for guessing, writing and speaking assessed by Claude with the CEFR criteria, can-do grids for the 5 CEFR skills (120 statements), and a report of the level in each skill with history and a recommended starting point.
 - Listening plan (real podcasts and series), spoken conversations and writing corrections with Claude.
 - TOEIC: practice by part and full mock test.
 - Interface in English (immersion) or French.
