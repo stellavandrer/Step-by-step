@@ -1675,5 +1675,11 @@ window.DICT_EN_FR = Object.assign(window.DICT_EN_FR || {}, {
   "occasional": "occasionnel",
   "underused": "sous-utilisé",
   "recruitment": "recrutement",
-  "counsellor": "conseiller (psychologue)"
+  "counsellor": "conseiller (psychologue)",
+  "inn": "auberge",
+  "grandad": "papi, grand-père",
+  "vietnamese": "vietnamien",
+  "chronotype": "chronotype (préférence naturelle pour le matin ou le soir)",
+  "chronotypes": "chronotypes",
+  "highlands": "hautes terres (the Highlands = les Highlands d'Écosse)"
 });

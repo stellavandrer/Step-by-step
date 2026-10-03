@@ -1006,5 +1006,14 @@ window.UI_TEXT.fr = {
   "How to write it: {g}": "Comment l'écrire : {g}",
   "Good writers plan before they write. Follow these steps, and note two or three words for each one: then writing your text will be much easier.": "Les bons rédacteurs font un plan avant d'écrire. Suis ces étapes et note deux ou trois mots pour chacune : écrire ton texte sera ensuite beaucoup plus facile.",
   "My ideas…": "Mes idées…",
-  "The highlighted phrases are what makes this text work. Compare with yours, and reuse two of them.": "Les passages surlignés sont ce qui fait fonctionner ce texte. Compare avec le tien, et réutilises-en deux."
+  "The highlighted phrases are what makes this text work. Compare with yours, and reuse two of them.": "Les passages surlignés sont ce qui fait fonctionner ce texte. Compare avec le tien, et réutilises-en deux.",
+  "Words in context": "Les mots en contexte",
+  "Words in context:": "Les mots en contexte :",
+  "the unit's words in sentences from its texts": "les mots de l'unité, dans des phrases de ses textes",
+  "The words of this unit, met again in sentences from its texts and recordings. First choose the missing word, then write it with the French as a cue. Each time you meet a word in a new sentence, it sticks a little more.": "Les mots de cette unité, retrouvés dans des phrases de ses textes et de ses enregistrements. Choisis d'abord le mot qui manque, puis écris-le avec le français comme indice. Chaque fois que tu croises un mot dans une nouvelle phrase, il s'ancre un peu plus.",
+  "Last time: {a}/{b}": "La dernière fois : {a}/{b}",
+  "Not enough sentences for this unit yet.": "Pas encore assez de phrases pour cette unité.",
+  "These sentences come from:": "Ces phrases viennent de :",
+  "New sentences": "Nouvelles phrases",
+  "Text": "Texte"
 };

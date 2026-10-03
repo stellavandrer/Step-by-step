@@ -93,7 +93,7 @@ const unitOfLesson = (id) => COURSE.find((u) => u.lessons.includes(+id));
 
 /* ================= Storage ================= */
 const KEY = "stepbystep.v1";
-const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, place: {}, cando: {}, lab: {}, toeic: { mocks: [], parts: {} } });
+const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, place: {}, cando: {}, lab: {}, ctx: {}, toeic: { mocks: [], parts: {} } });
 function load() {
   try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
   catch (e) { return defaults(); }
@@ -1218,7 +1218,8 @@ function viewUnit(id) {
     </section>
     <div class="stack" style="margin-top:16px">
       ${stepCard(st[0], 1, `<p class="muted small">${T("Learn the words first: they'll make everything else easier.")}</p>
-        ${themes.map((t) => { const ts = themeStats(t); return `<div class="row step-link"><span style="flex:1"><b>${esc(loc(t, "title"))}</b> <span class="muted small">${T("{a}/{b} seen", { a: ts.seen, b: ts.total })}</span></span><a class="btn btn-sm btn-dark" href="#/apprendre/${t.id}">${ic("layers")} ${T("Cards")}</a><a class="btn btn-sm" href="#/ecrire/${t.id}">${ic("keyboard")} ${T("Write")}</a></div>`; }).join("")}`)}
+        ${themes.map((t) => { const ts = themeStats(t); return `<div class="row step-link"><span style="flex:1"><b>${esc(loc(t, "title"))}</b> <span class="muted small">${T("{a}/{b} seen", { a: ts.seen, b: ts.total })}</span></span><a class="btn btn-sm btn-dark" href="#/apprendre/${t.id}">${ic("layers")} ${T("Cards")}</a><a class="btn btn-sm" href="#/ecrire/${t.id}">${ic("keyboard")} ${T("Write")}</a></div>`; }).join("")}
+        <div class="row step-link"><span style="flex:1"><b>${T("Words in context:")}</b> ${T("the unit's words in sentences from its texts")} ${(S.ctx || {})[u.id] ? `<span class="tag tag-done">${ic("check")} ${S.ctx[u.id].best}/${S.ctx[u.id].total}</span>` : ""}</span><a class="btn btn-sm" href="#/contexte/${u.id}">${ic("search")} ${T("Practise")}</a></div>`)}
       ${stepCard(st[1], 2, lessons.map((l) => `<div class="row step-link"><span style="flex:1"><b>${T("Lesson")} ${lnum(l)}</b> · ${esc(loc(l, "title"))} ${S.lessons[l.id] ? `<span class="tag tag-done">${ic("check")} ${S.lessons[l.id].best}/${S.lessons[l.id].total}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecons/${l.id}">${T("Open")}</a></div>`).join(""))}
       ${stepCard(st[2], 3, (r ? `<div class="row step-link"><span style="flex:1"><b>${esc(loc(r, "title"))}</b>${u.listen ? ` <span class="muted small">· ${T("listen first, without reading")}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecture/${r.id}${u.listen ? "/listen" : ""}">${u.listen ? ic("headphones") + " " + T("Listen") : ic("book-open-text") + " " + T("Read")}</a></div>` : "")
         + extraR.map((x) => `<div class="row step-link"><span style="flex:1"><span class="muted small">${T("Extra:")}</span> <b>${esc(loc(x, "title"))}</b> ${S.readings[x.id] ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/lecture/${x.id}">${ic("book-open-text")} ${T("Read")}</a></div>`).join("") + labRow(u) + acadRows(u, "read"))}
@@ -2150,6 +2151,7 @@ function viewReadings() {
 function tokenize(text, gloss) {
   return text.split(WORD_RE).map((part, k) => {
     if (k % 2 === 0) return esc(part).replace(/\n/g, "<br>");
+    if (/^[b-hj-z]$/i.test(part)) return esc(part); /* a lone letter (the m of a.m.) isn't a word */
     const key = part.toLowerCase().replace(/’/g, "'");
     const has = gloss[key] || gloss[key.replace(/'s$/, "")];
     return `<span class="w ${has ? "gloss" : ""}" data-w="${esc(part)}">${esc(part)}</span>`;
@@ -3099,6 +3101,86 @@ function viewAcadChapter(id) {
     task: tk.task, task_fr: tk.task_fr, words: tk.words, criteria: tk.checklist, focus: c.can.join("; "),
     source: acadSourceText(c)
   }));
+}
+
+/* ================= Words in context =================
+   The unit's words, met again in sentences from its texts and its listening lab: first choose the missing word,
+   then write it with the French as a cue. Meeting a word again in new contexts is what makes it stick (Nation 2013). */
+const CTX_SKIP = /^(the|and|but|or|in|on|at|to|of|for|with|what|where|when|who|why|how|which|yes|no|now|so|up|out|off|it|is|be|do|go|get|have|has|was|were|are|not|very|well|this|that|then|there|here|your|my|can|will)$/i;
+function sentencesOf(t) {
+  const parts = String(t).replace(/\s*\n\s*/g, " ").split(/([.!?][”"’']?)\s+/);
+  const out = [];
+  for (let i = 0; i < parts.length; i += 2) { const s = (parts[i] + (parts[i + 1] || "")).trim(); if (s) out.push(s); }
+  return out;
+}
+const reEsc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function ctxItems(u) {
+  const themes = u.vocab.map((id) => VOCAB.find((t) => t.id === id)).filter(Boolean);
+  const words = [];
+  themes.forEach((t) => t.words.forEach(([en, f, ex]) => en.split(" / ").forEach((p, k) => {
+    const form = p.replace(/\((uk|us)\)/gi, "").replace(/[?!.…]/g, "").trim().replace(/^to /, "");
+    const fs = f.split(" / ");
+    if (form.length < 4 && !form.includes(" ")) return;
+    if (CTX_SKIP.test(form) || words.some((w) => w.form.toLowerCase() === form.toLowerCase())) return;
+    words.push({ form, fr: (fs.length > k ? fs[k] : f).replace(/[()]/g, "").trim(), ex });
+  })));
+  const unitTexts = [u.reading, ...(u.extra || [])].map((id) => READINGS.find((r) => r.id === id)).filter(Boolean);
+  const pools = [
+    unitTexts.flatMap((r) => r.paragraphs.flatMap((p) => sentencesOf(p.en).map((s) => ({ s, src: r })))),
+    LAB().filter((x) => x.unit === u.id).flatMap((x) => x.lines.flatMap((l) => sentencesOf(l[1]).map((s) => ({ s, lab: x })))),
+    READINGS.filter((r) => r.level === u.level && !unitTexts.includes(r)).flatMap((r) => r.paragraphs.flatMap((p) => sentencesOf(p.en).map((s) => ({ s, src: r }))))
+  ].map((pool) => pool.filter((x) => x.s.split(/\s+/).length >= 5 && x.s.split(/\s+/).length <= 30));
+  const used = new Set();
+  const found = [];
+  shuffle(words).forEach((w) => {
+    const re = new RegExp("(^|[^A-Za-z'’-])(" + reEsc(w.form) + ")(?=$|[^A-Za-z'’-])", "i");
+    for (let tier = 0; tier < pools.length; tier++) {
+      const hit = pools[tier].find((x) => !used.has(x.s) && re.test(x.s));
+      if (hit) { used.add(hit.s); const m = hit.s.match(re); found.push(Object.assign({ tier, word: m[2], gapped: hit.s.replace(re, "$1___") }, w, hit)); return; }
+    }
+    /* Last resort: the word's own example sentence. */
+    if (w.ex && re.test(w.ex) && !used.has(w.ex)) { used.add(w.ex); const m = w.ex.match(re); found.push(Object.assign({ tier: 9, word: m[2], gapped: w.ex.replace(re, "$1___"), s: w.ex }, w)); }
+  });
+  const pick = found.sort((a, b) => a.tier - b.tier).slice(0, 10);
+  const all = words.map((w) => w.form);
+  return pick.map((x, k) => {
+    const meta = { from: x.src ? `Text · ${x.src.title}` : x.lab ? `Listening lab · ${x.lab.title}` : "Words", srcId: x.src ? x.src.id : null, labId: x.lab ? x.lab.id : null, ctxWord: x.word };
+    if (k < pick.length / 2) {
+      const others = shuffle(pick.map((y) => y.word).filter((w) => w.toLowerCase() !== x.word.toLowerCase()));
+      const extra = shuffle(all.filter((w) => w.toLowerCase() !== x.word.toLowerCase() && !others.includes(w)));
+      const o = [x.word, ...others.slice(0, 2), ...extra.slice(0, 1)].slice(0, 4);
+      return Object.assign({ type: "mcq", q: `Choose the missing word: “${x.gapped}”`, q_fr: `Choisis le mot qui manque : « ${x.gapped} »`, o, a: 0, ex: `${x.word} = ${x.fr}`, ex_fr: `${x.word} = ${x.fr}` }, meta);
+    }
+    return Object.assign({ type: "type", q: "Write the missing word.", q_fr: "Écris le mot qui manque.", sent: `${x.gapped} (${x.fr})`, answer: x.word }, meta);
+  });
+}
+function viewContext(id) {
+  const u = COURSE.find((x) => x.id === id);
+  if (!u) return viewCourse();
+  const items = ctxItems(u);
+  const prev = (S.ctx || {})[u.id];
+  app.innerHTML = `
+    ${back(`#/unite/${u.id}`, `Unit ${unitNum(u)} · ${loc(u, "title")}`)}
+    <h1>${ic("search")} ${T("Words in context")}</h1>
+    <p class="muted">${T("The words of this unit, met again in sentences from its texts and recordings. First choose the missing word, then write it with the French as a cue. Each time you meet a word in a new sentence, it sticks a little more.")}</p>
+    ${prev ? `<p class="small">${ic("check")} ${T("Last time: {a}/{b}", { a: prev.best, b: prev.total })}</p>` : ""}
+    <section class="card" id="ctxBox">${items.length ? "" : `<p>${T("Not enough sentences for this unit yet.")}</p>`}</section>`;
+  if (!items.length) return;
+  runQuiz($("#ctxBox"), items, (score, total) => {
+    S.ctx = S.ctx || {};
+    const first = !S.ctx[u.id];
+    S.ctx[u.id] = { best: Math.max(score, (prev && prev.best) || 0), total, date: today() };
+    addXP(first ? 10 + score : score, first ? "vocab" : null);
+    const srcs = [];
+    items.forEach((q) => { const k = q.srcId ? "r:" + q.srcId : q.labId ? "l:" + q.labId : null; if (k && !srcs.includes(k)) srcs.push(k); });
+    $("#ctxBox").innerHTML = `
+      <div class="result-big">${score} / ${total}</div>
+      <p style="text-align:center">${scoreMsg(score, total)}</p>
+      <p class="muted small">${T("These sentences come from:")}</p>
+      <div class="gr-links">${srcs.map((k) => { const [t, sid] = k.split(":"); const r = t === "r" ? READINGS.find((x) => x.id === sid) : labById(sid); return r ? `<a href="#/${t === "r" ? "lecture" : "comprehension"}/${sid}">${ic(t === "r" ? "book-open-text" : "headphones")} ${esc(loc(r, "title"))}</a>` : ""; }).join("")}</div>
+      <div class="row" style="justify-content:center;margin-top:16px"><a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a><button class="btn btn-primary" id="ctxAgain">${T("New sentences")}</button></div>`;
+    $("#ctxAgain").onclick = () => viewContext(id);
+  });
 }
 
 /* ================= Listening lab =================
@@ -4478,7 +4560,7 @@ function viewBooks() {
 }
 
 /* ================= Router ================= */
-const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", grammaire: "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", comprehension: "oral", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
+const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", grammaire: "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", comprehension: "oral", contexte: "cours", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
 function route() {
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
   cleanups = [];
@@ -4522,6 +4604,7 @@ function route() {
     erreurs: viewMistakes,
     oreille: viewEar,
     comprehension: () => (b ? viewLab(b) : viewLabHub()),
+    contexte: () => viewContext(b),
     competences: () => (b ? viewAcadChapter(b) : viewAcadHub()),
     placement: () => (b ? viewPlaceSection(b) : viewPlacement()),
     bilan: viewReport,
