@@ -12,6 +12,7 @@ My personal language course. For now: **English, from A1 to C2**, with TOEIC pre
 - Listening lab: 32 original recordings, one per unit from A1 to C1, read by several voices with British, American, Australian and Irish accents from B2. Each one follows the steps recommended by listening research (Field 2008; Vandergrift and Goh 2012): key words and prediction, main idea, details, dictation of fast passages, reading while listening, shadowing, and what made it difficult, with targeted advice.
 - Writing taught by genre in every unit A1 to C1: the type of text, a step-by-step plan to fill in before writing, and the model answer with its key phrases highlighted and explained. Ten new free-speaking topics for the A1 and A2 units that had none.
 - More reading at A1-B1: 21 new texts (one per unit, 109 texts in all), written to recycle each unit's vocabulary. Words in context in every unit A1-C1: ten of the unit's words found again in sentences from its texts and listening lab, first to choose, then to write with the French as a cue.
+- Word workshop for every B2, C1 and C2 unit: ten collocations on the unit's theme (with translation and example) and eight word-formation sentences in the format of the Cambridge exams, practised in a 14-question exercise (160 collocations and 128 word-formation items in all).
 - Listening plan (real podcasts and series), spoken conversations and writing corrections with Claude.
 - TOEIC: practice by part and full mock test.
 - Interface in English (immersion) or French.

@@ -782,3 +782,7 @@ mark.wm { background: var(--yellow-soft); color: inherit; border-bottom: 2px sol
 mark.wm sup { font: 700 11px var(--font); color: var(--ink-soft); margin-left: 2px; }
 .w-legend { margin: 12px 0 0; padding-left: 22px; font-size: 14px; color: var(--ink-soft); }
 .w-legend li { margin-bottom: 4px; }
+
+/* Word workshop */
+.lex-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.lex-item { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
