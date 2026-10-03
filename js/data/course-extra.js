@@ -1,19 +1,19 @@
-/* Extra content attached to the course units (new lessons, vocabulary topics and texts).
+/* Extra content attached to the course units (new lessons, vocabulary topics, texts and speaking prompts).
    Loaded after course.js: each entry is merged into the matching unit. */
 window.COURSE_EXTRA = {
-  "a1-1": { lessons: [101, 102], vocab: ["gens"] },
-  "a1-2": { lessons: [105], vocab: ["classe", "ecole"], extra: ["neighbours"] },
-  "a1-3": { vocab: ["jours", "heure"], extra: ["week"] },
-  "a1-4": { lessons: [81], vocab: ["adjectifs2", "prepositions", "objets"] },
-  "a1-5": { lessons: [82], vocab: ["routine", "verbes2", "motsq"] },
-  "a1-6": { lessons: [104], vocab: ["lieux", "transports"], extra: ["postcard"] },
-  "a1-7": { lessons: [103], vocab: ["fruitsleg", "boissons"], extra: ["market", "phonecall"] },
+  "a1-1": { prompt: "a1-p1", lessons: [101, 102], vocab: ["gens"] },
+  "a1-2": { prompt: "a1-p2", lessons: [105], vocab: ["classe", "ecole"], extra: ["neighbours"] },
+  "a1-3": { prompt: "a1-p3", vocab: ["jours", "heure"], extra: ["week"] },
+  "a1-4": { prompt: "a1-p4", lessons: [81], vocab: ["adjectifs2", "prepositions", "objets"] },
+  "a1-5": { prompt: "a1-p5", lessons: [82], vocab: ["routine", "verbes2", "motsq"] },
+  "a1-6": { prompt: "a1-p6", lessons: [104], vocab: ["lieux", "transports"], extra: ["postcard"] },
+  "a1-7": { prompt: "a1-p7", lessons: [103], vocab: ["fruitsleg", "boissons"], extra: ["market", "phonecall"] },
   "a2-1": { vocab: ["tempsA2", "verbesA2", "etapes"], extra: ["firstjob"] },
-  "a2-2": { vocab: ["sorties", "fetes"], extra: ["luggage"] },
+  "a2-2": { prompt: "a2-p2", vocab: ["sorties", "fetes"], extra: ["luggage"] },
   "a2-3": { lessons: [106, 108, 84], vocab: ["aeroport", "hotel", "nature"], extra: ["invitation"] },
   "a2-4": { lessons: [107, 86], vocab: ["apparence", "accessoires", "animauxA2"] },
-  "a2-5": { lessons: [83, 94], vocab: ["argent", "villeA2", "supermarche"], extra: ["nophone"] },
-  "a2-6": { lessons: [109], vocab: ["bobos", "menage", "repas", "problemes"], extra: ["doctor"] },
+  "a2-5": { prompt: "a2-p5", lessons: [83, 94], vocab: ["argent", "villeA2", "supermarche"], extra: ["nophone"] },
+  "a2-6": { prompt: "a2-p6", lessons: [109], vocab: ["bobos", "menage", "repas", "problemes"], extra: ["doctor"] },
   "a2-7": { lessons: [110, 85], vocab: ["ordi"] },
   "b1-1": { lessons: [93], vocab: ["familleB1", "sentimentsB1", "expressionsB1", "verbprep", "childhoodB1"], extra: ["mistakes"] },
   "b1-2": { lessons: [112, 92, 95], vocab: ["voyageB1", "route", "meteoB1", "urgences", "placesB1"], extra: ["ebike"] },
@@ -41,5 +41,6 @@ window.COURSE_EXTRA = {
     if (x.lessons) x.lessons.forEach((l) => { if (!u.lessons.includes(l)) u.lessons.push(l); });
     if (x.vocab) x.vocab.forEach((v) => { if (!u.vocab.includes(v)) u.vocab.push(v); });
     if (x.extra) u.extra = (u.extra || []).concat(x.extra.filter((r) => !(u.extra || []).includes(r)));
+    if (x.prompt && !u.prompt) u.prompt = x.prompt;
   });
 })();

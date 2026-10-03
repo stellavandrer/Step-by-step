@@ -1244,7 +1244,21 @@ function viewWriting(id) {
   if (!u) return viewCourse();
   const w = u.writing;
   const us = unitState(u.id);
+  const g = (window.WRITING_GUIDE || {})[u.id];
   const count = (t) => (t.trim() ? t.trim().split(/\s+/).length : 0);
+  /* The model with its key phrases highlighted and numbered, and the legend underneath. */
+  const annotated = () => {
+    let html = esc(w.model);
+    const legend = [];
+    ((g && g.marks) || []).forEach(([ph, en, f]) => {
+      const e = esc(ph), i = html.indexOf(e);
+      if (i < 0) return;
+      legend.push([en, f]);
+      html = html.slice(0, i) + `<mark class="wm">${e}<sup>${legend.length}</sup></mark>` + html.slice(i + e.length);
+    });
+    return { html, legend };
+  };
+  const am = annotated();
   app.innerHTML = `
     ${back(`#/unite/${u.id}`, `Unit ${unitNum(u)}`)}
     <h1>${ic("pen-line")} ${T("Writing")}</h1>
@@ -1254,6 +1268,11 @@ function viewWriting(id) {
       <h3 style="margin-top:16px">${T("Useful phrases")}</h3>
       <div class="chips">${w.tips.map((t) => `<button class="chip" data-say="${esc(t.replace(/…/g, ""))}">${ic("volume-2")} <span class="en">${esc(t)}</span></button>`).join("")}</div>
     </section>
+    ${g ? `<section class="card">
+      <h2 style="margin-top:0">${ic("list-ordered")} ${T("How to write it: {g}", { g: esc(loc(g, "genre")) })}</h2>
+      <p class="muted small">${T("Good writers plan before they write. Follow these steps, and note two or three words for each one: then writing your text will be much easier.")}</p>
+      <ol class="w-plan">${g.plan.map(([en, f], k) => `<li><span>${instr(en, f)}</span><input class="field" data-plan="${k}" value="${esc((us.plan || [])[k] || "")}" placeholder="${T("My ideas…")}" autocomplete="off"></li>`).join("")}</ol>
+    </section>` : ""}
     <section class="card">
       <textarea id="wText" class="field note" rows="10" placeholder="${T("Write here…")}" spellcheck="true" lang="en">${esc(us.writing || "")}</textarea>
       <div class="row" style="margin-top:10px">
@@ -1272,8 +1291,9 @@ function viewWriting(id) {
       <p class="muted small">${T("Like a teacher would: tick each point you've respected. If not, correct your text above.")}</p>
       <ul class="selfcheck">${w.checklist.map((c, i) => `<li><label><input type="checkbox" data-ck="${i}" ${us.checks && us.checks[i] ? "checked" : ""}> <span>${esc(c)}</span></label></li>`).join("")}</ul>
       <h2 style="margin-top:20px">${ic("book-open-text")} ${T("Model answer")}</h2>
-      <p class="muted small">${T("Compare with your text: note two expressions you'd like to reuse.")}</p>
-      <div class="model en">${esc(w.model)}</div>
+      <p class="muted small">${T(am.legend.length ? "The highlighted phrases are what makes this text work. Compare with yours, and reuse two of them." : "Compare with your text: note two expressions you'd like to reuse.")}</p>
+      <div class="model en">${am.html}</div>
+      ${am.legend.length ? `<ol class="w-legend">${am.legend.map(([en, f]) => `<li>${esc(isFr() ? f : en)}</li>`).join("")}</ol>` : ""}
       <div class="row" style="margin-top:10px"><button class="btn btn-sm" data-say="${esc(w.model)}">${ic("volume-2")} ${T("Listen")}</button><button class="btn btn-sm" data-say="${esc(w.model)}" data-slow="1">${ic("snail")} ${T("Slowly")}</button></div>
     </section>`;
   const ta = $("#wText");
@@ -1288,6 +1308,7 @@ function viewWriting(id) {
     $("#wAfter").scrollIntoView({ behavior: "smooth", block: "start" });
   };
   $$("[data-ck]").forEach((c) => (c.onchange = () => { us.checks = us.checks || {}; us.checks[c.dataset.ck] = c.checked; save(); }));
+  $$("[data-plan]").forEach((inp) => (inp.oninput = () => { us.plan = us.plan || []; us.plan[+inp.dataset.plan] = inp.value; save(); }));
   bindCorrection("u:" + u.id, () => ({
     text: ta.value, level: u.level, title: `${T("Unit")} ${unitNum(u)} · ${loc(u, "title")}`,
     kind: "End-of-unit writing task", kind_fr: "Production écrite de fin d'unité",

@@ -772,3 +772,13 @@ span.ipa { color: var(--blue); }
 .lab-step .tip { margin: 10px 0; padding: 12px 14px 12px 44px; border-radius: 12px; background: var(--blue-soft); position: relative; }
 .lab-step .tip .box-ic, #labTips .tip .box-ic { position: absolute; left: 14px; top: 13px; }
 #labTips .tip { margin: 10px 0; padding: 12px 14px 12px 44px; border-radius: 12px; background: var(--blue-soft); position: relative; }
+
+/* Writing guide */
+.w-plan { margin: 10px 0 0; padding-left: 22px; }
+.w-plan li { margin-bottom: 10px; }
+.w-plan li > span { display: block; margin-bottom: 4px; }
+.w-plan .field { margin: 0; padding: 8px 10px; font-size: 15px; }
+mark.wm { background: var(--yellow-soft); color: inherit; border-bottom: 2px solid var(--yellow); padding: 0 2px; border-radius: 3px; }
+mark.wm sup { font: 700 11px var(--font); color: var(--ink-soft); margin-left: 2px; }
+.w-legend { margin: 12px 0 0; padding-left: 22px; font-size: 14px; color: var(--ink-soft); }
+.w-legend li { margin-bottom: 4px; }

@@ -1002,5 +1002,9 @@ window.UI_TEXT.fr = {
   "Well done! Try the next recording, or listen to a podcast at your level without the text.": "Bravo ! Passe à l'enregistrement suivant, ou écoute un podcast de ton niveau sans le texte.",
   "Pronunciation: linking": "Prononciation : les liaisons",
   "Pronunciation: accents": "Prononciation : les accents",
-  "My listening plan": "Mon plan d'écoute"
+  "My listening plan": "Mon plan d'écoute",
+  "How to write it: {g}": "Comment l'écrire : {g}",
+  "Good writers plan before they write. Follow these steps, and note two or three words for each one: then writing your text will be much easier.": "Les bons rédacteurs font un plan avant d'écrire. Suis ces étapes et note deux ou trois mots pour chacune : écrire ton texte sera ensuite beaucoup plus facile.",
+  "My ideas…": "Mes idées…",
+  "The highlighted phrases are what makes this text work. Compare with yours, and reuse two of them.": "Les passages surlignés sont ce qui fait fonctionner ce texte. Compare avec le tien, et réutilises-en deux."
 };

@@ -1,0 +1,35 @@
+/* Sujets d'oral libre pour les unités A1 et A2 qui n'en avaient pas (2026-10-03).
+   Plus courts qu'aux niveaux suivants (45 à 75 secondes), avec des débuts de phrases pour se lancer.
+   Les modèles parlent de personnes imaginaires. Rattachés aux unités dans course-extra.js. */
+window.PROMPTS.push(
+  { id: "a1-p1", level: "A1", q: "Introduce yourself.", fr: "Présente-toi.", time: 45,
+    phrases: ["My name's…", "I'm from…", "I live in…", "I'm a… / I work in…", "I like… and I love…"],
+    model: "Hi! My name's Léa. I'm French and I'm from Nantes, but now I live in Lyon. I'm a nurse, and I work in a big hospital. I like cooking and reading, and I love the sea." },
+  { id: "a1-p2", level: "A1", q: "Talk about your family.", fr: "Parle de ta famille.", time: 45,
+    phrases: ["I've got… brothers / sisters", "My mother / father is…", "He's / She's … years old", "He / She works as…", "We've also got a…"],
+    model: "I've got a small family. My mother is fifty-eight and she's a teacher. My father is an engineer. I've got one brother, Hugo. He's twenty-six and he lives in Bordeaux. We've also got a dog called Biscuit!" },
+  { id: "a1-p3", level: "A1", q: "Talk about your week: what do you do, and when?", fr: "Parle de ta semaine : que fais-tu, et quand ?", time: 45,
+    phrases: ["On Monday, I…", "at … o'clock", "in the morning / in the evening", "At the weekend, I…", "My favourite day is… because…"],
+    model: "On Monday, I start work at half past eight. On Wednesday evening, I go swimming at seven o'clock. On Friday, I finish work at five and I meet my friends. At the weekend, I get up late. My favourite day is Saturday, because I go to the market." },
+  { id: "a1-p4", level: "A1", q: "Describe your favourite room.", fr: "Décris ta pièce préférée.", time: 45,
+    phrases: ["My favourite room is…", "It's small / big / bright…", "There's / There are…", "next to / opposite / in front of", "I like it because…"],
+    model: "My favourite room is the kitchen. It's quite small, but it's very bright. The walls are white and the table is blue. There are a lot of plants next to the window. There's a radio, and I listen to music when I cook. I like it because it's warm and it smells good!" },
+  { id: "a1-p5", level: "A1", q: "Describe your typical day.", fr: "Décris une journée typique.", time: 60,
+    phrases: ["I usually get up at…", "Then I…", "I always / never…", "In the evening, I…", "I go to bed at…"],
+    model: "I usually get up at seven. I have a shower and a coffee, then I take the bus to work. I start at nine. I always have lunch with my colleagues. I never work late. In the evening, I cook, I watch a series or I read. I go to bed at eleven." },
+  { id: "a1-p6", level: "A1", q: "Describe your street. How do you go from your home to a shop?", fr: "Décris ta rue. Comment vas-tu de chez toi à un magasin ?", time: 60,
+    phrases: ["In my street, there's / there are…", "There isn't a…", "Go out of my building and turn left / right", "It's next to / opposite…", "It's … minutes on foot"],
+    model: "I live in a quiet street. There's a bakery, a small supermarket and a park. There isn't a cinema, but there's one in the next street. To go to the bakery, go out of my building and turn right. It's opposite the pharmacy. It's two minutes on foot." },
+  { id: "a1-p7", level: "A1", q: "What can you do, and what can't you do? What are you doing right now?", fr: "Que sais-tu faire, et que ne sais-tu pas faire ? Que fais-tu en ce moment ?", time: 60,
+    phrases: ["I can… quite well", "I can't… at all", "I'd like to learn to…", "Right now, I'm…", "I'm sitting / wearing / drinking…"],
+    model: "I can cook quite well, and I can swim. I can't sing at all, and I can't drive! I'd like to learn to play the guitar. Right now, I'm sitting at my desk and I'm learning English. I'm drinking a cup of tea, and it's raining outside." },
+  { id: "a2-p2", level: "A2", q: "Tell me about a day you'll never forget.", fr: "Raconte-moi une journée que tu n'oublieras jamais.", time: 75,
+    phrases: ["It was a … day in…", "I was … when…", "Suddenly,…", "I felt so … that…", "In the end,…"],
+    model: "It was a cold morning in December. I was waiting for the bus when I saw an old friend from school. We were at school together ten years ago! Suddenly, she started laughing and crying at the same time. We missed our buses and went to a café. I felt so happy that I forgot I was late for work. In the end, we spent the whole morning together, and now we see each other every month." },
+  { id: "a2-p5", level: "A2", q: "Compare two places you know. Which one do you prefer?", fr: "Compare deux endroits que tu connais. Lequel préfères-tu ?", time: 75,
+    phrases: ["… is bigger / more … than…", "… isn't as … as…", "The best thing about … is…", "There are too many… / There isn't enough…", "I prefer … because…"],
+    model: "I know two cafés near my home. The first one is bigger and more modern than the second, but it's also noisier. The best thing about it is the coffee: it's the best in town. The second café is smaller and quieter, and the cakes are cheaper. There are too many people in the first one at the weekend. I prefer the small café because it's more relaxing." },
+  { id: "a2-p6", level: "A2", q: "A friend wants to be healthier. What advice do you give?", fr: "Un ami veut être en meilleure forme. Quels conseils lui donnes-tu ?", time: 75,
+    phrases: ["You should…", "You shouldn't…", "You don't have to…", "You must / mustn't…", "Why don't you…?"],
+    model: "First, you should sleep more: at least seven hours. You shouldn't look at your phone in bed. You don't have to go to the gym every day; you can walk to work instead. You must drink more water, and you mustn't skip breakfast. Why don't you cook with a friend at the weekend? It's more fun, and it's cheaper than eating out." }
+);
