@@ -936,5 +936,20 @@ window.UI_TEXT.fr = {
   "Answer “I know this word” only if you could give its meaning or use it in a sentence. Having seen it somewhere isn't enough.": "Réponds « Je connais ce mot » seulement si tu pourrais donner son sens ou l'utiliser dans une phrase. L'avoir déjà vu quelque part ne suffit pas.",
   "Some words don't exist in English. If you say you know them, your score goes down: it's how the test corrects for guessing.": "Certains mots n'existent pas en anglais. Si tu dis les connaître, ton score baisse : c'est ainsi que le test corrige les réponses au hasard.",
   "Answer quickly, following your first impression.": "Réponds vite, à la première impression.",
-  "Speak with someone": "Parler avec quelqu'un"
+  "Speak with someone": "Parler avec quelqu'un",
+  "Grammar reference A1 → C2": "Grammaire de référence A1 → C2",
+  "Grammar reference": "Grammaire de référence",
+  "{n} grammar points with the rule, an example and the lessons that teach them. Perfect for revising or checking a doubt.": "{n} points de grammaire avec la règle, un exemple et les leçons qui les enseignent. Idéal pour réviser ou vérifier un doute.",
+  "All the grammar of English from A1 to C2, point by point: the rule in one sentence, an example, and the lessons where it's taught. Use it to revise, to check a doubt, or to see what's coming next.": "Toute la grammaire de l'anglais du A1 au C2, point par point : la règle en une phrase, un exemple et les leçons où elle est enseignée. Pour réviser, vérifier un doute ou voir ce qui t'attend.",
+  "grammar points": "points de grammaire",
+  "taught in a lesson": "enseignés dans une leçon",
+  "already studied": "déjà étudiés",
+  "Levels based on the Core Inventory for General English (British Council and EAQUALS) and the English Grammar Profile (Cambridge). The two sometimes differ by a level: the level shown is the one at which the point is usually taught.": "Niveaux établis d'après le Core Inventory for General English (British Council et EAQUALS) et l'English Grammar Profile (Cambridge). Les deux diffèrent parfois d'un niveau : le niveau indiqué est celui où le point est généralement enseigné.",
+  "Search: since, passive, conditional…": "Rechercher : since, passive, conditional…",
+  "Search the grammar reference": "Rechercher dans la grammaire de référence",
+  "No grammar point matches your search.": "Aucun point de grammaire ne correspond à ta recherche.",
+  "How the course was checked": "Comment le cours a été vérifié",
+  "Each point of the reference inventories was compared with the lessons of the course. {n} points were missing or only mentioned in passing: each now has a full lesson, with exercises, in the right unit.": "Chaque point des référentiels a été comparé aux leçons du cours. {n} points manquaient ou n'étaient qu'effleurés : chacun a maintenant une leçon complète, avec ses exercices, dans la bonne unité.",
+  "{n} point": "{n} point",
+  "{n} points": "{n} points"
 };

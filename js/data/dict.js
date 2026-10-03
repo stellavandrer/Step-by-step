@@ -1589,3 +1589,23 @@ window.DICT_EN_FR = Object.assign(window.DICT_EN_FR || {}, {
   "lepper": "Lepper (Mark Lepper, psychologue)",
   "beck": "Beck (Harry Beck, créateur du plan du métro de Londres)"
 });
+/* Grammaire de référence et leçons ajoutées (2026-10-03). */
+window.DICT_EN_FR = Object.assign(window.DICT_EN_FR || {}, {
+  "indefinite": "indéfini",
+  "anybody": "quelqu'un, n'importe qui ; (négation) personne",
+  "tunnel": "tunnel",
+  "scissors": "ciseaux",
+  "shh": "chut",
+  "weekday": "jour de semaine",
+  "till": "jusqu'à",
+  "moderate": "modéré",
+  "invert": "inverser",
+  "hypothesis": "hypothèse",
+  "hypotheses": "hypothèses",
+  "causative": "causatif (faire faire)",
+  "intensity": "intensité",
+  "parallel": "parallèle",
+  "unbelievable": "incroyable",
+  "brussels": "Bruxelles",
+  "colosseum": "Colisée"
+});

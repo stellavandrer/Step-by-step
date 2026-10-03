@@ -32,7 +32,9 @@ function T(s, vars) {
 }
 const Tn = (n, one, many, vars) => T(n > 1 ? many : one, Object.assign({ n }, vars || {}));
 const loc = (o, k) => (o && lang() !== "en" && o[k + "_" + lang()]) || (o && o[k]);
-const instr = (en, f) => (isFr() && f ? `<span class="fr-ui">${esc(f)}</span>` : `${esc(en)}${fr(f)}`);
+/* French quoted in an English instruction (« … ») isn't clickable: it isn't English. */
+const noTxQuotes = (h) => h.replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`);
+const instr = (en, f) => (isFr() && f ? `<span class="fr-ui">${esc(f)}</span>` : `${noTxQuotes(esc(en))}${fr(f)}`);
 const tg = (g) => { const k = "genre:" + g, v = T(k); return v === k ? g : v; };
 const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.replace(/ \d+$/, "")) + (p.match(/ \d+$/) || [""])[0] : p.replace(/^lesson (\d+)$/, (_, n) => T("lesson") + " " + n))).join(" · ");
 
@@ -1514,6 +1516,7 @@ function viewLessons() {
         ${Object.keys(S.mistakes || {}).length ? `<a class="btn btn-sm" href="#/erreurs" style="margin-right:6px">${ic("notebook-pen")} ${T("My mistakes")}</a>` : ""}<a class="btn btn-sm ${dueL.length || dueM ? "btn-primary" : ""}" href="#/revision-grammaire" ${done ? "" : 'aria-disabled="true" style="pointer-events:none;opacity:.45"'}>${T("Start the review")}</a>
       </div>
     </div>
+    <a class="card ear-cta" href="#/grammaire" style="margin:0 0 8px">${tile("library", "B1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Grammar reference A1 → C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} grammar points with the rule, an example and the lessons that teach them. Perfect for revising or checking a doubt.", { n: GREF().reduce((a, x) => a + x.points.length, 0) })}</p></div>${ic("arrow-right")}</a>
     ${levelGroups(LESSONS, (l) => {
       const r = S.lessons[l.id];
       return `<a class="card lesson-item ${r ? "done" : ""}" href="#/lecons/${l.id}">
@@ -1523,6 +1526,69 @@ function viewLessons() {
       </a>`;
     }, { started: (its) => its.some((l) => S.lessons[l.id]), stat: (its) => T("{a} / {b} done", { a: its.filter((l) => S.lessons[l.id]).length, b: its.length }) })}`;
 }
+/* ================= Grammar reference =================
+   Every grammar point from A1 to C2 with its rule, an example and the lessons that teach it.
+   Built by comparing the course with the reference inventories; the lessons added after that check are listed. */
+const GREF = () => window.GRAMMAR_REF || [];
+const GAP_LESSONS = [81, 82, 83, 84, 85, 86, 94, 87, 88, 92, 93, 95, 89, 90, 91];
+function grPoint(p) {
+  const [L, en, f, rule, rule_fr, ex, ids] = p;
+  const links = ids.map((id) => { const l = lessonById(id); return l ? `<a href="#/lecons/${id}" class="${S.lessons[id] ? "done" : ""}">${ic(S.lessons[id] ? "check" : "book-open")} ${T("Lesson")} ${lnum(l)} · ${esc(loc(l, "title"))}</a>` : ""; }).join("");
+  return `<div class="card gr-point" data-s="${esc([en, f, rule, rule_fr, ex].join(" ").toLowerCase())}">
+    <div class="row" style="gap:8px;flex-wrap:nowrap;align-items:flex-start">${levelTag(L)}<h3 style="margin:0;flex:1">${esc(isFr() ? f : en)}</h3></div>
+    <p style="margin:8px 0">${instr(rule, rule_fr)}</p>
+    <p class="gr-ex"><span class="en">${esc(ex)}</span> ${sayBtn(ex)}</p>
+    ${links ? `<div class="gr-links">${links}</div>` : ""}
+  </div>`;
+}
+function viewGrammarRef(lv) {
+  const L = LV.includes(lv) ? lv : null;
+  const all = GREF().flatMap((a) => a.points);
+  const taught = all.filter((p) => p[6].some((id) => lessonById(id))).length;
+  const studied = all.filter((p) => p[6].some((id) => S.lessons[id])).length;
+  app.innerHTML = `
+    ${back("#/lecons", "Lessons")}
+    <h1>${T("Grammar reference A1 → C2")}</h1>
+    <p class="muted">${T("All the grammar of English from A1 to C2, point by point: the rule in one sentence, an example, and the lessons where it's taught. Use it to revise, to check a doubt, or to see what's coming next.")}</p>
+    <section class="card gr-stats">
+      <div><b>${all.length}</b><span class="muted small">${T("grammar points")}</span></div>
+      <div><b>${taught}</b><span class="muted small">${T("taught in a lesson")}</span></div>
+      <div><b>${studied}</b><span class="muted small">${T("already studied")}</span></div>
+      <p class="muted small" style="grid-column:1/-1;margin:0">${T("Levels based on the Core Inventory for General English (British Council and EAQUALS) and the English Grammar Profile (Cambridge). The two sometimes differ by a level: the level shown is the one at which the point is usually taught.")}</p>
+    </section>
+    <div class="gr-tools">
+      <div class="seg">${[["", "All"], ...LV.map((x) => [x, x])].map(([k, t]) => `<a href="#/grammaire${k ? "/" + k : ""}" class="${(L || "") === k ? "on" : ""}">${T(t)}</a>`).join("")}</div>
+      <input class="field" id="grSearch" type="search" autocomplete="off" placeholder="${T("Search: since, passive, conditional…")}" aria-label="${T("Search the grammar reference")}">
+    </div>
+    <p class="muted small" id="grNone" hidden>${T("No grammar point matches your search.")}</p>
+    ${GREF().map((a) => {
+      const pts = a.points.filter((p) => !L || p[0] === L);
+      if (!pts.length) return "";
+      const lvls = LV.filter((x) => pts.some((p) => p[0] === x));
+      return `<details class="level-block gr-area" ${L ? "open" : ""}>
+        <summary><span class="lvl-sum">${ic(a.icon)}<b>${esc(loc(a, "title"))}</b><span class="muted small">${Tn(pts.length, "{n} point", "{n} points")} · ${lvls.join(" ")}</span></span>${ic("chevron-down", "chev")}</summary>
+        <div class="stack" style="margin-top:12px">${pts.map(grPoint).join("")}</div>
+      </details>`;
+    }).join("")}
+    <details class="card" style="margin-top:20px">
+      <summary><b>${ic("search")} ${T("How the course was checked")}</b></summary>
+      <p>${T("Each point of the reference inventories was compared with the lessons of the course. {n} points were missing or only mentioned in passing: each now has a full lesson, with exercises, in the right unit.", { n: GAP_LESSONS.length })}</p>
+      <div class="gr-links">${GAP_LESSONS.map((id) => { const l = lessonById(id); const u = unitOfLesson(id); return l ? `<a href="#/lecons/${id}" class="${S.lessons[id] ? "done" : ""}">${levelTag(l.level)} ${esc(loc(l, "title"))}${u ? ` <span class="muted small">· ${u.level} ${T("Unit")} ${unitNum(u)}</span>` : ""}</a>` : ""; }).join("")}</div>
+    </details>`;
+  const inp = $("#grSearch");
+  inp.oninput = () => {
+    const q = inp.value.trim().toLowerCase();
+    let shown = 0;
+    $$(".gr-area").forEach((d) => {
+      let n = 0;
+      $$(".gr-point", d).forEach((c) => { const ok = !q || c.dataset.s.includes(q); c.hidden = !ok; if (ok) n++; });
+      d.hidden = !n; if (q) d.open = n > 0;
+      shown += n;
+    });
+    $("#grNone").hidden = shown > 0;
+  };
+}
+
 function renderBody(html) {
   return html
     .replace(/<s-en>([\s\S]*?)<\/s-en>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
@@ -4267,7 +4333,7 @@ function viewBooks() {
 }
 
 /* ================= Router ================= */
-const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
+const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", grammaire: "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
 function route() {
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
   cleanups = [];
@@ -4292,6 +4358,7 @@ function route() {
     methode: viewMethode,
     lecons: () => (b ? viewLesson(b) : viewLessons()),
     "revision-grammaire": viewGrammarReview,
+    grammaire: () => viewGrammarRef(b),
     vocabulaire: () => (b ? viewTheme(b) : viewVocab()),
     reviser: () => viewFlash("review"),
     apprendre: () => viewFlash("learn", b),

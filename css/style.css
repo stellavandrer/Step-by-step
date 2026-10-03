@@ -746,3 +746,16 @@ span.ipa { color: var(--blue); }
 }
 .place-review .script p { margin: 4px 0; }
 @media (hover: none) { .kbd-hint { display: none; } }
+
+/* Grammar reference */
+.gr-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; text-align: center; }
+.gr-stats > div b { display: block; font: 800 28px var(--serif); }
+.gr-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 16px 0 4px; }
+.gr-tools .field { flex: 1; min-width: 200px; margin: 0; }
+.gr-point { margin: 0; }
+.gr-ex { margin: 0; font-size: 17px; }
+.gr-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.gr-links a { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; text-decoration: none; color: var(--ink); background: var(--surface); }
+.gr-links a:hover { border-color: var(--accent); }
+.gr-links a.done { border-color: var(--green); }
+.gr-links a .ic, .gr-links a svg { width: 14px; height: 14px; }
