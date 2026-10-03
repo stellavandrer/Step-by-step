@@ -680,3 +680,26 @@ span.ipa { color: var(--blue); }
   .ipa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .syl { font-size: 22px; padding: 8px 12px; min-width: 44px; }
 }
+
+/* Academic skills */
+.seq-line { counter-reset: seq; display: grid; gap: 8px; min-height: 52px; padding: 10px; border: 2px dashed var(--line); border-radius: 12px; margin-bottom: 8px; }
+.seq-line:empty::before { content: ""; }
+.seq-bank { display: grid; gap: 8px; }
+.seq-item {
+  text-align: left; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface);
+  font-family: var(--serif); font-size: 16px; color: var(--ink); cursor: pointer;
+}
+.seq-line .seq-item { counter-increment: seq; }
+.seq-line .seq-item::before { content: counter(seq) ". "; font-weight: 700; color: var(--ink-soft); }
+.seq-item:hover:not([disabled]) { border-color: var(--blue); }
+.seq-item[disabled] { cursor: default; }
+.seq-item.correct { border-color: var(--green); background: var(--green-soft); }
+.seq-item.wrong { border-color: var(--red); background: var(--red-soft); }
+.seq-answer { margin: 8px 0 0; padding-left: 22px; }
+.cornell { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 14px; }
+.acad-src h3 { margin: 14px 0 6px; }
+.acad-src p { margin: 0 0 .7em; }
+.table-wrap { overflow-x: auto; }
+.data-table { max-width: 560px; }
+.data-table td:not(:first-child), .data-table th:not(:first-child) { text-align: right; }
+@media (max-width: 560px) { .cornell { grid-template-columns: 1fr; } }

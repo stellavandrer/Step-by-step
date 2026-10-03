@@ -91,7 +91,7 @@ const unitOfLesson = (id) => COURSE.find((u) => u.lessons.includes(+id));
 
 /* ================= Storage ================= */
 const KEY = "stepbystep.v1";
-const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, toeic: { mocks: [], parts: {} } });
+const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, toeic: { mocks: [], parts: {} } });
 function load() {
   try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
   catch (e) { return defaults(); }
@@ -298,7 +298,7 @@ function speak(text, btn, opts = {}) {
   });
 }
 /* Play several lines one after the other, with a voice per speaker. */
-async function playLines(lines, btn) {
+async function playLines(lines, btn, rate) {
   stopAudio();
   const seq = playSeq;
   const speakers = [];
@@ -306,7 +306,7 @@ async function playLines(lines, btn) {
   for (const [sp, text] of lines) {
     if (seq !== playSeq) break;
     if (sp && !speakers.includes(sp)) speakers.push(sp);
-    await speak(text, null, { voice: sp ? voiceFor(sp, speakers.indexOf(sp)) : bestVoice(), keep: true });
+    await speak(text, null, { voice: sp ? voiceFor(sp, speakers.indexOf(sp)) : bestVoice(), keep: true, rate });
     await new Promise((r) => setTimeout(r, 250));
   }
   if (btn) btn.classList.remove("playing");
@@ -505,6 +505,7 @@ function scoreMsg(score, total) {
           {type:'say', en, fr}                                       say it out loud
           {type:'dict', text}                                        dictation
           {type:'stress', parts, a, word?, sayText?, ctx?}           tap the stressed syllable (word) or word (sentence)
+          {type:'seq', q, items}                                     put sentences or parts in order (items = the right order)
    mcq extras: voice (a SpeechSynthesisVoice for say), exHtml (trusted HTML after the explanation), ipaO (options in IPA).
    type extras: say (text read aloud, e.g. a word spelled out).
    Items from a lesson quiz carry lessonId + qi: a wrong answer goes into the mistakes review.
@@ -624,7 +625,7 @@ function runQuiz(el, items, done) {
     if (q.type === "match") {
       const en = shuffle(q.pairs.map((p, k) => ({ t: p[0], k }))), frs = shuffle(q.pairs.map((p, k) => ({ t: p[1], k })));
       el.innerHTML = `${head}
-        <div class="quiz-q">${T("Match each English sentence with its translation.")}</div>
+        <div class="quiz-q">${q.q ? instr(q.q, q.q_fr) : T("Match each English sentence with its translation.")}</div>
         <div class="match-grid">
           <div class="match-col">${en.map((x) => `<button type="button" class="match-btn" data-side="en" data-k="${x.k}">${esc(x.t)}</button>`).join("")}</div>
           <div class="match-col no-tx">${frs.map((x) => `<button type="button" class="match-btn" data-side="fr" data-k="${x.k}">${esc(x.t)}</button>`).join("")}</div>
@@ -633,7 +634,7 @@ function runQuiz(el, items, done) {
       let sel = null, errors = 0, left = q.pairs.length;
       $$(".match-btn", el).forEach((b) => (b.onclick = () => {
         if (b.disabled) return;
-        if (!sel || sel.dataset.side === b.dataset.side) { if (sel) sel.classList.remove("sel"); sel = b; b.classList.add("sel"); if (b.dataset.side === "en") speak(q.pairs[+b.dataset.k][0]); return; }
+        if (!sel || sel.dataset.side === b.dataset.side) { if (sel) sel.classList.remove("sel"); sel = b; b.classList.add("sel"); if (b.dataset.side === "en" && !q.q) speak(q.pairs[+b.dataset.k][0]); return; }
         const a = sel; sel = null; a.classList.remove("sel");
         if (a.dataset.k === b.dataset.k) {
           [a, b].forEach((x) => { x.classList.add("matched"); x.disabled = true; });
@@ -704,6 +705,31 @@ function runQuiz(el, items, done) {
         const shown = q.parts.map((p, j) => (j === q.a ? `<b class="st">${esc(p)}</b>` : esc(p))).join(isWord ? "" : " ");
         finishItem(ok, `<div class="feedback ${ok ? "ok" : "ko"}">${ok ? ic("circle-check") + ` <b>${T("Well done!")}</b>` : ic("circle-x") + ` <b>${T("Not quite.")}</b>`} <span class="en no-tx">${shown}</span>${isWord ? " " + sayBtn(q.sayText || q.word) : ""}${q.ex ? `<div style="margin-top:6px">${instr(q.ex, q.ex_fr)}</div>` : ""}</div>`, q);
       }));
+      return;
+    }
+    if (q.type === "seq") {
+      let order = shuffle(q.items.map((_, k) => k));
+      for (let t = 0; t < 5 && order.every((v, k) => v === k); t++) order = shuffle(order);
+      el.innerHTML = `${head}
+        <div class="quiz-q">${q.q ? instr(q.q, q.q_fr) : T("Put these in the right order.")}</div>
+        <div class="seq-line" id="qLine"></div>
+        <p class="muted small" id="qHint">${T("Tap the items in the right order.")}</p>
+        <div class="seq-bank" id="qBank">${order.map((k) => `<button type="button" class="seq-item" data-k="${k}">${esc(q.items[k])}</button>`).join("")}</div>
+        <div class="row" style="margin-top:14px"><button class="btn btn-dark" id="qCheck" disabled>${T("Check")}</button><button type="button" class="btn" id="qReset">${T("Start again")}</button></div>
+        <div class="fb"></div>`;
+      const line = $("#qLine"), bankEl = $("#qBank");
+      const refresh = () => { $("#qCheck").disabled = bankEl.children.length > 0; };
+      $$(".seq-item", el).forEach((b) => (b.onclick = () => { if (b.disabled) return; (b.parentElement === bankEl ? line : bankEl).appendChild(b); refresh(); }));
+      $("#qReset").onclick = () => { $$(".seq-item", line).forEach((b) => bankEl.appendChild(b)); refresh(); };
+      $("#qCheck").onclick = () => {
+        const got = $$(".seq-item", line).map((b) => +b.dataset.k);
+        const ok = got.every((v, k) => v === k);
+        $$(".seq-item", el).forEach((b, j) => { b.disabled = true; });
+        $$(".seq-item", line).forEach((b, j) => b.classList.add(+b.dataset.k === j ? "correct" : "wrong"));
+        $("#qCheck").remove(); $("#qReset").remove(); $("#qHint").remove();
+        finishItem(ok, `<div class="feedback ${ok ? "ok" : "ko"}">${ok ? ic("circle-check") + ` <b>${T("Well done!")}</b>` : ic("circle-x") + ` <b>${T("The right order:")}</b>`}
+          ${ok ? "" : `<ol class="seq-answer">${q.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>`}${q.ex ? `<div style="margin-top:6px">${instr(q.ex, q.ex_fr)}</div>` : ""}</div>`, q);
+      };
       return;
     }
     if (q.type === "order") {
@@ -1117,6 +1143,7 @@ function viewCourse() {
       <div style="flex:1;min-width:0"><span class="muted small">${T("Continue")} · ${cu.level} · ${T("Unit")} ${unitNum(cu)}</span><h2 style="margin:2px 0 0">${esc(loc(cu, "title"))}</h2></div>
       ${ic("arrow-right")}
     </a>
+    <a class="card ear-cta" href="#/competences">${tile("graduation-cap", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Academic skills, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} chapters taught as in a university English course: note-taking, essays, data, presentations, seminars, sources, critical thinking, reports, mediation, synthesis, research writing, exams.", { n: ACAD().length })}</p></div><span class="muted small">${ACAD().filter((c) => acadDone(c.id)).length} / ${ACAD().length}</span>${ic("arrow-right")}</a>
     ${LV.map((L) => {
       const units = COURSE.filter((u) => u.level === L);
       const done = units.filter(unitDone).length;
@@ -1175,15 +1202,16 @@ function viewUnit(id) {
         ${themes.map((t) => { const ts = themeStats(t); return `<div class="row step-link"><span style="flex:1"><b>${esc(loc(t, "title"))}</b> <span class="muted small">${T("{a}/{b} seen", { a: ts.seen, b: ts.total })}</span></span><a class="btn btn-sm btn-dark" href="#/apprendre/${t.id}">${ic("layers")} ${T("Cards")}</a><a class="btn btn-sm" href="#/ecrire/${t.id}">${ic("keyboard")} ${T("Write")}</a></div>`; }).join("")}`)}
       ${stepCard(st[1], 2, lessons.map((l) => `<div class="row step-link"><span style="flex:1"><b>${T("Lesson")} ${lnum(l)}</b> · ${esc(loc(l, "title"))} ${S.lessons[l.id] ? `<span class="tag tag-done">${ic("check")} ${S.lessons[l.id].best}/${S.lessons[l.id].total}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecons/${l.id}">${T("Open")}</a></div>`).join(""))}
       ${stepCard(st[2], 3, (r ? `<div class="row step-link"><span style="flex:1"><b>${esc(loc(r, "title"))}</b>${u.listen ? ` <span class="muted small">· ${T("listen first, without reading")}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecture/${r.id}${u.listen ? "/listen" : ""}">${u.listen ? ic("headphones") + " " + T("Listen") : ic("book-open-text") + " " + T("Read")}</a></div>` : "")
-        + extraR.map((x) => `<div class="row step-link"><span style="flex:1"><span class="muted small">${T("Extra:")}</span> <b>${esc(loc(x, "title"))}</b> ${S.readings[x.id] ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/lecture/${x.id}">${ic("book-open-text")} ${T("Read")}</a></div>`).join(""))}
+        + extraR.map((x) => `<div class="row step-link"><span style="flex:1"><span class="muted small">${T("Extra:")}</span> <b>${esc(loc(x, "title"))}</b> ${S.readings[x.id] ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/lecture/${x.id}">${ic("book-open-text")} ${T("Read")}</a></div>`).join("") + acadRows(u, "read"))}
       ${stepCard(st[3], 4, `
         ${sp ? `<div class="row step-link"><span style="flex:1"><b>${T("Repeat:")}</b> ${esc(loc(sp, "title"))}</span><a class="btn btn-sm btn-dark" href="#/oral/${sp.id}">${ic("mic")} ${T("Practise")}</a></div>`
             : `<div class="row step-link"><span style="flex:1"><b>${T("Repeat the key sentences of the unit")}</b></span><a class="btn btn-sm btn-dark" href="#/repeter/${u.id}">${ic("mic")} ${T("Practise")}</a></div>`}
         ${RP().filter((x) => u.lessons.includes(x.lesson)).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Role-play")}:</b> ${esc(loc(x, "title"))}</span><a class="btn btn-sm" href="#/dialogue/${x.id}">${ic("messages-square")} ${T("Talk")}</a></div>`).join("")}
         ${PRON().filter((x) => (x.units || []).includes(u.id)).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Pronunciation:")}</b> ${esc(loc(x, "title"))} ${pronDone(x.id) ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/prononciation/${x.id}">${ic("audio-lines")} ${T("Open")}</a></div>`).join("")}
+        ${acadRows(u, "speak")}
         ${pr ? `<div class="row step-link"><span style="flex:1"><b>${T("Speak freely:")}</b> <span class="en">${esc(pr.q)}</span></span><a class="btn btn-sm" href="#/parler/${pr.id}">${ic("message-circle")} ${T("Speak")}</a></div>` : ""}
         <div class="row step-link"><span style="flex:1"><b>${T("Real conversation:")}</b> ${T("talk about this unit with Claude, out loud")}</span><a class="btn btn-sm" href="#/conversation/unit/${u.id}">${ic("bot")} ${T("Talk")}</a></div>`)}
-      ${stepCard(st[4], 5, `<p style="margin:0 0 10px">${instr(u.writing.task, u.writing.task_fr)}</p><div class="row step-link"><span style="flex:1" class="muted small">${T("{n} words · model answer included", { n: u.writing.words })}</span><a class="btn btn-sm btn-dark" href="#/ecrit/${u.id}">${ic("pen-line")} ${T("Write")}</a></div>`)}
+      ${stepCard(st[4], 5, `<p style="margin:0 0 10px">${instr(u.writing.task, u.writing.task_fr)}</p><div class="row step-link"><span style="flex:1" class="muted small">${T("{n} words · model answer included", { n: u.writing.words })}</span><a class="btn btn-sm btn-dark" href="#/ecrit/${u.id}">${ic("pen-line")} ${T("Write")}</a></div>${acadRows(u, "write")}`)}
       ${stepCard(st[5], 6, `<div class="row step-link"><span style="flex:1" class="muted small">${T("Sentences from the unit, to train your ear and your spelling.")}${us.dict ? ` ${T("Best:")} <b>${us.dict}%</b>` : ""}</span><a class="btn btn-sm btn-dark" href="#/dictee-unite/${u.id}">${ic("ear")} ${T("Start")}</a></div>`)}
       ${stepCard(st[6], 7, `<div class="row step-link"><span style="flex:1" class="muted small">${T("Grammar, vocabulary, reading and dictation. You need 70% to complete the unit.")}${us.test != null ? ` ${T("Best:")} <b>${us.test}%</b>` : ""}</span><a class="btn btn-sm btn-primary" href="#/test/${u.id}">${ic("list-checks")} ${T("Take the test")}</a></div>`)}
     </div>
@@ -2726,6 +2754,246 @@ function viewPronChapter(id) {
   };
 }
 
+/* ================= Academic skills (B2 → C2) =================
+   16 chapters (js/data/academic*.js), as in an English for Academic Purposes course: objectives, an explanation,
+   a text, lecture or data set to work with, a language bank, a practice, and a real task with a model answer,
+   a checklist and a correction by Claude. Progress: S.acad[id] = {best, total, date, wrote, checks}; texts in S.notes["a:" + id]. */
+const ACAD = () => window.ACAD || [];
+const acadById = (id) => ACAD().find((c) => c.id === id);
+const acadNum = (c) => ACAD().indexOf(c) + 1;
+const acadState = (id) => (S.acad || {})[id] || {};
+const acadDone = (id) => acadState(id).best != null;
+const ACAD_KIND = { read: ["book-open-text", "Reading and listening"], write: ["pen-line", "Writing"], speak: ["mic", "Speaking"] };
+const kindTag = (c) => `<span class="tag">${ic(ACAD_KIND[c.kind][0])} ${T(ACAD_KIND[c.kind][1])}</span>`;
+const dataTable = (d, caption) => `${caption ? `<p style="margin:0 0 6px"><b>${esc(d.title)}</b></p>` : ""}<div class="table-wrap"><table class="irr-table data-table"><tr>${d.head.map((h) => `<th>${esc(h)}</th>`).join("")}</tr>${d.rows.map((r) => `<tr>${r.map((x) => `<td>${esc(x)}</td>`).join("")}</tr>`).join("")}</table></div>${d.note ? `<p class="muted small" style="margin:8px 0 0">${instr(d.note, d.note_fr)}</p>` : ""}`;
+function acadSourceInner(c, caption) {
+  const s = c.source;
+  if (s) {
+    const paras = (ps) => ps.map((p) => `<p>${esc(p)}</p>`).join("");
+    return `<div class="reader acad-src${s.fr ? " no-tx" : ""}"${s.fr ? ' lang="fr"' : ""}>${s.blocks ? s.blocks.map((b) => `<h3>${esc(b.h)}</h3>${paras(b.paras)}`).join("") : paras(s.paras)}</div>`;
+  }
+  return c.data ? dataTable(c.data, caption) : "";
+}
+/* The material of the chapter as plain text, for the correction message. */
+function acadSourceText(c) {
+  if (c.source) return (c.source.blocks ? c.source.blocks.map((b) => b.h + "\n" + b.paras.join("\n\n")) : c.source.paras).join("\n\n");
+  if (c.data) return [c.data.title, c.data.head.join(" | "), ...c.data.rows.map((r) => r.join(" | ")), c.data.note || ""].join("\n").trim();
+  if (c.lecture) return c.lecture.paras.join("\n\n");
+  return "";
+}
+function acadPractice(c) {
+  const pre = c.source || c.data ? `<details class="card mini-text" open><summary>${ic(c.data ? "table" : "book-open-text")} <span>${esc(c.data ? c.data.title : loc(c.source, "title"))}</span></summary>${acadSourceInner(c)}</details>` : "";
+  const items = c.quiz.map((q) => Object.assign({ type: "mcq", from: q.src ? "The text" : "Understand" }, q, q.src && pre ? { pre } : {}));
+  /* Two questions on the language bank: recognise the English phrase from its French meaning. */
+  const bank = c.bank.flatMap((g) => g.items).map(([en, f]) => [en.replace(/…/g, "").trim().replace(/[,:]$/, ""), f]);
+  shuffle(bank).slice(0, 2).forEach(([en, f]) => {
+    const others = shuffle(bank.filter((x) => x[0] !== en)).slice(0, 2).map((x) => x[0]);
+    if (others.length === 2) items.push({ type: "mcq", q: `Which phrase means « ${f} »?`, q_fr: `Quelle formule signifie « ${f} » ?`, o: [en, ...others], a: 0, from: "Language bank" });
+  });
+  return items;
+}
+function acadCard(c) {
+  const r = acadState(c.id);
+  return `<a class="card lesson-item ${acadDone(c.id) ? "done" : ""}" href="#/competences/${c.id}">
+    <span class="lesson-num">${acadDone(c.id) ? ic("check") : acadNum(c)}</span>
+    <span style="flex:1;min-width:0"><span class="row" style="gap:6px;margin-bottom:4px">${kindTag(c)}${r.best != null ? `<span class="small muted">${T("{a}/{b} in the practice", { a: r.best, b: r.total })}</span>` : ""}${r.wrote ? `<span class="small muted">${ic("pen-line")} ${T("task done")}</span>` : ""}</span>
+    <h3 style="margin:0">${esc(loc(c, "title"))}</h3><span class="muted small">${esc(loc(c, "subtitle"))}</span></span>
+  </a>`;
+}
+const acadRows = (u, kind) => ACAD().filter((x) => x.kind === kind && (x.units || []).includes(u.id)).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Academic skills:")}</b> ${esc(loc(x, "title"))} ${acadDone(x.id) ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/competences/${x.id}">${ic("graduation-cap")} ${T("Open")}</a></div>`).join("");
+function viewAcadHub() {
+  const all = ACAD();
+  const done = all.filter((c) => acadDone(c.id)).length;
+  const wrote = all.filter((c) => acadState(c.id).wrote).length;
+  app.innerHTML = `
+    ${back("#/cours", "Course")}
+    <h1>${T("Academic skills")}</h1>
+    <p class="muted">${T("The skills taught in English for Academic Purposes courses at English-speaking universities, from B2 to C2: reading and note-taking, paraphrasing and summarising, essays, data, presentations, seminars, academic style, sources, critical thinking, reports, mediation, synthesis, research writing, editing and exams.")}</p>
+    <div class="grid grid-2" style="margin:20px 0">
+      <div class="card">
+        <div class="row"><b>${T("{a} / {b} chapters", { a: done, b: all.length })}</b><span class="spacer"></span><span class="muted small">${Tn(wrote, "{n} task written", "{n} tasks written")}</span></div>
+        <div class="progress" style="margin-top:10px"><div style="width:${pct(done, all.length)}%"></div></div>
+        <div class="chips" style="margin-top:14px">${Object.entries(ACAD_KIND).map(([k, [icn, l]]) => `<span class="chip">${ic(icn)} ${T(l)} · ${all.filter((c) => c.kind === k).length}</span>`).join("")}</div>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 8px">${ic("graduation-cap")} ${T("How each chapter works")}</h3>
+        <ol class="small" style="margin:0;padding-left:20px">
+          <li>${T("Objectives and a clear explanation, in English or in French.")}</li>
+          <li>${T("A real text, lecture or set of data to work with.")}</li>
+          <li>${T("A bank of useful phrases, with audio.")}</li>
+          <li>${T("About a dozen exercises.")}</li>
+          <li>${T("A real task, with a model answer, a checklist and a correction by Claude.")}</li>
+        </ol>
+      </div>
+    </div>
+    ${levelGroups(all, acadCard, { started: (its) => its[0].level === "B2" || its.some((c) => acadDone(c.id)), stat: (its) => T("{a} / {b} done", { a: its.filter((c) => acadDone(c.id)).length, b: its.length }) })}`;
+}
+const recorderHtml = () => `<div class="row" style="margin-top:12px;gap:10px"><button class="btn btn-sm" id="recBtn">${ic("circle-dot")} ${T("Record myself")}</button><span class="muted small" id="recTime"></span><span id="myAudio"></span></div>`;
+function bindRecorder() {
+  if (!$("#recBtn")) return;
+  let mediaRec = null, chunks = [], url = null, t0 = 0, timer = null;
+  onCleanup(() => { try { if (mediaRec && mediaRec.state !== "inactive") mediaRec.stop(); } catch (e) {} clearInterval(timer); });
+  $("#recBtn").onclick = async () => {
+    const btn = $("#recBtn");
+    if (mediaRec && mediaRec.state === "recording") { mediaRec.stop(); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { toast(T("Recording isn't available here")); return; }
+    try {
+      stopAudio();
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      chunks = [];
+      mediaRec = new MediaRecorder(stream);
+      mediaRec.ondataavailable = (ev) => chunks.push(ev.data);
+      mediaRec.onstop = () => {
+        clearInterval(timer);
+        stream.getTracks().forEach((t) => t.stop());
+        if (!$("#myAudio")) return;
+        if (url) URL.revokeObjectURL(url);
+        url = URL.createObjectURL(new Blob(chunks, { type: mediaRec.mimeType }));
+        $("#myAudio").innerHTML = `<audio controls src="${url}" style="height:36px;max-width:240px"></audio>`;
+        btn.innerHTML = ic("circle-dot") + " " + T("Again");
+        addXP(2, "speak");
+      };
+      mediaRec.start(); t0 = Date.now();
+      btn.innerHTML = ic("square") + " " + T("Stop");
+      timer = setInterval(() => { if ($("#recTime")) $("#recTime").textContent = mmss(Math.round((Date.now() - t0) / 1000)); }, 500);
+    } catch (err) { toast(T("Allow microphone access in your browser")); }
+  };
+}
+function viewAcadChapter(id) {
+  const c = acadById(id);
+  if (!c) return viewAcadHub();
+  const all = ACAD(), i = all.indexOf(c), prev = all[i - 1], next = all[i + 1];
+  const tk = c.task, key = "a:" + c.id;
+  const st = () => (S.acad = S.acad || {}, S.acad[c.id] = S.acad[c.id] || {});
+  const r = acadState(c.id);
+  const lec = (S.notes["an:" + c.id] || {});
+  let showFr = isFr() && !!c.body_fr;
+  app.innerHTML = `
+    ${back("#/competences", "Academic skills")}
+    <article class="card lesson-body">
+      <div class="row" style="margin-bottom:8px">${levelTag(c.level)}${kindTag(c)}<span class="muted small">${T("Chapter {a} of {b}", { a: i + 1, b: all.length })}</span><span class="spacer"></span>${c.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${showFr ? (isFr() ? "En anglais" : "In English") : "En français"}</button>` : ""}</div>
+      <div class="row" style="flex-wrap:nowrap;align-items:center">${tile(c.icon, c.level)}<h1 style="margin:0">${esc(loc(c, "title"))}</h1></div>
+      <p class="muted" style="margin-top:10px">${esc(loc(c, "subtitle"))}</p>
+      <section class="teacher-goals">
+        <h3 style="margin:8px 0 6px">${T("By the end of this chapter, you'll be able to…")}</h3>
+        <ul class="checklist">${c.can.map((x, k) => `<li>${ic("target")}<span>${instr(x, c.can_fr && c.can_fr[k])}</span></li>`).join("")}</ul>
+      </section>
+      <div id="lbody" class="${showFr ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? c.body_fr : c.body)}</div>
+    </article>
+    ${c.lecture ? `<section class="card">
+      <h2>${ic("headphones")} ${esc(loc(c.lecture, "title"))}</h2>
+      <p class="muted small">${T("Listen once without writing, then a second time while taking notes: your notes in the large box, key words and questions in the small one (the Cornell method). Answer the questions of the practice before reading the transcript.")}</p>
+      <div class="row" style="gap:8px"><button class="btn btn-dark" id="lecPlay">${ic("play")} ${T("Play the lecture")}</button><button class="btn" id="lecSlow">${ic("snail")} ${T("Slowly")}</button><button class="btn" id="lecStop">${ic("square")} ${T("Stop")}</button></div>
+      <div class="cornell">
+        <textarea id="lecCues" class="field note" rows="6" placeholder="${T("Key words and questions")}" spellcheck="true" lang="en">${esc(lec.cues || "")}</textarea>
+        <textarea id="lecNotes" class="field note" rows="9" placeholder="${T("Notes")}" spellcheck="true" lang="en">${esc(lec.notes || "")}</textarea>
+      </div>
+      <details class="cx-saved" style="margin-top:12px"><summary><b>${T("Transcript")}</b></summary><div class="reader">${c.lecture.paras.map((p) => `<p>${esc(p)}</p>`).join("")}</div></details>
+    </section>` : ""}
+    ${c.source || c.data ? `<section class="card">
+      <h2>${ic(c.data ? "table" : "book-open-text")} ${esc(c.data ? c.data.title : loc(c.source, "title"))}</h2>
+      ${c.source && c.source.note ? `<p class="muted small">${instr(c.source.note, c.source.note_fr)}</p>` : ""}
+      ${c.source && !c.source.fr ? `<div class="row" style="margin-bottom:6px"><button class="btn btn-sm" data-say="${esc(acadSourceText(c))}">${ic("volume-2")} ${T("Listen")}</button></div>` : ""}
+      ${acadSourceInner(c)}
+    </section>` : ""}
+    <section class="card">
+      <h2>${ic("quote")} ${T("Language bank")}</h2>
+      <p class="muted small">${T("Phrases to reuse in your own work. Listen, repeat, and use at least three of them in the task.")}</p>
+      ${c.bank.map((g) => `<h3 style="margin:14px 0 4px">${esc(loc(g, "h"))}</h3><ul class="examples">${g.items.map(([en, f]) => `<li>${sayBtn(en.replace(/…/g, "").trim())}<div style="flex:1"><div class="en">${esc(en)}</div><div class="fr">${esc(f)}</div></div></li>`).join("")}</ul>`).join("")}
+    </section>
+    <section class="card" id="quizBox">
+      <h2>${ic("list-checks")} ${T("Practice")}</h2>
+      <p class="muted">${T("About a dozen exercises on the method, the text and the language of this chapter.")}</p>
+      ${r.best != null ? `<p class="small">${T("Your best score:")} <b>${r.best} / ${r.total}</b></p>` : ""}
+      <button class="btn btn-primary" id="startQuiz">${T("Start the practice")}</button>
+    </section>
+    <section class="card" id="taskBox">
+      <h2>${ic(tk.speak ? "mic" : "pen-line")} ${T("Your task")}</h2>
+      <p style="font-size:18px;margin:0"><b>${instr(tk.task, tk.task_fr)}</b></p>
+      <p class="muted small" style="margin:8px 0 12px">${T("Length: {n} words.", { n: tk.words })}${tk.speak ? " " + T("Then say it out loud and record yourself.") : ""}</p>
+      <textarea id="aText" class="field note" rows="10" placeholder="${T("Write here…")}" spellcheck="true" lang="en">${esc(S.notes[key] || "")}</textarea>
+      <div class="row" style="margin-top:10px">
+        <span class="muted small" id="aCount"></span><span class="spacer"></span>
+        <button class="btn btn-sm" id="aListen">${ic("volume-2")} ${T("Listen to my text")}</button>
+        <button class="btn btn-sm btn-dark" id="aDone">${ic("check")} ${T("I've finished")}</button>
+      </div>
+      ${tk.speak ? recorderHtml() : ""}
+      <div style="margin-top:16px">${correctionBox(key)}</div>
+      <div id="aAfter" ${r.wrote ? "" : "hidden"} style="margin-top:18px">
+        <h3>${ic("list-checks")} ${T("Check your text")}</h3>
+        <ul class="selfcheck">${tk.checklist.map((x, k) => `<li><label><input type="checkbox" data-ck="${k}" ${r.checks && r.checks[k] ? "checked" : ""}> <span>${instr(x, tk.checklist_fr && tk.checklist_fr[k])}</span></label></li>`).join("")}</ul>
+        <h3 style="margin-top:18px">${ic("book-open-text")} ${T("Model answer")}</h3>
+        <p class="muted small">${T("Compare with your text: note two expressions you'd like to reuse.")}</p>
+        <div class="model en">${esc(tk.model)}</div>
+        <div class="row" style="margin-top:10px"><button class="btn btn-sm" data-say="${esc(tk.model)}">${ic("volume-2")} ${T("Listen")}</button><button class="btn btn-sm" data-say="${esc(tk.model)}" data-slow="1">${ic("snail")} ${T("Slowly")}</button></div>
+      </div>
+    </section>
+    ${(c.more || []).length ? `<section class="card">
+      <h2>${ic("external-link")} ${T("Go further")}</h2>
+      ${c.more.map((m) => `<div class="row step-link"><span style="flex:1;min-width:0"><b>${esc(m.name)}</b><br><span class="muted small">${instr(m.desc, m.desc_fr)}</span></span><a class="btn btn-sm" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(m.q)}">${T("Search")} ${ic("external-link")}</a></div>`).join("")}
+    </section>` : ""}
+    <div class="row" style="margin-top:16px">
+      ${prev ? `<a class="btn" href="#/competences/${prev.id}">${ic("arrow-left")} ${T("Previous")}</a>` : ""}
+      <span class="spacer"></span>
+      ${next ? `<a class="btn btn-dark" href="#/competences/${next.id}">${T("Next chapter")} ${ic("arrow-right")}</a>` : `<a class="btn btn-dark" href="#/competences">${T("All chapters")} ${ic("arrow-right")}</a>`}
+    </div>`;
+  if ($("#frToggle")) $("#frToggle").onclick = () => {
+    showFr = !showFr;
+    $("#lbody").innerHTML = renderBody(showFr ? c.body_fr : c.body);
+    $("#lbody").classList.toggle("fr", showFr);
+    if (showFr) $("#lbody").setAttribute("lang", "fr"); else $("#lbody").removeAttribute("lang");
+    $("#frToggle").innerHTML = showFr ? `${ic("languages")} ${isFr() ? "En anglais" : "In English"}` : `${ic("languages")} En français`;
+  };
+  if (c.lecture) {
+    const lines = c.lecture.paras.map((p) => ["Lecturer", p]);
+    $("#lecPlay").onclick = (e) => playLines(lines, e.currentTarget);
+    $("#lecSlow").onclick = (e) => playLines(lines, e.currentTarget, 0.7);
+    $("#lecStop").onclick = () => stopAudio();
+    let lt;
+    const saveLec = () => { clearTimeout(lt); lt = setTimeout(() => { S.notes["an:" + c.id] = { cues: $("#lecCues").value, notes: $("#lecNotes").value }; save(); }, 400); };
+    $("#lecCues").oninput = saveLec; $("#lecNotes").oninput = saveLec;
+  }
+  $("#startQuiz").onclick = () => {
+    const box = $("#quizBox");
+    runQuiz(box, acadPractice(c), (score, total) => {
+      const s = st(), first = s.best == null;
+      Object.assign(s, { best: Math.max(score, s.best || 0), total, date: s.date || today() });
+      addXP(first ? 10 + score * 2 : score, "lesson");
+      box.innerHTML = `
+        <div class="result-big">${score} / ${total}</div>
+        <p style="text-align:center">${scoreMsg(score, total)}</p>
+        <div class="row" style="justify-content:center">
+          <button class="btn" id="retry">${T("Practise again")}</button>
+          <a class="btn btn-primary" href="#taskBox" id="toTask">${T("Now, the task")} ${ic("arrow-right")}</a>
+        </div>`;
+      $("#retry").onclick = () => { viewAcadChapter(id); $("#startQuiz").click(); $("#quizBox").scrollIntoView({ block: "start" }); };
+      $("#toTask").onclick = (e) => { e.preventDefault(); $("#taskBox").scrollIntoView({ behavior: "smooth", block: "start" }); };
+    });
+  };
+  const ta = $("#aText");
+  let tm;
+  const count = () => { $("#aCount").textContent = T("{n} words", { n: nWords(ta.value) }); };
+  count();
+  ta.oninput = () => { count(); clearTimeout(tm); tm = setTimeout(() => { S.notes[key] = ta.value; save(); }, 400); };
+  $("#aListen").onclick = (e) => { if (ta.value.trim()) speak(ta.value, e.currentTarget); else toast(T("Write your text first")); };
+  $("#aDone").onclick = () => {
+    if (nWords(ta.value) < 20) { toast(T("Write a little more first")); return; }
+    S.notes[key] = ta.value;
+    const s = st();
+    if (!s.wrote) { s.wrote = today(); addXP(15, "free"); toast(T("Well done! Now check your text")); } else save();
+    $("#aAfter").hidden = false;
+    $("#aAfter").scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  $$("[data-ck]").forEach((x) => (x.onchange = () => { const s = st(); s.checks = s.checks || {}; s.checks[x.dataset.ck] = x.checked; save(); }));
+  bindRecorder();
+  bindCorrection(key, () => ({
+    text: ta.value, level: c.level, title: `${T("Academic skills")} · ${loc(c, "title")}`,
+    kind: `Academic skills task (${c.title})`, kind_fr: `Tâche de compétences universitaires (${c.title_fr})`,
+    task: tk.task, task_fr: tk.task_fr, words: tk.words, criteria: tk.checklist, focus: c.can.join("; "),
+    source: acadSourceText(c)
+  }));
+}
+
 /* ================= Dictation ================= */
 function dictPool(L) {
   const maxW = { A1: 8, A2: 11, B1: 14, B2: 18, C1: 22, C2: 26 }[L] || 14;
@@ -3294,6 +3562,7 @@ function correctionPrompt(o) {
     o.words ? `Longueur demandée : environ ${o.words} mots.` : null,
     o.focus ? `Points travaillés : ${o.focus}` : null,
     o.criteria && o.criteria.length ? `Critères de réussite : ${o.criteria.join(" ; ")}` : null,
+    ...(o.source ? ["", "Texte de départ (à résumer, expliquer, décrire ou corriger) :", '"""', o.source, '"""'] : []),
     "",
     "Mon texte :",
     '"""', o.text.trim(), '"""',
@@ -3315,6 +3584,7 @@ function correctionPrompt(o) {
     o.words ? `Expected length: about ${o.words} words.` : null,
     o.focus ? `Language focus: ${o.focus}` : null,
     o.criteria && o.criteria.length ? `Success criteria: ${o.criteria.join("; ")}` : null,
+    ...(o.source ? ["", "Source material (to summarise, explain, describe or correct):", '"""', o.source, '"""'] : []),
     "",
     "My text:",
     '"""', o.text.trim(), '"""',
@@ -3425,7 +3695,7 @@ function viewBooks() {
 }
 
 /* ================= Router ================= */
-const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
+const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", competences: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
 function route() {
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
   cleanups = [];
@@ -3467,6 +3737,7 @@ function route() {
     dialogue: () => viewDialogue(b, c),
     erreurs: viewMistakes,
     oreille: viewEar,
+    competences: () => (b ? viewAcadChapter(b) : viewAcadHub()),
     prononciation: () => {
       if (b === "api") return viewPronIPA();
       const ch = pronById(b);
