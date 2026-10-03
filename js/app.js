@@ -93,7 +93,7 @@ const unitOfLesson = (id) => COURSE.find((u) => u.lessons.includes(+id));
 
 /* ================= Storage ================= */
 const KEY = "stepbystep.v1";
-const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, place: {}, cando: {}, toeic: { mocks: [], parts: {} } });
+const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, place: {}, cando: {}, lab: {}, toeic: { mocks: [], parts: {} } });
 function load() {
   try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
   catch (e) { return defaults(); }
@@ -269,13 +269,14 @@ function voiceByLang(l) {
   return ranked().find((v) => re.test(v.lang)) || null;
 }
 /* A different voice for each speaker in a dialogue (female names → female voice when possible). */
+const SPK_F = /^(W\b|W\d|Woman|Stella|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i;
+const SPK_M = /^(M\b|M\d|Man|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i;
 function voiceFor(speaker, i) {
   const r = ranked();
   if (!r.length) return null;
   const fem = r.filter((v) => FEMALE.test(v.name)), mal = r.filter((v) => !FEMALE.test(v.name));
   const sp = String(speaker || "");
-  const isF = /^(W\b|W\d|Woman|Stella|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i.test(sp);
-  const isM = /^(M\b|M\d|Man|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i.test(sp);
+  const isF = SPK_F.test(sp), isM = SPK_M.test(sp);
   const n = (sp.match(/\d+/) || [0])[0] * 1;
   if (isF && fem.length) return fem[(n ? n - 1 : 0) % fem.length];
   if (isM && mal.length) return mal[(n ? n - 1 : 0) % mal.length];
@@ -301,16 +302,25 @@ function speak(text, btn, opts = {}) {
     synth.speak(u);
   });
 }
-/* Play several lines one after the other, with a voice per speaker. */
+/* The best voice for an accent ("en-US", "en-AU"…), of the speaker's gender when the name tells it. */
+function accentVoice(l, sp) {
+  const re = new RegExp("^" + l.replace("-", "[-_]"), "i");
+  const c = ranked().filter((v) => re.test(v.lang));
+  if (!c.length) return null;
+  const s = String(sp || "");
+  return (SPK_F.test(s) && c.find((v) => FEMALE.test(v.name))) || (SPK_M.test(s) && c.find((v) => !FEMALE.test(v.name))) || c[0];
+}
+/* Play several lines one after the other, with a voice per speaker (and an accent when a line gives one). */
 async function playLines(lines, btn, rate) {
   stopAudio();
   const seq = playSeq;
-  const speakers = [];
+  const speakers = [], byAccent = {};
   if (btn) btn.classList.add("playing");
-  for (const [sp, text] of lines) {
+  for (const [sp, text, acc] of lines) {
     if (seq !== playSeq) break;
     if (sp && !speakers.includes(sp)) speakers.push(sp);
-    await speak(text, null, { voice: sp ? voiceFor(sp, speakers.indexOf(sp)) : bestVoice(), keep: true, rate });
+    const v = acc ? (byAccent[sp] = byAccent[sp] || accentVoice(acc, sp)) : null;
+    await speak(text, null, { voice: v || (sp ? voiceFor(sp, speakers.indexOf(sp)) : bestVoice()), keep: true, rate });
     await new Promise((r) => setTimeout(r, 250));
   }
   if (btn) btn.classList.remove("playing");
@@ -343,6 +353,8 @@ function buildDict() {
     pp.split(" / ").forEach((p) => { const k = p.replace(/\(.*\)/, "").trim(); if (!IRR_FORMS[k]) IRR_FORMS[k] = { base, kind: "past participle" }; });
   });
   READINGS.forEach((r) => Object.entries(r.glossary || {}).forEach(([k, v]) => add(k, v)));
+  /* Key words of the listening lab ("single / return" gives two entries). */
+  (window.LAB || []).forEach((x) => x.words.forEach(([en, f]) => { const ps = en.split(" / "), fs = f.split(" / "); ps.forEach((k, i) => add(k.replace(/^(to|a|an|the) /, ""), ps.length === fs.length ? fs[i] : f)); }));
   S.myWords.forEach((w) => add(w.en, w.fr));
   /* General dictionary last: the course's own translations always win. */
   Object.entries(window.DICT_EN_FR || {}).forEach(([k, v]) => add(k, v));
@@ -1209,7 +1221,7 @@ function viewUnit(id) {
         ${themes.map((t) => { const ts = themeStats(t); return `<div class="row step-link"><span style="flex:1"><b>${esc(loc(t, "title"))}</b> <span class="muted small">${T("{a}/{b} seen", { a: ts.seen, b: ts.total })}</span></span><a class="btn btn-sm btn-dark" href="#/apprendre/${t.id}">${ic("layers")} ${T("Cards")}</a><a class="btn btn-sm" href="#/ecrire/${t.id}">${ic("keyboard")} ${T("Write")}</a></div>`; }).join("")}`)}
       ${stepCard(st[1], 2, lessons.map((l) => `<div class="row step-link"><span style="flex:1"><b>${T("Lesson")} ${lnum(l)}</b> · ${esc(loc(l, "title"))} ${S.lessons[l.id] ? `<span class="tag tag-done">${ic("check")} ${S.lessons[l.id].best}/${S.lessons[l.id].total}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecons/${l.id}">${T("Open")}</a></div>`).join(""))}
       ${stepCard(st[2], 3, (r ? `<div class="row step-link"><span style="flex:1"><b>${esc(loc(r, "title"))}</b>${u.listen ? ` <span class="muted small">· ${T("listen first, without reading")}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecture/${r.id}${u.listen ? "/listen" : ""}">${u.listen ? ic("headphones") + " " + T("Listen") : ic("book-open-text") + " " + T("Read")}</a></div>` : "")
-        + extraR.map((x) => `<div class="row step-link"><span style="flex:1"><span class="muted small">${T("Extra:")}</span> <b>${esc(loc(x, "title"))}</b> ${S.readings[x.id] ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/lecture/${x.id}">${ic("book-open-text")} ${T("Read")}</a></div>`).join("") + acadRows(u, "read"))}
+        + extraR.map((x) => `<div class="row step-link"><span style="flex:1"><span class="muted small">${T("Extra:")}</span> <b>${esc(loc(x, "title"))}</b> ${S.readings[x.id] ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/lecture/${x.id}">${ic("book-open-text")} ${T("Read")}</a></div>`).join("") + labRow(u) + acadRows(u, "read"))}
       ${stepCard(st[3], 4, `
         ${sp ? `<div class="row step-link"><span style="flex:1"><b>${T("Repeat:")}</b> ${esc(loc(sp, "title"))}</span><a class="btn btn-sm btn-dark" href="#/oral/${sp.id}">${ic("mic")} ${T("Practise")}</a></div>`
             : `<div class="row step-link"><span style="flex:1"><b>${T("Repeat the key sentences of the unit")}</b></span><a class="btn btn-sm btn-dark" href="#/repeter/${u.id}">${ic("mic")} ${T("Practise")}</a></div>`}
@@ -2382,6 +2394,7 @@ function viewSpeaking() {
     <p class="muted">${T("To speak, you need to hear, then <b>dare to speak out loud</b>. Start by repeating sentences (shadowing), train your ear, then learn to speak freely.")}</p>
     ${SR ? "" : `<div class="card" style="background:var(--yellow-soft);border-color:var(--yellow)">${ic("triangle-alert")} ${T("Your browser doesn't support speech recognition. Use <b>Chrome</b> or <b>Safari</b> to get a score. You can still listen and record yourself.")}</div>`}
     <a class="card ear-cta pron-cta" href="#/prononciation">${tile("audio-lines", "A1")}<div style="flex:1"><h3 style="margin:0">${T("Pronunciation course")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} chapters from A1 to C2: all the sounds and the phonetic alphabet, stress, rhythm, linking, intonation and accents.", { n: PRON().length })}</p></div><span class="muted small">${T("{a} / {b}", { a: PRON().filter((c) => pronDone(c.id)).length, b: PRON().length })}</span>${ic("arrow-right")}</a>
+    <a class="card ear-cta" href="#/comprehension">${tile("headphones", "A2")}<div style="flex:1"><h3 style="margin:0">${T("Listening lab")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} recordings, one per unit from A1 to C1, with several voices and accents: main idea, details, every word, then repeat.", { n: LAB().length })}</p></div><span class="muted small">${LAB().filter((x) => labDone(x.id)).length} / ${LAB().length}</span>${ic("arrow-right")}</a>
     <div class="grid grid-2">
       <a class="card ear-cta" href="#/oreille">${tile("ear", "B1")}<div style="flex:1"><h3 style="margin:0">${T("Train your ear")}</h3><p class="muted small" style="margin:4px 0 0">${T("Ship or sheep? Think or sink? Recognise very similar words, spoken by different voices.")}</p></div>${ic("arrow-right")}</a>
       <a class="card ear-cta" href="#/conversation">${tile("messages-square", "B2")}<div style="flex:1"><h3 style="margin:0">${T("Talk with someone")}</h3><p class="muted small" style="margin:4px 0 0">${T("Real conversations out loud: with Claude at any time, and with real people. Role-plays, debates and exam simulations, A1 to C2.")}</p></div>${ic("arrow-right")}</a>
@@ -3067,6 +3080,116 @@ function viewAcadChapter(id) {
   }));
 }
 
+/* ================= Listening lab =================
+   One recording per unit, A1 to C1, with listening taught as a skill (Field 2008; Vandergrift & Goh 2012):
+   predict, listen for the main idea, listen for detail, decode fast passages word by word,
+   read while listening, repeat (shadowing), then notice what made it hard. */
+const LAB = () => window.LAB || [];
+const labById = (id) => LAB().find((x) => x.id === id);
+const labDone = (id) => (S.lab || {})[id];
+const LAB_RATE = { A1: 0.8, A2: 0.85, B1: 0.92, B2: 1, C1: 1, C2: 1.05 };
+const LAB_HARD = [
+  ["speed", "It was too fast", "Speed: listen once at normal speed, then slowly, then at normal speed again. Repeating just after the speaker (shadowing) trains your ear to keep up.", null],
+  ["words", "I didn't know some words", "Vocabulary: learn the key words before you listen, and add the new ones to My words. Two or three unknown words are often enough to lose the thread.", ["#/mes-mots", "My words"]],
+  ["linking", "The words ran together", "Connected speech: in natural English, words join together and small words almost disappear. The pronunciation chapter on linking shows you how.", ["#/prononciation/p-linking", "Pronunciation: linking"]],
+  ["accent", "The accent was unfamiliar", "Accents: the more voices you hear, the faster you adapt. Try the chapter on accents, and podcasts or series from different countries.", ["#/prononciation/p-accents", "Pronunciation: accents"]],
+  ["focus", "I lost concentration", "Concentration: read the questions and predict the answers before you listen. Then listen in short parts and pause between them.", null],
+  ["ok", "Nothing in particular", "Well done! Try the next recording, or listen to a podcast at your level without the text.", ["#/ecoute", "My listening plan"]]
+];
+const labRow = (u) => LAB().filter((x) => x.unit === u.id).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Listening lab:")}</b> ${esc(loc(x, "title"))} ${labDone(x.id) ? `<span class="tag tag-done">${ic("check")} ${labDone(x.id).best}/${labDone(x.id).total}</span>` : ""}</span><a class="btn btn-sm" href="#/comprehension/${x.id}">${ic("headphones")} ${T("Listen")}</a></div>`).join("");
+function viewLab(id) {
+  const x = labById(id);
+  if (!x) return viewLabHub();
+  const u = COURSE.find((c) => c.id === x.unit);
+  const rate = LAB_RATE[x.level] || 0.9;
+  const prev = labDone(id);
+  let slow = false, plays = 0, score = 0;
+  const total = 1 + x.detail.length + x.decode.length;
+  const mcq = ([q, o]) => ({ type: "mcq", q, o, a: 0 });
+  const lineSay = (l) => `<button class="speak" data-say="${esc(l[1])}"${l[2] ? ` data-lang="${l[2]}"` : ""} aria-label="${T("Listen")}" title="${T("Listen")}">${ic("volume-2")}</button>`;
+  const step = (n, title, sub, body) => `<section class="card lab-step" id="ls${n}" ${n > 1 ? "hidden" : ""}><h2 style="margin-top:0"><span class="step-n">${n}</span> ${T(title)}</h2><p class="muted small">${T(sub)}</p>${body}</section>`;
+  app.innerHTML = `
+    ${back(u ? `#/unite/${u.id}` : "#/comprehension", u ? `Unit ${unitNum(u)} · ${loc(u, "title")}` : "Listening lab")}
+    <article class="card">
+      <div class="row" style="margin-bottom:8px">${levelTag(x.level)}<span class="muted small">${T("Listening lab")}</span><span class="spacer"></span>${prev ? `<span class="tag tag-done">${ic("check")} ${prev.best}/${prev.total}</span>` : ""}</div>
+      <div class="row" style="flex-wrap:nowrap">${tile(x.icon, x.level)}<h1 style="margin:0">${esc(loc(x, "title"))}</h1></div>
+      <p style="margin-top:12px">${instr(x.context, x.context_fr)}</p>
+      <h3>${ic("lightbulb")} ${T("Before you listen")}</h3>
+      <p class="muted small">${T("Listen to the key words. Then take ten seconds to imagine the conversation: who says what? Predicting makes listening much easier.")}</p>
+      <div class="ipa-chips">${x.words.map(([en, f]) => `<span class="ipa-chip"><span class="en">${esc(en)}</span>${fr(f)} ${sayBtn(en)}</span>`).join("")}</div>
+    </article>
+    <div class="card lab-player">
+      <button class="btn btn-primary" id="labPlay">${ic("play")} ${T("Listen")}</button>
+      <button class="btn btn-sm" id="labSlow" aria-pressed="false">${ic("snail")} ${T("Slower")}</button>
+      <span class="muted small" id="labCount">${T("Not listened yet")}</span>
+    </div>
+    ${step(1, "First listening: the main idea", "Listen once, without trying to understand every word. Then answer.", `<div id="lq1"></div>`)}
+    ${step(2, "Second listening: the details", "Read the questions first, then listen again. Two listens before answering is normal, as in exams.", `<button class="btn btn-sm" id="lgo2">${ic("list-checks")} ${T("I've read the questions, show them")}</button><div id="lq2"></div>`)}
+    ${step(3, "Catch every word", "Two short passages at natural speed. Write exactly what you hear: it trains your ear to separate the words.", `<div id="lq3"></div>`)}
+    ${step(4, "Read while you listen", "Now listen again while reading. Click on any word you don't know, and notice what you missed.", `<div class="tip">${ic("lightbulb", "box-ic")} ${instr(x.tip, x.tip_fr)}</div><div class="lab-script">${x.lines.map((l) => `<p class="en"><span class="speaker">${esc(l[0])}</span> ${esc(l[1])} ${lineSay(l)}</p>`).join("")}</div><div class="row" style="margin-top:12px"><button class="btn btn-sm btn-dark" id="lgo5">${T("Continue")} ${ic("arrow-right")}</button></div>`)}
+    ${step(5, "Say it like them", "Repeat each passage just after the model, copying the rhythm and the way the words join together.", `<div id="lq5"></div>`)}
+    ${step(6, "What made it difficult?", "Noticing what blocks you is part of the method: choose everything that applies.", `<div class="lab-hard">${LAB_HARD.map(([k, t]) => `<button class="btn btn-sm" data-hard="${k}" aria-pressed="false">${T(t)}</button>`).join("")}</div><div class="row" style="margin-top:12px"><button class="btn btn-primary" id="labFinish">${ic("check")} ${T("Finish")}</button></div><div id="labTips"></div>`)}`;
+  /* Steps with audio (dictation, repeating) only start when they appear: otherwise they would play at once. */
+  const starters = {};
+  const show = (n) => { const el = $("#ls" + n); if (!el) return; el.hidden = false; if (starters[n]) { starters[n](); delete starters[n]; } el.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  $("#labPlay").onclick = async () => {
+    const btn = $("#labPlay");
+    if (btn.classList.contains("playing")) { stopAudio(); btn.classList.remove("playing"); return; }
+    plays++;
+    $("#labCount").textContent = Tn(plays, "Listened {n} time", "Listened {n} times");
+    await playLines(x.lines, btn, slow ? rate * 0.8 : rate);
+    if ($("#labPlay") === btn) btn.classList.remove("playing");
+  };
+  $("#labSlow").onclick = () => { slow = !slow; $("#labSlow").classList.toggle("on", slow); $("#labSlow").setAttribute("aria-pressed", slow); };
+  runQuiz($("#lq1"), [mcq(x.gist)], (s) => { score += s; $("#lq1").innerHTML = `<p class="small">${ic(s ? "circle-check" : "circle-x")} ${T(s ? "You got the main idea." : "Not quite, but that's what the next listens are for.")}</p>`; show(2); });
+  $("#lgo2").onclick = () => {
+    $("#lgo2").remove();
+    runQuiz($("#lq2"), x.detail.map(mcq), (s, t) => { score += s; $("#lq2").innerHTML = `<p class="small">${T("{a} / {b} details.", { a: s, b: t })}</p>`; show(3); });
+  };
+  starters[3] = () => runQuiz($("#lq3"), x.decode.map((text) => ({ type: "dict", text })), (s) => { score += s; $("#lq3").innerHTML = `<p class="small">${T("{a} / {b} passages written correctly.", { a: s, b: x.decode.length })}</p>`; show(4); });
+  $("#lgo5").onclick = () => { $("#lgo5").remove(); show(5); };
+  starters[5] = () => runQuiz($("#lq5"), x.decode.map((en) => ({ type: "say", en })), () => { $("#lq5").innerHTML = `<p class="small">${ic("circle-check")} ${T("Well done. Saying it out loud fixes it in your ear.")}</p>`; show(6); });
+  const picked = new Set((prev && prev.hard) || []);
+  $$("[data-hard]").forEach((b) => {
+    b.classList.toggle("on", picked.has(b.dataset.hard));
+    b.onclick = () => { const k = b.dataset.hard; if (picked.has(k)) picked.delete(k); else { if (k === "ok") picked.clear(); else picked.delete("ok"); picked.add(k); } $$("[data-hard]").forEach((y) => { y.classList.toggle("on", picked.has(y.dataset.hard)); y.setAttribute("aria-pressed", picked.has(y.dataset.hard)); }); };
+  });
+  $("#labFinish").onclick = () => {
+    S.lab = S.lab || {};
+    const first = !S.lab[id];
+    S.lab[id] = { best: Math.max(score, (prev && prev.best) || 0), total, date: today(), hard: [...picked], last: score };
+    addXP(first ? 15 + score * 2 : score, first ? "step" : null);
+    const next = LAB()[LAB().indexOf(x) + 1];
+    $("#labTips").innerHTML = `
+      <div class="result-big">${score} / ${total}</div>
+      ${LAB_HARD.filter(([k]) => picked.has(k)).map(([, t, tip, link]) => `<div class="tip">${ic("lightbulb", "box-ic")} <b>${T(t)}.</b> ${T(tip)}${link ? ` <a href="${link[0]}">${T(link[1])}</a>` : ""}</div>`).join("")}
+      <div class="row" style="justify-content:center;margin-top:12px">${u ? `<a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a>` : ""}${next ? `<a class="btn btn-primary" href="#/comprehension/${next.id}">${T("Next recording")} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/comprehension">${T("Listening lab")}</a>`}</div>`;
+    $("#labFinish").remove();
+    $("#labTips").scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+}
+function viewLabHub() {
+  const done = LAB().filter((x) => labDone(x.id)).length;
+  const counts = {};
+  LAB().forEach((x) => ((labDone(x.id) || {}).hard || []).forEach((k) => { counts[k] = (counts[k] || 0) + 1; }));
+  const top = LAB_HARD.filter(([k]) => k !== "ok" && counts[k]).sort((a, b) => counts[b[0]] - counts[a[0]])[0];
+  app.innerHTML = `
+    <h1>${T("Listening lab")}</h1>
+    <p class="muted">${T("In real life, nobody gives you the text. These recordings train listening as a skill, step by step, as research on listening recommends (Field, 2008; Vandergrift and Goh, 2012): predict, listen for the main idea, then for the details, write the fast passages word by word, read while listening, repeat, and notice what was hard.")}</p>
+    <div class="grid grid-2" style="margin:16px 0">
+      <div class="card"><b>${T("{a} / {b} recordings", { a: done, b: LAB().length })}</b><div class="progress" style="margin-top:10px"><div style="width:${pct(done, LAB().length)}%"></div></div><p class="muted small" style="margin:8px 0 0">${T("One per unit, from A1 to C1. You'll also find each one in step 3 of its unit.")}</p></div>
+      <div class="card">${top ? `<b>${ic("target")} ${T("What blocks you most often: {t}", { t: T(top[1]).toLowerCase() })}</b><p class="small" style="margin:8px 0 0">${T(top[2])}${top[3] ? ` <a href="${top[3][0]}">${T(top[3][1])}</a>` : ""}</p>` : `<b>${ic("lightbulb")} ${T("How to use it")}</b><p class="small" style="margin:8px 0 0">${T("Do one recording per unit, at your level. At the end, say what made it difficult: the lab will show you what to work on.")}</p>`}</div>
+    </div>
+    ${levelGroups(LAB(), (x) => {
+      const d = labDone(x.id), u = COURSE.find((c) => c.id === x.unit);
+      return `<a class="card lesson-item ${d ? "done" : ""}" href="#/comprehension/${x.id}">
+        ${tile(x.icon, x.level)}
+        <span style="flex:1;min-width:0"><span class="muted small">${u ? `${T("Unit")} ${unitNum(u)} · ${esc(loc(u, "title"))}` : ""}</span><h3 style="margin:2px 0 0">${esc(loc(x, "title"))}</h3></span>
+        ${d ? `<span class="tag tag-done">${ic("check")} ${d.best}/${d.total}</span>` : ""}
+      </a>`;
+    }, { started: (its) => its.some((x) => labDone(x.id)), stat: (its) => T("{a} / {b} done", { a: its.filter((x) => labDone(x.id)).length, b: its.length }) })}`;
+}
+
 /* ================= Placement test, can-do grids, skills report =================
    As at university: an adaptive test per skill (one level up after a set that goes well, one level down
    after a set that doesn't, and it stops at the boundary), a vocabulary-size check with pseudo-words
@@ -3557,7 +3680,7 @@ function viewCando(skill) {
 
 /* Skills report: test, self-assessment and Claude's assessment, side by side. */
 const REPORT = [
-  { id: "listening", icon: "ear", title: "Listening", cando: ["li"], go: (L) => [`#/ecoute/${L}`, "Listening plan"] },
+  { id: "listening", icon: "ear", title: "Listening", cando: ["li"], go: () => ["#/comprehension", "Listening lab"] },
   { id: "reading", icon: "book-open-text", title: "Reading", cando: ["re"], go: () => ["#/lecture", "Reading"] },
   { id: "speaking", icon: "mic", title: "Speaking", cando: ["si", "sp"], go: (L) => (lvIdx(L) >= 3 ? ["#/conversation", "Speak with someone"] : ["#/oral", "Speaking"]) },
   { id: "writing", icon: "pen-line", title: "Writing", cando: ["wr"], go: (L) => (lvIdx(L) >= 3 ? ["#/competences", "Academic skills"] : [`#/ecrit/${currentUnit().id}`, "Writing"]) },
@@ -3574,7 +3697,7 @@ function skillEvidence(id) {
   const sum = (k) => Object.values(S.days).reduce((a, d) => a + (d[k] || 0), 0);
   const n = (o) => Object.keys(o || {}).length;
   const ac = (kind) => ACAD().filter((c) => c.kind === kind && acadDone(c.id)).length;
-  if (id === "listening") return T("In the app: {a} dictation sentences, {b} of listening outside the app, {c} pronunciation chapters.", { a: sum("dictee"), b: fmtH((S.extMin || 0) / 60), c: n(S.pron) });
+  if (id === "listening") return T("In the app: {d} listening labs, {a} dictation sentences, {b} of listening outside the app, {c} pronunciation chapters.", { d: n(S.lab), a: sum("dictee"), b: fmtH((S.extMin || 0) / 60), c: n(S.pron) });
   if (id === "reading") return T("In the app: {a} texts read, {b} academic reading chapters.", { a: n(S.readings), b: ac("read") });
   if (id === "speaking") return T("In the app: {a} sentences said into the microphone, {b} role-plays, {c} conversations.", { a: n(S.spoken), b: n(S.dialogues), c: (S.convos || []).length });
   if (id === "writing") return T("In the app: {a} unit texts, {b} corrections kept, {c} academic writing tasks.", { a: Object.values(S.units).filter((u) => u.wdone).length, b: n(S.corrections), c: Object.values(S.acad || {}).filter((x) => x.wrote).length });
@@ -3984,6 +4107,7 @@ function viewListening(lv) {
       <div class="row">${tile("headphones", level)}<div style="flex:1;min-width:0"><span class="muted small">${levelTag(level)} ${T("Your goal")}</span><h2 style="margin:0">${T("{n} min of real English a day", { n: goal })}</h2></div></div>
       <div class="progress" style="margin:14px 0 6px"><div style="width:${Math.min(100, Math.round((week / (goal * 7)) * 100))}%"></div></div>
       <p class="muted small" style="margin:0">${T("This week: {a} min out of {b}", { a: week, b: goal * 7 })}</p>
+      <p class="small" style="margin:12px 0 0"><a href="#/comprehension">${ic("headphones")} ${T("Before real podcasts: the listening lab, step by step, in the app")}</a></p>
       <p class="small" style="margin:12px 0 0"><b>${T("Subtitles at this level:")}</b> ${instr(sub[0], sub[1])}</p>
     </section>
     <details class="card" open>
@@ -4333,7 +4457,7 @@ function viewBooks() {
 }
 
 /* ================= Router ================= */
-const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", grammaire: "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
+const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", grammaire: "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", comprehension: "oral", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
 function route() {
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
   cleanups = [];
@@ -4376,6 +4500,7 @@ function route() {
     dialogue: () => viewDialogue(b, c),
     erreurs: viewMistakes,
     oreille: viewEar,
+    comprehension: () => (b ? viewLab(b) : viewLabHub()),
     competences: () => (b ? viewAcadChapter(b) : viewAcadHub()),
     placement: () => (b ? viewPlaceSection(b) : viewPlacement()),
     bilan: viewReport,

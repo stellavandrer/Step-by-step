@@ -1609,3 +1609,28 @@ window.DICT_EN_FR = Object.assign(window.DICT_EN_FR || {}, {
   "brussels": "Bruxelles",
   "colosseum": "Colisée"
 });
+/* Ateliers d'écoute (2026-10-03). */
+window.DICT_EN_FR = Object.assign(window.DICT_EN_FR || {}, {
+  "hmm": "hum",
+  "caller": "auditeur (qui appelle), interlocuteur",
+  "lunchtime": "l'heure du déjeuner",
+  "relaunch": "relancer ; relance",
+  "painter": "peintre",
+  "who've": "qui ont (who have)",
+  "organiser": "organisateur",
+  "worksheet": "fiche d'exercices",
+  "scientifically": "scientifiquement",
+  "acceptance": "acceptation ; (acceptance speech) discours de remerciement",
+  "assure": "assurer, garantir",
+  "reopen": "rouvrir",
+  "pop": "pop ; (pop in) passer rapidement",
+  "it'd": "ce serait, ça aurait (it would / it had)",
+  "foolish": "stupide, insensé",
+  "pleasant": "agréable",
+  "sudden": "soudain",
+  "misuse": "mal utiliser ; mauvais usage",
+  "assessment": "évaluation",
+  "callers": "auditeurs (qui appellent)",
+  "baker": "boulanger",
+  "wales": "le pays de Galles"
+});

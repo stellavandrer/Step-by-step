@@ -759,3 +759,16 @@ span.ipa { color: var(--blue); }
 .gr-links a:hover { border-color: var(--accent); }
 .gr-links a.done { border-color: var(--green); }
 .gr-links a .ic, .gr-links a svg { width: 14px; height: 14px; }
+
+/* Listening lab */
+.lab-player { position: sticky; top: 70px; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 16px 0; }
+.lab-player #labSlow.on { background: var(--ink); color: var(--bg); }
+.lab-step .step-n { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--bg); font: 800 15px var(--font); margin-right: 6px; vertical-align: 2px; }
+.lab-script { margin-top: 12px; }
+.lab-script p { margin: 0 0 10px; font-size: 17px; line-height: 1.6; }
+.lab-script .speaker { font-family: var(--font); font-weight: 700; font-size: 13px; color: var(--ink-soft); margin-right: 6px; }
+.lab-hard { display: flex; flex-wrap: wrap; gap: 8px; }
+.lab-hard .btn.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.lab-step .tip { margin: 10px 0; padding: 12px 14px 12px 44px; border-radius: 12px; background: var(--blue-soft); position: relative; }
+.lab-step .tip .box-ic, #labTips .tip .box-ic { position: absolute; left: 14px; top: 13px; }
+#labTips .tip { margin: 10px 0; padding: 12px 14px 12px 44px; border-radius: 12px; background: var(--blue-soft); position: relative; }
