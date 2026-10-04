@@ -966,7 +966,7 @@ window.UI_TEXT.fr = {
   "Next recording": "Enregistrement suivant",
   "In real life, nobody gives you the text. These recordings train listening as a skill, step by step, as research on listening recommends (Field, 2008; Vandergrift and Goh, 2012): predict, listen for the main idea, then for the details, write the fast passages word by word, read while listening, repeat, and notice what was hard.": "Dans la vraie vie, personne ne te donne le texte. Ces enregistrements entraînent l'écoute comme une compétence, étape par étape, comme le recommande la recherche (Field, 2008 ; Vandergrift et Goh, 2012) : anticiper, écouter pour l'idée générale, puis pour les détails, écrire mot à mot les passages rapides, lire en écoutant, répéter, et repérer ce qui a gêné.",
   "{a} / {b} recordings": "{a} enregistrements sur {b}",
-  "One per unit, from A1 to C1. You'll also find each one in step 3 of its unit.": "Un par unité, du A1 au C1. Tu retrouves aussi chacun à l'étape 3 de son unité.",
+  "One per unit, from A1 to C2. You'll also find each one in its unit's path.": "Un par unité, du A1 au C2. Tu retrouves aussi chacun dans le parcours de son unité.",
   "What blocks you most often: {t}": "Ce qui te bloque le plus souvent : {t}",
   "How to use it": "Comment s'en servir",
   "Do one recording per unit, at your level. At the end, say what made it difficult: the lab will show you what to work on.": "Fais un enregistrement par unité, à ton niveau. À la fin, dis ce qui t'a gênée : l'atelier te montrera quoi travailler.",

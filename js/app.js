@@ -3402,7 +3402,7 @@ function viewLexisHub() {
 }
 
 /* ================= Listening lab =================
-   One recording per unit, A1 to C1, with listening taught as a skill (Field 2008; Vandergrift & Goh 2012):
+   One recording per unit, A1 to C2, with listening taught as a skill (Field 2008; Vandergrift & Goh 2012):
    predict, listen for the main idea, listen for detail, decode fast passages word by word,
    read while listening, repeat (shadowing), then notice what made it hard. */
 const LAB = () => window.LAB || [];
@@ -3498,7 +3498,7 @@ function viewLabHub() {
     <h1>${T("Listening lab")}</h1>
     <p class="muted">${T("In real life, nobody gives you the text. These recordings train listening as a skill, step by step, as research on listening recommends (Field, 2008; Vandergrift and Goh, 2012): predict, listen for the main idea, then for the details, write the fast passages word by word, read while listening, repeat, and notice what was hard.")}</p>
     <div class="grid grid-2" style="margin:16px 0">
-      <div class="card"><b>${T("{a} / {b} recordings", { a: done, b: LAB().length })}</b><div class="progress" style="margin-top:10px"><div style="width:${pct(done, LAB().length)}%"></div></div><p class="muted small" style="margin:8px 0 0">${T("One per unit, from A1 to C1. You'll also find each one in step 3 of its unit.")}</p></div>
+      <div class="card"><b>${T("{a} / {b} recordings", { a: done, b: LAB().length })}</b><div class="progress" style="margin-top:10px"><div style="width:${pct(done, LAB().length)}%"></div></div><p class="muted small" style="margin:8px 0 0">${T("One per unit, from A1 to C2. You'll also find each one in its unit's path.")}</p></div>
       <div class="card">${top ? `<b>${ic("target")} ${T("What blocks you most often: {t}", { t: T(top[1]).toLowerCase() })}</b><p class="small" style="margin:8px 0 0">${T(top[2])}${top[3] ? ` <a href="${top[3][0]}">${T(top[3][1])}</a>` : ""}</p>` : `<b>${ic("lightbulb")} ${T("How to use it")}</b><p class="small" style="margin:8px 0 0">${T("Do one recording per unit, at your level. At the end, say what made it difficult: the lab will show you what to work on.")}</p>`}</div>
     </div>
     ${levelGroups(LAB(), (x) => {
