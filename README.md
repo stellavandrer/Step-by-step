@@ -4,6 +4,7 @@ My personal language course. For now: **English, from A1 to C2**, with TOEIC pre
 
 ## What's inside
 
+- A thread through the whole course: each unit is an ordered path (words just before the lesson that uses them, then texts, speaking, writing and checks), with "You are here" on the next activity, and a Next button on every page that always opens the right one. Today's programme counts the course activities done each day; extras are grouped under "To go further".
 - A structured course: units, grammar lessons, vocabulary with spaced repetition, texts, dictations, role-plays, writing tasks, unit tests and level exams.
 - A pronunciation course: 27 chapters from A1 to C2 (the 44 sounds and the IPA chart, word and sentence stress, rhythm, linking, intonation, accents), with ear training and exercises.
 - Academic skills, B2 to C2: 16 chapters as in a university English (EAP) course (note-taking from a lecture, paraphrasing, essays, data, presentations, seminars, academic style, sources, critical thinking, reports, mediation, synthesis, research writing, editing, exams), each with a real task, a model answer and a correction by Claude.

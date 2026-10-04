@@ -101,6 +101,7 @@ function load() {
 let S = load();
 if (!S.toeic || !S.toeic.mocks) S.toeic = { mocks: [], parts: {} };
 function save() {
+  try { trackPath(); } catch (e) { /* the course isn't loaded yet */ }
   try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* private browsing */ }
   renderTopStats();
 }
@@ -493,7 +494,28 @@ function toast(msg) {
   t.textContent = msg; t.classList.add("show");
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2400);
 }
+/* The Next button (in the top bar, and floating above the tab bar on small screens). It is hidden on the
+   page it points to, and comes back, highlighted, as soon as that activity is finished. */
+let lastNext = null;
+function renderNext() {
+  let up = null;
+  try { up = nextUp(); } catch (e) { return; }
+  const here = up && location.hash === up.href;
+  const html = up && !here ? `${ic("arrow-right")}<span class="next-k">${T("Next")}</span><span class="next-what">${esc(up.label)}</span>` : "";
+  const fresh = up && lastNext !== null && lastNext !== up.href;
+  lastNext = up ? up.href : "";
+  ["#nextTop", "#nextFab"].forEach((sel) => {
+    const el = $(sel);
+    if (!el) return;
+    el.hidden = !html;
+    if (!html) return;
+    el.href = up.href; el.innerHTML = html;
+    el.title = `${T("Next")}: ${up.label}`; el.setAttribute("aria-label", el.title);
+    if (fresh) { el.classList.remove("fresh"); void el.offsetWidth; el.classList.add("fresh"); }
+  });
+}
 function renderTopStats() {
+  renderNext();
   $("#topStats").innerHTML = `<label class="pill lang-pill" title="${T("Interface language")}">${ic("languages")}<select id="langSel" aria-label="${T("Interface language")}">${LANGS.map(([k]) => `<option value="${k}" ${lang() === k ? "selected" : ""}>${k.toUpperCase()}</option>`).join("")}</select></label><span class="pill" title="${T("Day streak")}">${ic("flame", "c-accent")} ${streak()}</span><span class="pill" title="${T("Experience points")}">${ic("star", "c-yellow")} ${S.xp}</span>`;
   $("#langSel").onchange = (e) => setLang(e.target.value);
 }
@@ -945,23 +967,27 @@ function nextStep(u) {
   const st = unitSteps(u);
   return st.find((s) => !s.done) || st[st.length - 1];
 }
-function viewHome() {
+/* Today's programme, in the order to do it: words, the next activities of the course, review, speaking, listening. */
+function dailyTasks() {
   const log = S.days[today()] || {};
   const G = goal();
   const cur = currentLevel();
   const due = dueIds().length;
   const dueL = dueLessons();
   const unit = currentUnit();
-  const step = nextStep(unit);
-  const newTheme = unit.vocab.map((id) => VOCAB.find((t) => t.id === id)).find((t) => t && t.words.some(([en]) => !S.srs[en])) || VOCAB.find((t) => !t.toeic && t.words.some(([en]) => !S.srs[en])) || VOCAB[0];
+  const nx = nextActivity();
   const advanced = LV.indexOf(cur) >= 2;
   const promptId = unit.prompt || (PROMPTS.find((p) => p.level === cur) || PROMPTS[0]).id;
-  const tasks = [
-    { pillar: T("Study"), done: (log.vocab || 0) >= G.words, href: due > 0 ? "#/reviser" : `#/apprendre/${newTheme.id}`, icon: "layers",
-      t: due > 0 ? T("Review your words ({n} due)", { n: due }) : T("Learn {n} words: {t}", { n: G.words, t: loc(newTheme, "title") }), d: T("spaced repetition"), n: `${Math.min(log.vocab || 0, G.words)}/${G.words}` },
-    { pillar: T("Course"), done: (log.step || 0) >= G.steps, href: `#/unite/${unit.id}`, icon: "graduation-cap",
-      t: T("{a}: {b}", { a: `${T("Unit")} ${unitNum(unit)}`, b: loc(unit, "title") }), d: T("next step: {s}", { s: T(step.label) }), n: `${Math.min(log.step || 0, G.steps)}/${Tn(G.steps, "{n} step", "{n} steps")}` }
-  ];
+  /* New words come with the course (each unit's themes, just before their lesson); this task is only the spaced review. */
+  const tasks = [];
+  if (due > 0 || (log.vocab || 0) > 0) tasks.push({ pillar: T("Study"), done: due === 0 || (log.vocab || 0) >= G.words * 2, href: "#/reviser", icon: "layers",
+    t: due > 0 ? T("Review your words ({n} due)", { n: due }) : T("Your words are up to date"), d: T("spaced repetition") });
+  tasks.push(
+    nx && pathToday() >= G.steps
+      ? { pillar: T("Course"), done: true, href: nx.href, icon: "graduation-cap", btn: "Continue",
+          t: Tn(pathToday(), "{n} course activity done today", "{n} course activities done today"), d: `${T("Next:")} ${nx.label}` }
+      : { pillar: T("Course"), done: !nx, href: nx ? nx.href : "#/cours", icon: "graduation-cap",
+          t: nx ? nx.label : T("Course complete"), d: nx && nx.unit ? `${T("Unit")} ${unitNum(nx.unit)} · ${loc(nx.unit, "title")}` : T("End of level"), n: `${Math.min(pathToday(), G.steps)}/${Tn(G.steps, "{n} activity", "{n} activities")}` });
   const dueM = dueMistakes().length;
   if (dueL.length || dueM) tasks.push({ pillar: T("Review"), done: (log.review || 0) >= 1, href: "#/revision-grammaire", icon: "shuffle", t: `${T("Grammar review")} (${[dueL.length ? Tn(dueL.length, "{n} lesson", "{n} lessons") : "", dueM ? Tn(dueM, "{n} mistake", "{n} mistakes") : ""].filter(Boolean).join(" + ")})`, d: T("mixed practice") });
   const rpU = RP().find((x) => unit.lessons.includes(x.lesson) && (!(S.dialogues || {})[x.id] || S.dialogues[x.id].date === today()));
@@ -971,9 +997,24 @@ function viewHome() {
     : { pillar: T("Speak"), done: (log.speak || 0) >= G.speak, href: unit.speak ? `#/oral/${unit.speak}` : `#/repeter/${unit.id}`, icon: "mic", t: T("Repeat {n} sentences out loud", { n: G.speak }), d: T("listen, repeat, record yourself"), n: `${Math.min(log.speak || 0, G.speak)}/${G.speak}` });
   if (G.dictee) tasks.push({ pillar: T("Listen"), done: (log.dictee || 0) >= G.dictee, href: "#/dictee", icon: "ear", t: T("Dictation: {n} sentences", { n: G.dictee }), d: T("listen, then write"), n: `${Math.min(log.dictee || 0, G.dictee)}/${G.dictee}` });
   if (G.ext) tasks.push({ pillar: T("Listen"), done: (log.ext || 0) >= G.ext, href: "#ext", icon: "tv", t: T("{n} min of series or podcasts in English", { n: G.ext }), d: T("then add it in “Outside the app”"), n: `${Math.min(log.ext || 0, G.ext)}/${G.ext} min` });
+  return tasks;
+}
+/* What the Next button opens: the first unfinished task of today's programme, then the course thread. */
+function nextUp() {
+  const t = dailyTasks().find((x) => !x.done && x.href !== "#ext");
+  if (t) return { href: t.href, label: t.t, icon: t.icon };
+  const a = nextActivity();
+  return a ? { href: a.href, label: a.label, icon: a.icon } : null;
+}
+function viewHome() {
+  const log = S.days[today()] || {};
+  const G = goal();
+  const cur = currentLevel();
+  const tasks = dailyTasks();
+  const up = nextUp();
   const doneCount = tasks.filter((t) => t.done).length;
   const allDone = doneCount === tasks.length;
-  const pool = Array.from(WORDS.values()).filter((w) => w.theme !== "mine" && VOCAB.find((t) => t.id === w.theme)?.level === cur);
+  const pool =Array.from(WORDS.values()).filter((w) => w.theme !== "mine" && VOCAB.find((t) => t.id === w.theme)?.level === cur);
   const list = pool.length ? pool : Array.from(WORDS.values());
   const wod = list[today().split("-").join("") % list.length];
   const pronNext = PRON().find((c) => !pronDone(c.id) && LV.indexOf(c.level) <= LV.indexOf(cur)) || PRON().find((c) => !pronDone(c.id));
@@ -997,7 +1038,8 @@ function viewHome() {
         ? (isFr() ? "Bienvenue dans ton cours d'anglais. L'interface est en français ; tout ce que tu apprends est en anglais : <b>clique sur un mot anglais</b> pour voir sa traduction, ou sur <b>FR</b> pour traduire une phrase entière. Tu peux passer l'interface en anglais en haut de la page." : `Welcome to your English course. Everything here is in English: <b>click on any word</b> to see its translation, or on <b>FR</b> to translate a whole sentence. Prefer the menus in French? Click <b>EN</b> at the top of the page.${fr("Bienvenue dans ton cours d'anglais. Tout est en anglais : clique sur n'importe quel mot pour voir sa traduction, ou sur FR pour traduire une phrase entière. Tu préfères les menus en français ? Clique sur EN en haut de la page.")}`)
         : allDone ? T("Today's programme is done. Well done! Anything extra is a bonus.")
         : T("You've done {a} of {b} activities today ({m} min of English). Shall we continue?", { a: doneCount, b: tasks.length, m: todayMin })}</p>
-      <a class="btn btn-primary" href="${tasks.find((t) => !t.done && t.href !== "#ext")?.href || "#/livres"}">${T(first ? "Start Unit 1" : allDone ? "Find a book to read" : "Continue")} ${ic("arrow-right")}</a>
+      ${up && !first ? `<p class="hero-next">${ic(up.icon)}<span>${T(allDone ? "If you'd like to go on:" : "Next:")} <b>${esc(up.label)}</b></span></p>` : ""}
+      <a class="btn btn-primary" href="${up ? up.href : "#/livres"}">${T(first ? "Start Unit 1" : allDone ? (up ? "Keep going" : "Find a book to read") : "Continue")} ${ic("arrow-right")}</a>
     </div>
     <div class="stats">
       <div class="stat"><b>${ic("flame", "c-accent")} ${streak()}</b><span>${T("day streak")}</span></div>
@@ -1030,15 +1072,17 @@ function viewHome() {
         <div class="seg" role="group" aria-label="${T("Time per day")}">${[15, 30, 60].map((m) => `<button data-goal="${m}" class="${S.goal === m ? "on" : ""}">${m} min</button>`).join("")}</div>
       </div>
       <div class="progress" style="margin:12px 0 4px"><div style="width:${(doneCount / tasks.length) * 100}%"></div></div>
+      <p class="small how-next">${ic("signpost", "c-accent")}<span>${T("Do these activities in order. On every page, the <b>Next</b> button at the top takes you straight to the right one: you never have to choose.")}</span></p>
       <ul class="daily">
         ${tasks.map((t) => `
           <li>
             <span class="check ${t.done ? "on" : ""}">${t.done ? ic("check") : ic(t.icon)}</span>
             <span class="txt"><span class="pillar">${t.pillar}</span><b>${esc(t.t)}</b><span class="muted small">${esc(t.d)}${t.n && !t.done ? ` · <b>${t.n}</b>` : ""}</span></span>
-            <a class="btn btn-sm ${t.done ? "" : "btn-dark"}" href="${t.href}">${T(t.done ? "Again" : "Go")}</a>
+            <a class="btn btn-sm ${t.done ? "" : "btn-dark"}" href="${t.href}">${T(t.btn || (t.done ? "Again" : "Go"))}</a>
           </li>`).join("")}
       </ul>
-      <p class="muted small" style="margin:12px 0 0">${T(S.goal === 60 ? "Intensive pace: about 1 hour, including 20 minutes of series or podcasts. The pace to aim for C1 in about two years." : S.goal === 30 ? "About 30 minutes: the right balance to progress fast without burning out." : "About 15 minutes: the essentials, so you never break the chain.")} <a href="#/methode">${T("Why this method?")}</a></p>
+      <p class="muted small" style="margin:12px 0 0">${T("The other tabs (vocabulary, reading, speaking, TOEIC…) are libraries for extra practice, whenever you like: the course doesn't depend on them.")}</p>
+      <p class="muted small" style="margin:8px 0 0">${T(S.goal === 60 ? "Intensive pace: about 1 hour, including 20 minutes of series or podcasts. The pace to aim for C1 in about two years." : S.goal === 30 ? "About 30 minutes: the right balance to progress fast without burning out." : "About 15 minutes: the essentials, so you never break the chain.")} <a href="#/methode">${T("Why this method?")}</a></p>
     </section>
 
     <section class="card word-of-day">
@@ -1151,14 +1195,74 @@ function unitSteps(u) {
   ];
 }
 function markStep() { todayLog().step = (todayLog().step || 0) + 1; save(); }
+
+/* ================= The thread: one next activity at a time =================
+   Every activity of a unit, in teaching order: the words just before the lesson that uses them,
+   then the unit's texts, speaking, writing and the checks. The Next button always opens the first one
+   not done yet, so there is never a choice to make. Extras (more texts, pronunciation, academic skills)
+   stay outside the thread, under "To go further". */
+const PHASES = [["learn", "Words and grammar"], ["understand", "Reading and listening"], ["speak", "Speaking"], ["write", "Writing"], ["check", "Check what you've learned"]];
+function unitPath(u) {
+  const us = S.units[u.id] || {};
+  const out = [];
+  const add = (key, phase, icon, kind, label, href, done) => out.push({ key: u.id + ":" + key, unit: u, phase, icon, kind, label, href, done: !!done });
+  const themes = u.vocab.map((id) => VOCAB.find((t) => t.id === id)).filter(Boolean);
+  const lessons = u.lessons.map(lessonById).filter(Boolean).sort((x, y) => LESSONS.indexOf(x) - LESSONS.indexOf(y));
+  const per = Math.ceil(themes.length / Math.max(1, lessons.length));
+  const addTheme = (t) => { const s = themeStats(t); add("v:" + t.id, "learn", "layers", "Words", T("Learn the words: {t}", { t: loc(t, "title") }), `#/apprendre/${t.id}`, s.total && s.seen / s.total >= 0.8); };
+  lessons.forEach((l, i) => {
+    themes.slice(i * per, (i + 1) * per).forEach(addTheme);
+    add("l:" + l.id, "learn", "book-open", "Grammar", `${T("Lesson")} ${lnum(l)} · ${loc(l, "title")}`, `#/lecons/${l.id}`, S.lessons[l.id]);
+  });
+  if (!lessons.length) themes.forEach(addTheme);
+  add("ctx", "learn", "search", "Words", T("Words in context"), `#/contexte/${u.id}`, (S.ctx || {})[u.id]);
+  if (LEX()[u.id]) add("lex", "learn", "puzzle", "Language workshop", T("Collocations, idioms, word formation, transformations"), `#/lexique/${u.id}`, lexDone(u.id) === 3);
+  const r = READINGS.find((x) => x.id === u.reading);
+  if (r) add("r", "understand", u.listen ? "headphones" : "book-open-text", u.listen ? "Listening" : "Reading", loc(r, "title"), `#/lecture/${r.id}${u.listen ? "/listen" : ""}`, S.readings[r.id]);
+  LAB().filter((x) => x.unit === u.id).forEach((x) => add("lab:" + x.id, "understand", "headphones", "Listening lab", loc(x, "title"), `#/comprehension/${x.id}`, labDone(x.id)));
+  const sp = u.speak ? SPEAKING.find((c) => c.id === u.speak) : null;
+  if (sp) add("sp", "speak", "mic", "Speaking", `${T("Repeat:")} ${loc(sp, "title")}`, `#/oral/${sp.id}`, us.speak || sp.phrases.filter(([en]) => (S.spoken[en] || 0) >= 80).length >= Math.ceil(sp.phrases.length / 2));
+  else add("sp", "speak", "mic", "Speaking", T("Repeat the key sentences of the unit"), `#/repeter/${u.id}`, us.speak);
+  RP().filter((x) => u.lessons.includes(x.lesson)).forEach((x) => add("rp:" + x.id, "speak", "messages-square", "Speaking", `${T("Role-play")}: ${loc(x, "title")}`, `#/dialogue/${x.id}`, (S.dialogues || {})[x.id]));
+  const pr = u.prompt ? PROMPTS.find((p) => p.id === u.prompt) : null;
+  if (pr) add("pr", "speak", "message-circle", "Speaking", `${T("Speak freely:")} ${pr.q}`, `#/parler/${pr.id}`, S.prompts[pr.id]);
+  const g = (window.WRITING_GUIDE || {})[u.id];
+  add("w", "write", "pen-line", "Writing", g ? loc(g, "genre") : T("The unit's writing task"), `#/ecrit/${u.id}`, us.wdone);
+  add("d", "check", "ear", "Dictation", T("Unit {n} dictation", { n: unitNum(u) }), `#/dictee-unite/${u.id}`, (us.dict || 0) > 0);
+  add("t", "check", "list-checks", "Unit test", T("Unit {n} test", { n: unitNum(u) }), `#/test/${u.id}`, (us.test || 0) >= 70);
+  return out;
+}
+/* The next activity of the whole course: a level exam as soon as all its units are done, otherwise the current unit's thread. */
+function nextActivity() {
+  for (const L of LV) {
+    if (placedOut(L)) continue;
+    const us = COURSE.filter((u) => u.level === L);
+    if (!us.length) continue;
+    if (!us.every(unitDone)) break;
+    if (!(S.exams[L] >= 70)) return { key: "exam:" + L, phase: "check", icon: "award", kind: "Level exam", label: T("{l} exam", { l: L }), href: `#/examen/${L}`, done: false };
+  }
+  return unitPath(currentUnit()).find((a) => !a.done) || null;
+}
+/* The day each activity of the thread was first completed, so the daily programme can count them.
+   Activities already done before this existed are marked "before". */
+function trackPath() {
+  const u = currentUnit(), i = COURSE.indexOf(u);
+  const keys = [COURSE[i - 1], u].filter(Boolean).flatMap(unitPath).filter((a) => a.done).map((a) => a.key)
+    .concat(LV.filter((L) => S.exams[L] >= 70).map((L) => "exam:" + L));
+  const stamp = S.pathDone ? today() : "before";
+  S.pathDone = S.pathDone || {};
+  keys.forEach((k) => { if (!S.pathDone[k]) S.pathDone[k] = stamp; });
+}
+const pathToday = () => Object.values(S.pathDone || {}).filter((d) => d === today()).length;
 function viewCourse() {
   const cu = currentUnit();
+  const cnx = nextActivity();
   app.innerHTML = `
     <h1>${T("My English course")}</h1>
     <p class="muted">${T("A complete course from A1 to C2, organised like a textbook: each unit is a full lesson with vocabulary, grammar, reading or listening, speaking, writing, dictation and a test. At the end of each level, an exam checks that you're ready for the next one.")}</p>
     <a class="card unit-next" href="#/unite/${cu.id}">
       ${tile(cu.icon, cu.level)}
-      <div style="flex:1;min-width:0"><span class="muted small">${T("Continue")} · ${cu.level} · ${T("Unit")} ${unitNum(cu)}</span><h2 style="margin:2px 0 0">${esc(loc(cu, "title"))}</h2></div>
+      <div style="flex:1;min-width:0"><span class="muted small">${T("Continue")} · ${cu.level} · ${T("Unit")} ${unitNum(cu)}</span><h2 style="margin:2px 0 0">${esc(loc(cu, "title"))}</h2>${cnx ? `<p class="small" style="margin:6px 0 0">${T("Next:")} <b>${esc(cnx.label)}</b></p>` : ""}</div>
       ${ic("arrow-right")}
     </a>
     <a class="card ear-cta" href="#/placement">${tile("compass", "A2")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Placement test and skills report")}</h3><p class="muted small" style="margin:4px 0 0">${T("An adaptive test in each skill, can-do grids and a report of your level in listening, reading, speaking, writing, grammar and vocabulary.")}</p></div>${ic("arrow-right")}</a>
@@ -1190,21 +1294,19 @@ function viewCourse() {
 function viewUnit(id) {
   const u = COURSE.find((x) => x.id === id);
   if (!u) return viewCourse();
-  const st = unitSteps(u);
-  const us = S.units[u.id] || {};
   const themes = u.vocab.map((t) => VOCAB.find((x) => x.id === t)).filter(Boolean);
-  const lessons = u.lessons.map(lessonById).filter(Boolean).sort((x, y) => LESSONS.indexOf(x) - LESSONS.indexOf(y));
-  const r = READINGS.find((x) => x.id === u.reading);
   const extraR = (u.extra || []).map((rid) => READINGS.find((x) => x.id === rid)).filter(Boolean);
-  const sp = u.speak ? SPEAKING.find((c) => c.id === u.speak) : null;
-  const pr = u.prompt ? PROMPTS.find((p) => p.id === u.prompt) : null;
   const idx = COURSE.indexOf(u);
   const next = COURSE[idx + 1];
-  const stepCard = (s, n, body) => `
-    <section class="card step ${s.done ? "done" : ""}">
-      <div class="row step-head"><span class="step-num">${s.done ? ic("check") : n}</span>${ic(s.icon, "muted")}<h3 style="margin:0">${T(s.label)}</h3></div>
-      <div class="step-body">${body}</div>
-    </section>`;
+  const path = unitPath(u);
+  const doneN = path.filter((a) => a.done).length;
+  const nx = path.find((a) => !a.done);
+  const row = (label, title, href, icon, btn, done) => `<div class="row step-link"><span style="flex:1"><b>${label}</b> ${title} ${done ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="${href}">${ic(icon)} ${T(btn)}</a></div>`;
+  const further = extraR.map((x) => row(T("Extra:"), esc(loc(x, "title")), `#/lecture/${x.id}`, "book-open-text", "Read", S.readings[x.id])).join("")
+    + acadRows(u, "read") + acadRows(u, "speak") + acadRows(u, "write")
+    + PRON().filter((x) => (x.units || []).includes(u.id)).map((x) => row(T("Pronunciation:"), esc(loc(x, "title")), `#/prononciation/${x.id}`, "audio-lines", "Open", pronDone(x.id))).join("")
+    + (themes.length ? `<div class="row step-link"><span style="flex:1"><b>${T("Spell the words:")}</b> <span class="chips" style="display:inline-flex">${themes.map((t) => `<a class="chip" href="#/ecrire/${t.id}">${ic("keyboard")} ${esc(loc(t, "title"))}</a>`).join("")}</span></span></div>` : "")
+    + row(T("Real conversation:"), T("talk about this unit with Claude, out loud"), `#/conversation/unit/${u.id}`, "bot", "Talk");
   app.innerHTML = `
     ${back("#/cours", "Course")}
     <div class="unit-head">
@@ -1216,26 +1318,28 @@ function viewUnit(id) {
       <h3 style="margin-top:16px">${T("By the end of this unit, you'll be able to…")}</h3>
       <ul class="checklist">${u.can.map((c, i) => `<li>${ic("target")}<span>${instr(c, u.can_fr && u.can_fr[i])}</span></li>`).join("")}</ul>
     </section>
-    <div class="stack" style="margin-top:16px">
-      ${stepCard(st[0], 1, `<p class="muted small">${T("Learn the words first: they'll make everything else easier.")}</p>
-        ${themes.map((t) => { const ts = themeStats(t); return `<div class="row step-link"><span style="flex:1"><b>${esc(loc(t, "title"))}</b> <span class="muted small">${T("{a}/{b} seen", { a: ts.seen, b: ts.total })}</span></span><a class="btn btn-sm btn-dark" href="#/apprendre/${t.id}">${ic("layers")} ${T("Cards")}</a><a class="btn btn-sm" href="#/ecrire/${t.id}">${ic("keyboard")} ${T("Write")}</a></div>`; }).join("")}
-        <div class="row step-link"><span style="flex:1"><b>${T("Words in context:")}</b> ${T("the unit's words in sentences from its texts")} ${(S.ctx || {})[u.id] ? `<span class="tag tag-done">${ic("check")} ${S.ctx[u.id].best}/${S.ctx[u.id].total}</span>` : ""}</span><a class="btn btn-sm" href="#/contexte/${u.id}">${ic("search")} ${T("Practise")}</a></div>
-        ${LEX()[u.id] ? `<div class="row step-link"><span style="flex:1"><b>${T("Language workshop:")}</b> ${T("collocations, idioms, word formation, transformations")} ${lexDone(u.id) ? `<span class="tag tag-done">${ic("check")} ${lexDone(u.id)}/3</span>` : ""}</span><a class="btn btn-sm" href="#/lexique/${u.id}">${ic("puzzle")} ${T("Open")}</a></div>` : ""}`)}
-      ${stepCard(st[1], 2, lessons.map((l) => `<div class="row step-link"><span style="flex:1"><b>${T("Lesson")} ${lnum(l)}</b> · ${esc(loc(l, "title"))} ${S.lessons[l.id] ? `<span class="tag tag-done">${ic("check")} ${S.lessons[l.id].best}/${S.lessons[l.id].total}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecons/${l.id}">${T("Open")}</a></div>`).join(""))}
-      ${stepCard(st[2], 3, (r ? `<div class="row step-link"><span style="flex:1"><b>${esc(loc(r, "title"))}</b>${u.listen ? ` <span class="muted small">· ${T("listen first, without reading")}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecture/${r.id}${u.listen ? "/listen" : ""}">${u.listen ? ic("headphones") + " " + T("Listen") : ic("book-open-text") + " " + T("Read")}</a></div>` : "")
-        + extraR.map((x) => `<div class="row step-link"><span style="flex:1"><span class="muted small">${T("Extra:")}</span> <b>${esc(loc(x, "title"))}</b> ${S.readings[x.id] ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/lecture/${x.id}">${ic("book-open-text")} ${T("Read")}</a></div>`).join("") + labRow(u) + acadRows(u, "read"))}
-      ${stepCard(st[3], 4, `
-        ${sp ? `<div class="row step-link"><span style="flex:1"><b>${T("Repeat:")}</b> ${esc(loc(sp, "title"))}</span><a class="btn btn-sm btn-dark" href="#/oral/${sp.id}">${ic("mic")} ${T("Practise")}</a></div>`
-            : `<div class="row step-link"><span style="flex:1"><b>${T("Repeat the key sentences of the unit")}</b></span><a class="btn btn-sm btn-dark" href="#/repeter/${u.id}">${ic("mic")} ${T("Practise")}</a></div>`}
-        ${RP().filter((x) => u.lessons.includes(x.lesson)).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Role-play")}:</b> ${esc(loc(x, "title"))}</span><a class="btn btn-sm" href="#/dialogue/${x.id}">${ic("messages-square")} ${T("Talk")}</a></div>`).join("")}
-        ${PRON().filter((x) => (x.units || []).includes(u.id)).map((x) => `<div class="row step-link"><span style="flex:1"><b>${T("Pronunciation:")}</b> ${esc(loc(x, "title"))} ${pronDone(x.id) ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/prononciation/${x.id}">${ic("audio-lines")} ${T("Open")}</a></div>`).join("")}
-        ${acadRows(u, "speak")}
-        ${pr ? `<div class="row step-link"><span style="flex:1"><b>${T("Speak freely:")}</b> <span class="en">${esc(pr.q)}</span></span><a class="btn btn-sm" href="#/parler/${pr.id}">${ic("message-circle")} ${T("Speak")}</a></div>` : ""}
-        <div class="row step-link"><span style="flex:1"><b>${T("Real conversation:")}</b> ${T("talk about this unit with Claude, out loud")}</span><a class="btn btn-sm" href="#/conversation/unit/${u.id}">${ic("bot")} ${T("Talk")}</a></div>`)}
-      ${stepCard(st[4], 5, `<p style="margin:0 0 10px">${instr(u.writing.task, u.writing.task_fr)}</p><div class="row step-link"><span style="flex:1" class="muted small">${T("{n} words · model answer included", { n: u.writing.words })}</span><a class="btn btn-sm btn-dark" href="#/ecrit/${u.id}">${ic("pen-line")} ${T("Write")}</a></div>${acadRows(u, "write")}`)}
-      ${stepCard(st[5], 6, `<div class="row step-link"><span style="flex:1" class="muted small">${T("Sentences from the unit, to train your ear and your spelling.")}${us.dict ? ` ${T("Best:")} <b>${us.dict}%</b>` : ""}</span><a class="btn btn-sm btn-dark" href="#/dictee-unite/${u.id}">${ic("ear")} ${T("Start")}</a></div>`)}
-      ${stepCard(st[6], 7, `<div class="row step-link"><span style="flex:1" class="muted small">${T("Grammar, vocabulary, reading and dictation. You need 70% to complete the unit.")}${us.test != null ? ` ${T("Best:")} <b>${us.test}%</b>` : ""}</span><a class="btn btn-sm btn-primary" href="#/test/${u.id}">${ic("list-checks")} ${T("Take the test")}</a></div>`)}
-    </div>
+    <section class="card unit-path">
+      <div class="row"><h2 style="margin:0">${ic("route")} ${T("Your path through this unit")}</h2><span class="spacer"></span><span class="muted small">${T("{a} / {b} done", { a: doneN, b: path.length })}</span></div>
+      <div class="progress" style="margin:12px 0"><div style="width:${pct(doneN, path.length)}%"></div></div>
+      <p class="muted small" style="margin:0">${T("Do the activities in this order, one at a time. The <b>Next</b> button at the top of every page takes you to the right one. You can also open any activity whenever you like.")}</p>
+      ${PHASES.map(([ph, title]) => {
+        const items = path.filter((a) => a.phase === ph);
+        if (!items.length) return "";
+        return `<h3 class="pl-phase">${T(ph === "understand" && u.listen ? "Listening" : title)}</h3>
+        <ol class="pl-list">${items.map((a) => {
+          const n = path.indexOf(a) + 1, isNext = nx && a.key === nx.key;
+          return `<li class="pl-item ${a.done ? "done" : ""} ${isNext ? "next" : ""}">
+            <span class="pl-num">${a.done ? ic("check") : n}</span>
+            <span class="pl-txt"><span class="pillar">${T(a.kind)}${isNext ? ` · ${T("You are here")}` : ""}</span><b>${esc(a.label)}</b></span>
+            <a class="btn btn-sm ${isNext ? "btn-primary" : a.done ? "" : "btn-dark"}" href="${a.href}">${T(isNext ? "Start" : a.done ? "Again" : "Open")}</a>
+          </li>`;
+        }).join("")}</ol>`;
+      }).join("")}
+    </section>
+    ${further ? `<details class="card further">
+      <summary>${ic("library")} <span>${T("To go further")}</span><span class="muted small">${T("optional, whenever you like")}</span></summary>
+      <div style="margin-top:12px">${further}</div>
+    </details>` : ""}
     <div class="row" style="margin-top:20px">
       <span class="spacer"></span>
       ${next ? (next.level !== u.level ? `<a class="btn btn-dark" href="#/examen/${u.level}">${T("{l} exam", { l: u.level })} ${ic("arrow-right")}</a>` : `<a class="btn btn-dark" href="#/unite/${next.id}">${T("Unit")} ${unitNum(next)} ${ic("arrow-right")}</a>`) : `<a class="btn btn-dark" href="#/examen/C1">${T("{l} exam", { l: "C1" })} ${ic("arrow-right")}</a>`}
@@ -4676,6 +4780,7 @@ function viewBooks() {
 /* ================= Router ================= */
 const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", grammaire: "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", comprehension: "oral", contexte: "cours", lexique: "vocabulaire", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
 function route() {
+  try { trackPath(); } catch (e) {}
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
   cleanups = [];
   stopAudio(); closePop();
