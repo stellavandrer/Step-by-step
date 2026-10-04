@@ -1220,7 +1220,7 @@ function viewUnit(id) {
       ${stepCard(st[0], 1, `<p class="muted small">${T("Learn the words first: they'll make everything else easier.")}</p>
         ${themes.map((t) => { const ts = themeStats(t); return `<div class="row step-link"><span style="flex:1"><b>${esc(loc(t, "title"))}</b> <span class="muted small">${T("{a}/{b} seen", { a: ts.seen, b: ts.total })}</span></span><a class="btn btn-sm btn-dark" href="#/apprendre/${t.id}">${ic("layers")} ${T("Cards")}</a><a class="btn btn-sm" href="#/ecrire/${t.id}">${ic("keyboard")} ${T("Write")}</a></div>`; }).join("")}
         <div class="row step-link"><span style="flex:1"><b>${T("Words in context:")}</b> ${T("the unit's words in sentences from its texts")} ${(S.ctx || {})[u.id] ? `<span class="tag tag-done">${ic("check")} ${S.ctx[u.id].best}/${S.ctx[u.id].total}</span>` : ""}</span><a class="btn btn-sm" href="#/contexte/${u.id}">${ic("search")} ${T("Practise")}</a></div>
-        ${LEX()[u.id] ? `<div class="row step-link"><span style="flex:1"><b>${T("Word workshop:")}</b> ${T("collocations and word formation")} ${(S.lex || {})[u.id] ? `<span class="tag tag-done">${ic("check")} ${S.lex[u.id].best}/${S.lex[u.id].total}</span>` : ""}</span><a class="btn btn-sm" href="#/lexique/${u.id}">${ic("puzzle")} ${T("Open")}</a></div>` : ""}`)}
+        ${LEX()[u.id] ? `<div class="row step-link"><span style="flex:1"><b>${T("Language workshop:")}</b> ${T("collocations, idioms, word formation, transformations")} ${lexDone(u.id) ? `<span class="tag tag-done">${ic("check")} ${lexDone(u.id)}/3</span>` : ""}</span><a class="btn btn-sm" href="#/lexique/${u.id}">${ic("puzzle")} ${T("Open")}</a></div>` : ""}`)}
       ${stepCard(st[1], 2, lessons.map((l) => `<div class="row step-link"><span style="flex:1"><b>${T("Lesson")} ${lnum(l)}</b> · ${esc(loc(l, "title"))} ${S.lessons[l.id] ? `<span class="tag tag-done">${ic("check")} ${S.lessons[l.id].best}/${S.lessons[l.id].total}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecons/${l.id}">${T("Open")}</a></div>`).join(""))}
       ${stepCard(st[2], 3, (r ? `<div class="row step-link"><span style="flex:1"><b>${esc(loc(r, "title"))}</b>${u.listen ? ` <span class="muted small">· ${T("listen first, without reading")}</span>` : ""}</span><a class="btn btn-sm btn-dark" href="#/lecture/${r.id}${u.listen ? "/listen" : ""}">${u.listen ? ic("headphones") + " " + T("Listen") : ic("book-open-text") + " " + T("Read")}</a></div>` : "")
         + extraR.map((x) => `<div class="row step-link"><span style="flex:1"><span class="muted small">${T("Extra:")}</span> <b>${esc(loc(x, "title"))}</b> ${S.readings[x.id] ? `<span class="tag tag-done">${ic("check")}</span>` : ""}</span><a class="btn btn-sm" href="#/lecture/${x.id}">${ic("book-open-text")} ${T("Read")}</a></div>`).join("") + labRow(u) + acadRows(u, "read"))}
@@ -1817,7 +1817,7 @@ function viewVocab() {
   const total = VOCAB.reduce((a, t) => a + t.words.length, 0);
   app.innerHTML = `
     <h1>${T("Vocabulary")}</h1>
-    <a class="card ear-cta" href="#/lexique" style="margin:12px 0 0">${tile("puzzle", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Word workshop, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("Collocations and word formation for each B2, C1 and C2 unit, as in the Cambridge exams.")}</p></div>${ic("arrow-right")}</a>
+    <a class="card ear-cta" href="#/lexique" style="margin:12px 0 0">${tile("puzzle", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Language workshop, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("Collocations, idioms, word formation and sentence transformations for each B2, C1 and C2 unit, as in the Cambridge exams.")}</p></div>${ic("arrow-right")}</a>
     <p class="muted">${T("{n} words and expressions, with <b>spaced repetition</b>: when you know a word, it comes back in 1 day, then 3, 7, 14, 30… Difficult words come back quickly. Words you already know a little are asked from French to English: it's harder, so it works better.", { n: total })}</p>
     <div class="grid grid-3" style="margin:20px 0">
       <div class="card">
@@ -3185,7 +3185,7 @@ function viewContext(id) {
   });
 }
 
-/* ================= Word workshop (B2 → C2) =================
+/* ================= Language workshop (B2 → C2) =================
    Collocations (the words that go together) and word formation, unit by unit, with an exercise in the format
    of the Cambridge exams. At these levels, precision comes less from new words than from how words combine. */
 const LEX = () => window.LEXIS || {};
@@ -3197,64 +3197,104 @@ const WF_TABLE = [
   ["verbs", "verbes", "-ise / -ize, -ify, -en", "visualise, intensify, widen"],
   ["the opposite", "le contraire", "un-, in-, im-, il-, ir-, dis-, mis-", "unreliable, impolite, illogical, disagree, misinterpret"]
 ];
-function lexItems(L) {
-  const colloc = shuffle(L.colloc).slice(0, 8).map(([c, f, ex, gap, ds]) => {
-    const re = new RegExp("(^|[^A-Za-z'’-])" + reEsc(gap) + "(?=$|[^A-Za-z'’-])");
-    const g = ex.replace(re, "$1___");
-    return { type: "mcq", q: `Choose the word that fits: “${g}”`, q_fr: `Choisis le mot qui convient : « ${g} »`, o: [gap, ...ds], a: 0, ex: `${c} = ${f}`, ex_fr: `${c} = ${f}`, say: null, from: "Collocations" };
-  });
-  const wf = shuffle(L.wf).slice(0, 6).map(([sent, ans]) => {
+const lexPart = (id, part) => { const x = (S.lex || {})[id]; return x && x[part]; };
+const lexDone = (id) => ["coll", "wf", "kwt"].filter((p) => lexPart(id, p)).length;
+function lexItems(L, part, level) {
+  if (part === "wf") return shuffle(L.wf).map(([sent, ans]) => {
     const [answer, ...accept] = ans.split("|");
     return { type: "type", q: "Use the word in capitals to form a word that fits the gap.", q_fr: "À partir du mot en capitales, forme le mot qui complète la phrase.", sent, answer, accept, from: "Word formation" };
   });
-  return [...colloc, ...wf];
+  if (part === "kwt") {
+    const c2 = level === "C2";
+    return shuffle(L.kwt).map(([first, key, second, ans]) => {
+      const [answer, ...accept] = ans.split("|");
+      return { type: "type", q: c2 ? "Complete the second sentence so that it means the same as the first. Use the word given, without changing it, and three to eight words." : "Complete the second sentence so that it means the same as the first. Use the word given, without changing it, and two to five words.", q_fr: c2 ? "Complète la seconde phrase pour qu'elle ait le même sens que la première, avec le mot donné, sans le modifier, en trois à huit mots." : "Complète la seconde phrase pour qu'elle ait le même sens que la première, avec le mot donné, sans le modifier, en deux à cinq mots.", big: first, sent: `${second} (${key})`, answer, accept, from: "Transformations" };
+    });
+  }
+  const colloc = shuffle(L.colloc).slice(0, 6).map(([c, f, ex, gap, ds]) => {
+    const re = new RegExp("(^|[^A-Za-z'’-])" + reEsc(gap) + "(?=$|[^A-Za-z'’-])");
+    const g = ex.replace(re, "$1___");
+    return { type: "mcq", q: `Choose the word that fits: “${g}”`, q_fr: `Choisis le mot qui convient : « ${g} »`, o: [gap, ...ds], a: 0, ex: `${c} = ${f}`, ex_fr: `${c} = ${f}`, from: "Collocations" };
+  });
+  const ids = shuffle(L.idioms || []);
+  const idioms = ids.slice(0, 5).map(([e, m, f, ex, form]) => {
+    const g = ex.replace(form, "___");
+    const others = shuffle(ids.filter((x) => x[4] !== form)).slice(0, 3).map((x) => x[4]);
+    return { type: "mcq", q: `Choose the expression that fits: “${g}”`, q_fr: `Choisis l'expression qui convient : « ${g} »`, o: [form, ...others], a: 0, ex: `${e}: ${m}`, ex_fr: `${e} = ${f}`, from: "Idioms" };
+  });
+  const match = ids.length >= 5 ? [{ type: "match", q: "Match each expression with its French equivalent.", q_fr: "Associe chaque expression à son équivalent français.", pairs: shuffle(ids).slice(0, 5).map(([e, , f]) => [e, f]), from: "Idioms" }] : [];
+  return [...colloc, ...idioms, ...match];
 }
+const LEX_PARTS = [
+  ["coll", "link", "Collocations and idioms", "Six collocations and five expressions to choose, then five expressions to match with their French equivalent."],
+  ["wf", "layers", "Word formation", "Eight sentences: form the right word from the one in capitals."],
+  ["kwt", "repeat", "Sentence transformations", "Six sentences to rewrite with the word given, as in the exam."]
+];
 function viewLexis(id) {
   const u = COURSE.find((x) => x.id === id), L = LEX()[id];
   if (!u || !L) return viewLexisHub();
-  const prev = (S.lex || {})[id];
+  const c2 = u.level === "C2";
   app.innerHTML = `
     ${back(`#/unite/${u.id}`, `Unit ${unitNum(u)} · ${loc(u, "title")}`)}
-    <div class="row" style="gap:8px">${levelTag(u.level)}<span class="muted small">${T("Word workshop")}</span>${prev ? `<span class="tag tag-done">${ic("check")} ${prev.best}/${prev.total}</span>` : ""}</div>
+    <div class="row" style="gap:8px">${levelTag(u.level)}<span class="muted small">${T("Language workshop")}</span>${lexDone(id) ? `<span class="tag tag-done">${ic("check")} ${lexDone(id)}/3</span>` : ""}</div>
     <h1>${ic("puzzle")} ${esc(loc(u, "title"))}</h1>
-    <p class="muted">${T("At this level, sounding natural depends less on knowing more words than on combining them well. Two tools: collocations, the words that go together, and word formation, finding the right form of a word, as in the Cambridge exams.")}</p>
+    <p class="muted">${T("At this level, sounding natural depends less on knowing more words than on combining them well. Four tools, as in the Cambridge exams: collocations, idioms and phrasal verbs, word formation, and sentence transformations.")}</p>
     <section class="card">
       <h2 style="margin-top:0">${ic("link")} ${T("Collocations")}</h2>
       <p class="muted small">${T("Learn them as blocks, never word by word: we say “heavy rain”, not “strong rain”, and “meet a deadline”, not “respect a deadline”. Listen, then say each one out loud.")}</p>
       <div class="lex-list">${L.colloc.map(([c, f, ex]) => `<div class="lex-item"><div class="row" style="gap:8px;flex-wrap:wrap"><b class="en">${esc(c)}</b>${sayBtn(c)}<span class="muted small no-tx">${esc(f)}</span></div><p class="en small" style="margin:4px 0 0">${esc(ex)} ${sayBtn(ex)}</p></div>`).join("")}</div>
     </section>
+    ${L.idioms ? `<section class="card">
+      <h2 style="margin-top:0">${ic("sparkles")} ${T("Idioms and phrasal verbs")}</h2>
+      <p class="muted small">${T("Their meaning can't be guessed from the words: learn each one with its example. Use them sparingly in writing, more freely when you speak.")}</p>
+      <div class="lex-list">${L.idioms.map(([e, m, f, ex]) => `<div class="lex-item"><div class="row" style="gap:8px;flex-wrap:wrap"><b class="en">${esc(e)}</b>${sayBtn(e)}</div><p class="small" style="margin:4px 0 0">${isFr() ? `<span class="no-tx">${esc(f)}</span>` : `${esc(m)} <span class="muted no-tx">· ${esc(f)}</span>`}</p><p class="en small" style="margin:4px 0 0">${esc(ex)} ${sayBtn(ex)}</p></div>`).join("")}</div>
+    </section>` : ""}
     <section class="card">
       <h2 style="margin-top:0">${ic("layers")} ${T("Word formation")}</h2>
       <p class="muted small">${T("In the exam, you get a sentence with a gap and a word in capitals to transform. Ask yourself three questions: what kind of word does the gap need (noun, adjective, adverb, verb)? Singular or plural? Positive or negative meaning?")}</p>
       <div class="table-wrap"><table class="irr-table"><tr><th>${T("To make…")}</th><th>${T("Common endings")}</th><th>${T("Examples")}</th></tr>
         ${WF_TABLE.map(([en, f, end, ex]) => `<tr><td>${esc(isFr() ? f : en)}</td><td class="no-tx">${esc(end)}</td><td class="en">${esc(ex)}</td></tr>`).join("")}</table></div>
     </section>
-    <section class="card" id="lexBox">
+    ${L.kwt ? `<section class="card">
+      <h2 style="margin-top:0">${ic("repeat")} ${T("Sentence transformations")}</h2>
+      <p class="muted small">${T(c2 ? "Rewrite a sentence with a given word, keeping the meaning: three to eight words, and the word given must not change. It tests grammar and vocabulary at the same time." : "Rewrite a sentence with a given word, keeping the meaning: two to five words, and the word given must not change. It tests grammar and vocabulary at the same time.")}</p>
+      <div class="kwt-example"><p class="en" style="margin:0">I regret not going to university. <b>WISH</b></p><p class="en" style="margin:6px 0 0">I <u>wish I had gone</u> to university.</p></div>
+      <p class="muted small" style="margin:10px 0 0">${T("Method: find the grammar point (here, a regret: wish + past perfect), write the answer, then check the word count and that the meaning hasn't changed.")}</p>
+    </section>` : ""}
+    <section class="card">
       <h2 style="margin-top:0">${ic("list-checks")} ${T("Practice")}</h2>
-      <p class="muted small">${T("Eight collocations to complete, then six words to form. The collocations and sentences change each time.")}</p>
-      <button class="btn btn-primary" id="lexGo">${T("Start")}</button>
+      <div class="stack">${LEX_PARTS.filter(([p]) => p !== "kwt" || L.kwt).map(([p, icon, title, d]) => { const r = lexPart(id, p); return `<div class="row step-link"><span style="flex:1"><b>${T(title)}</b> ${r ? `<span class="tag tag-done">${ic("check")} ${r.best}/${r.total}</span>` : ""}<br><span class="muted small">${T(d)}</span></span><button class="btn btn-sm btn-primary" data-part="${p}">${ic(icon)} ${T("Start")}</button></div>`; }).join("")}</div>
+      <div id="lexBox" style="margin-top:12px"></div>
     </section>`;
-  $("#lexGo").onclick = () => runQuiz($("#lexBox"), lexItems(L), (score, total) => {
-    S.lex = S.lex || {};
-    const first = !S.lex[id];
-    S.lex[id] = { best: Math.max(score, (prev && prev.best) || 0), total, date: today() };
-    addXP(first ? 10 + score : score, first ? "vocab" : null);
-    const i = lexUnits().indexOf(u), next = lexUnits()[i + 1];
-    $("#lexBox").innerHTML = `<div class="result-big">${score} / ${total}</div><p style="text-align:center">${scoreMsg(score, total)}</p>
-      <div class="row" style="justify-content:center"><a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a><button class="btn" id="lexAgain">${T("Practise again")}</button>${next ? `<a class="btn btn-primary" href="#/lexique/${next.id}">${T("Next workshop")} ${ic("arrow-right")}</a>` : ""}</div>`;
-    $("#lexAgain").onclick = () => viewLexis(id);
-  });
+  $$("[data-part]").forEach((b) => (b.onclick = () => {
+    const part = b.dataset.part;
+    const box = $("#lexBox");
+    box.classList.add("card");
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
+    runQuiz(box, lexItems(L, part, u.level), (score, total) => {
+      S.lex = S.lex || {};
+      const cur = S.lex[id] && S.lex[id].best == null ? S.lex[id] : {};
+      const first = !cur[part];
+      cur[part] = { best: Math.max(score, (cur[part] && cur[part].best) || 0), total, date: today() };
+      S.lex[id] = cur;
+      addXP(first ? 10 + score : score, first ? "vocab" : null);
+      const i = lexUnits().indexOf(u), next = lexUnits()[i + 1];
+      box.innerHTML = `<div class="result-big">${score} / ${total}</div><p style="text-align:center">${scoreMsg(score, total)}</p>
+        <div class="row" style="justify-content:center"><button class="btn" id="lexBack">${T("Back to the workshop")}</button>${next && lexDone(id) === 3 ? `<a class="btn btn-primary" href="#/lexique/${next.id}">${T("Next workshop")} ${ic("arrow-right")}</a>` : ""}</div>`;
+      $("#lexBack").onclick = () => viewLexis(id);
+    });
+  }));
 }
 function viewLexisHub() {
   const us = lexUnits();
   app.innerHTML = `
     ${back("#/vocabulaire", "Vocabulary")}
-    <h1>${T("Word workshop, B2 to C2")}</h1>
-    <p class="muted">${T("One workshop per unit: ten collocations on the unit's theme and eight word-formation sentences, as in the Cambridge exams (B2 First, C1 Advanced, C2 Proficiency).")}</p>
+    <h1>${T("Language workshop, B2 to C2")}</h1>
+    <p class="muted">${T("One workshop per unit, on the unit's theme: ten collocations, eight idioms and phrasal verbs, eight word-formation sentences and six sentence transformations, as in the Cambridge exams (B2 First, C1 Advanced, C2 Proficiency).")}</p>
     ${levelGroups(us, (u) => {
-      const d = (S.lex || {})[u.id];
-      return `<a class="card lesson-item ${d ? "done" : ""}" href="#/lexique/${u.id}">${tile(u.icon, u.level)}<span style="flex:1;min-width:0"><span class="muted small">${T("Unit")} ${unitNum(u)}</span><h3 style="margin:2px 0 0">${esc(loc(u, "title"))}</h3></span>${d ? `<span class="tag tag-done">${ic("check")} ${d.best}/${d.total}</span>` : ""}</a>`;
-    }, { started: (its) => its.some((u) => (S.lex || {})[u.id]), stat: (its) => T("{a} / {b} done", { a: its.filter((u) => (S.lex || {})[u.id]).length, b: its.length }) })}`;
+      const d = lexDone(u.id);
+      return `<a class="card lesson-item ${d === 3 ? "done" : ""}" href="#/lexique/${u.id}">${tile(u.icon, u.level)}<span style="flex:1;min-width:0"><span class="muted small">${T("Unit")} ${unitNum(u)}</span><h3 style="margin:2px 0 0">${esc(loc(u, "title"))}</h3></span>${d ? `<span class="tag tag-done">${ic("check")} ${d}/3</span>` : ""}</a>`;
+    }, { started: (its) => its.some((u) => lexDone(u.id)), stat: (its) => T("{a} / {b} done", { a: its.filter((u) => lexDone(u.id) === 3).length, b: its.length }) })}`;
 }
 
 /* ================= Listening lab =================
