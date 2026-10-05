@@ -900,3 +900,9 @@ mark.wm sup { font: 700 11px var(--font); color: var(--ink-soft); margin-left: 2
 .welcome-choice:hover { border-color: var(--accent); }
 .welcome-choice > span:last-child { display: flex; flex-direction: column; gap: 4px; }
 .tools-h { scroll-margin-top: 84px; }
+.tool-here { border-color: var(--accent); }
+
+/* The French course (francais.html): blue instead of coral, so you always know which course you're in */
+.course-fr { --accent: #3b6fd8; --accent-soft: #e5edfc; }
+@media (prefers-color-scheme: dark) { .course-fr { --accent: #6b8ff0; --accent-soft: #1f2b47; } }
+.course-fr .hero-main::after { content: "Bonjour"; }

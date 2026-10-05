@@ -37,3 +37,14 @@ No build step and no external server: everything (data, icons) is in this folder
 - `js/data/`: course content (lessons, vocabulary, texts, pronunciation, academic skills, TOEIC, listening, conversation…)
 - `js/i18n-fr.js`: French interface
 - `js/icons.js`: icons (Lucide shapes, ISC licence)
+
+## French course for English speakers (francais.html) — in progress
+
+The same engine (js/app.js) runs a second course: French from A1 to C2 for English speakers, with its own page
+(francais.html), its own data (js/fr/) and its own saved progress. `window.APP` (js/fr/config.js) sets the target
+language (French voices, French speech recognition, French click-translation with elisions, plurals, verb endings and
+irregular forms from js/fr/forms.js), the learner's language (English, the default interface; French = total
+immersion) and texts that differ. Interface texts written for the English course swap the two language names
+automatically. Tools without French content yet are hidden. Answers are compared without accents (ça = ca), and a
+noun typed without its article is accepted with its article shown. Characters have French first names.
+Each unit is one file, js/fr/unit-<id>.js, like the English thematic units. Done: A1 unit 1 (Hello!).

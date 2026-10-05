@@ -16,6 +16,32 @@ const svgIcon = (name, cls) => {
 };
 const ic = (name, cls = "") => svgIcon(name, cls);
 
+/* ================= Which course this page is =================
+   index.html is the English course (for French speakers); francais.html sets window.APP for the French course
+   (for English speakers). The engine is the same: only the target language, its voices, its dictionary and the
+   saved progress change. "target" is the language taught, "helper" the learner's own language. */
+const APP = Object.assign({
+  id: "en", target: "en", helper: "fr", helperCode: "FR", key: "stepbystep.v1",
+  voiceLang: "en-GB", srLang: "en-US", learner: "Stella", hello: null
+}, window.APP || {});
+const TARGET_RE = new RegExp("^" + APP.target + "[-_]", "i");
+const FRENCH_COURSE = APP.target === "fr";
+/* The interface texts are written for the English course: in the French course, the two language names swap
+   ("from French to English" becomes "from English to French"), in English and in French. */
+const SWAP = FRENCH_COURSE ? [
+  [/\bEnglish\b/g, "French"], [/\bFrench\b/g, "English"], [/\bBritish and American\b/g, "regional"],
+  [/\bd'anglais\b/g, "de français"], [/\bde français\b/g, "d'anglais"], [/\bl'anglais\b/g, "le français"], [/\ble français\b/g, "l'anglais"],
+  [/\banglaise(s?)\b/g, "française$1"], [/\bfrançaise(s?)\b/g, "anglaise$1"], [/\banglais\b/g, "français"], [/\bfrançais\b/g, "anglais"],
+  [/\bAnglais\b/g, "Français"], [/\bFrançais\b/g, "Anglais"], [/\banglophone(s?)\b/g, "francophone$1"], [/\bfrancophone(s?)\b/g, "anglophone$1"]
+] : [];
+function swapNames(t) {
+  if (!SWAP.length || !t) return t;
+  /* All at once, through placeholders, so a name swapped once isn't swapped back. */
+  const marks = [];
+  SWAP.forEach(([re, to]) => { t = t.replace(re, (...m) => { marks.push(to.replace(/\$1/g, m[1] || "")); return "\u0001" + (marks.length - 1) + "\u0002"; }); });
+  return t.replace(/\u0001(\d+)\u0002/g, (_, i) => marks[i]);
+}
+
 /* ================= Interface language =================
    The course content stays in English: only the interface changes.
    T("English text", {vars}) gives the text in the chosen language (English if no translation).
@@ -23,10 +49,13 @@ const ic = (name, cls = "") => svgIcon(name, cls);
    instr(en, fr): an instruction in English with its FR button, or directly in French. */
 const LANGS = [["en", "English"], ["fr", "Français"]];
 const lang = () => (typeof S !== "undefined" && S.lang) || "en";
+/* Immersion: the interface is in the language being learnt. */
+const immersion = () => lang() === APP.target;
 const isFr = () => lang() === "fr";
 function T(s, vars) {
   const d = (window.UI_TEXT || {})[lang()];
-  let out = (d && d[s]) || s;
+  const own = ((APP.ui || {})[lang()] || {})[s];
+  let out = own || swapNames((d && d[s]) || s);
   if (vars) out = out.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? vars[k] : ""));
   return out;
 }
@@ -86,13 +115,15 @@ const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.
     g.items.forEach((b, j) => { const eb = e.items[j]; if (eb) { b.desc_fr = b.desc; b.why_fr = b.why; b.desc = eb.desc; b.why = eb.why; if (eb.title) b.title = eb.title; if (eb.author) b.author = eb.author; } });
   });
   RESOURCES.forEach((r, i) => { const e = (window.RESOURCES_EN || [])[i]; if (e) { r.title_fr = r.title; r.desc_fr = r.desc; r.title = e.title; r.desc = e.desc; } });
+  /* The can-do grids are shared by both courses: in the French course, they speak of French. */
+  if (FRENCH_COURSE) CANDO.forEach((c) => Object.values(c.levels).forEach((arr) => arr.forEach((pair) => { pair[0] = swapNames(pair[0]); pair[1] = swapNames(pair[1]); })));
 })();
 const lnum = (l) => LESSONS.indexOf(l) + 1;
 const lessonById = (id) => LESSONS.find((l) => l.id === +id);
 const unitOfLesson = (id) => COURSE.find((u) => u.lessons.includes(+id));
 
 /* ================= Storage ================= */
-const KEY = "stepbystep.v1";
+const KEY = APP.key;
 const defaults = () => ({ xp: 0, days: {}, lessons: {}, readings: {}, srs: {}, myWords: [], spoken: {}, prompts: {}, notes: {}, ritual: null, rate: 0.9, voice: "", dir: "auto", goal: 30, siteSec: 0, extMin: 0, units: {}, exams: {}, irr: {}, mistakes: {}, pron: {}, acad: {}, place: {}, cando: {}, lab: {}, ctx: {}, lex: {}, toeic: { mocks: [], parts: {} } });
 function load() {
   try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
@@ -106,6 +137,8 @@ function save() {
   renderTopStats();
 }
 const unitState = (id) => (S.units[id] = S.units[id] || {});
+/* The learner's first name: the one given in the settings, or the course's default (Stella for the English course). */
+const learnerName = () => (S.name || APP.learner || "").trim();
 
 /* ================= Dates & progress ================= */
 const fmt = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -243,11 +276,11 @@ function reviewLesson(id, ratio) {
 const synth = window.speechSynthesis;
 let voices = [];
 const NOVELTY = /compact|eloquence|grandma|grandpa|bad news|bells|bubbles|cellos|jester|organ|trinoids|whisper|zarvox|albert|boing|fred|junior|ralph|wobble|superstar|good news|hysterical|bahh|eddy|flo\b|reed|rocko|sandy|shelley|kathy|nouvelles|bouffon|bulles|cloches|murmure|orgue|trino|violoncelles/i;
-const GOOD = /premium|enhanced|amélior|natural|neural|google|microsoft|siri|^(samantha|daniel|karen|moira|tessa|rishi|aaron|arthur|catherine|gordon|martha|nicky|alex|fiona|veena|allison|ava|susan|tom|serena|kate|oliver|zoe|evan|nathan|joelle|noelle|jamie|matilda|lee|isha|sangeeta|stephanie)\b/i;
-const FEMALE = /samantha|karen|moira|tessa|martha|catherine|nicky|serena|ava|zoe|kate|fiona|allison|susan|joelle|noelle|matilda|isha|sangeeta|veena|stephanie|female|libby|sonia|jenny|aria|emma|amy/i;
+const GOOD = /premium|enhanced|amélior|natural|neural|google|microsoft|siri|^(thomas|amélie|audrey|aurélie|marie|virginie|jacques|nicolas|juliette|samantha|daniel|karen|moira|tessa|rishi|aaron|arthur|catherine|gordon|martha|nicky|alex|fiona|veena|allison|ava|susan|tom|serena|kate|oliver|zoe|evan|nathan|joelle|noelle|jamie|matilda|lee|isha|sangeeta|stephanie)\b/i;
+const FEMALE = /amélie|amelie|audrey|aurélie|aurelie|marie|virginie|juliette|céline|celine|léa|lea\b|chantal|denise|sylvie|eloise|élise|samantha|karen|moira|tessa|martha|catherine|nicky|serena|ava|zoe|kate|fiona|allison|susan|joelle|noelle|matilda|isha|sangeeta|veena|stephanie|female|libby|sonia|jenny|aria|emma|amy/i;
 function loadVoices() {
   if (!synth) return;
-  const en = synth.getVoices().filter((v) => /^en[-_]/i.test(v.lang) && !NOVELTY.test(v.name));
+  const en = synth.getVoices().filter((v) => TARGET_RE.test(v.lang) && !NOVELTY.test(v.name));
   const good = en.filter((v) => GOOD.test(v.name));
   voices = good.length ? good : en;
 }
@@ -255,9 +288,9 @@ if (synth) { loadVoices(); synth.onvoiceschanged = () => { loadVoices(); if (loc
 function voiceScore(v) {
   let s = 0;
   if (/premium|enhanced|amélior|natural|neural/i.test(v.name)) s += 10;
-  if (/^Google (UK|US) English/i.test(v.name)) s += 6;
+  if (/^Google (UK|US) English|^Google français/i.test(v.name)) s += 6;
   if (GOOD.test(v.name)) s += 4;
-  if (/en[-_]GB/i.test(v.lang)) s += 2;
+  if (new RegExp("^" + APP.voiceLang.replace("-", "[-_]"), "i").test(v.lang)) s += 2;
   if (/en[-_]US/i.test(v.lang)) s += 1;
   return s;
 }
@@ -272,8 +305,8 @@ function voiceByLang(l) {
   return ranked().find((v) => re.test(v.lang)) || null;
 }
 /* A different voice for each speaker in a dialogue (female names → female voice when possible). */
-const SPK_F = /^(W\b|W\d|Woman|Stella|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i;
-const SPK_M = /^(M\b|M\d|Man|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i;
+const SPK_F = /^(W\b|W\d|Woman|Femme|Stella|Léa|Chloé|Manon|Julie|Camille|Claire|Inès|Élodie|Nathalie|Isabelle|Margaux|Lucie|Pauline|Amandine|Sabrina|Yasmine|Agathe|Mathilde|Océane|Zoé|Aurélie|Sandrine|Valérie|Jeanne|Louise|Alice|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i;
+const SPK_M = /^(M\b|M\d|Man|Homme|Serveur|Lucas|Hugo|Thomas|Julien|Nicolas|Antoine|Pierre|Louis|Karim|Mehdi|Théo|Bastien|Maxime|Romain|Kevin|Olivier|Benoît|Rémi|Yanis|Arthur|Gabriel|Raphaël|Mathis|Étienne|Vincent|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i;
 function voiceFor(speaker, i) {
   const r = ranked();
   if (!r.length) return null;
@@ -298,7 +331,7 @@ function speak(text, btn, opts = {}) {
   return new Promise((resolve) => {
     const u = new SpeechSynthesisUtterance(text);
     const v = opts.voice || bestVoice();
-    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = "en-GB";
+    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = APP.voiceLang;
     u.rate = opts.rate || S.rate;
     if (btn) { btn.classList.add("playing"); playingBtn = btn; }
     u.onend = u.onerror = () => { if (btn) btn.classList.remove("playing"); resolve(); };
@@ -335,7 +368,15 @@ const slowBtn = (text) => `<button class="speak" data-say="${esc(text)}" data-sl
 
 /* ================= Translation on click ================= */
 /* FR button: shows the French translation of a block. */
-const fr = (french) => french ? ` <button class="fr-btn" data-fr="${esc(french)}" aria-label="Traduction en français" title="Traduction">FR</button>` : "";
+/* In the French course, the button reveals English under French content, and French under English explanations:
+   its label says which. */
+const looksFrench = (t) => /[àâçéèêëîïôûùœ]|\b(le|la|les|des|est|et|une|du|pour|avec|dans|tu|vous|je)\b/i.test(t);
+const fr = (french) => {
+  if (!french) return "";
+  const toFr = FRENCH_COURSE && looksFrench(french);
+  const code = FRENCH_COURSE ? (toFr ? "FR" : "EN") : APP.helperCode;
+  return ` <button class="fr-btn" data-fr="${esc(french)}" aria-label="${code === "FR" ? "Traduction en français" : "English translation"}" title="${code === "FR" ? "Traduction" : "Translation"}">${code}</button>`;
+};
 const WORD_RE = /([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'’-]*[A-Za-zÀ-ÖØ-öø-ÿ]|[A-Za-zÀ-ÖØ-öø-ÿ])/;
 let DICT = new Map();
 const IRR_FORMS = {};
@@ -346,8 +387,15 @@ function buildDict() {
     const parts = en.split(" / ");
     const fparts = f.split(" / ");
     parts.forEach((p, i) => {
+      const tr = parts.length === fparts.length ? fparts[i] : f;
+      if (FRENCH_COURSE) {
+        /* "le pain", "l'eau", "se lever": the word alone too. */
+        const k = p.replace(/\((m|f|m\.|f\.|pl)\)/gi, "").replace(/[?!.…]/g, "").trim();
+        add(k, tr); add(k.replace(/^(?:(?:les|le|la|une|un|des|du|de la|se)\s+|de l'|s'|l'|d')/i, ""), tr);
+        return;
+      }
       const k = p.replace(/\((uk|us)\)/gi, "").replace(/[?!.…]/g, "").trim().replace(/^to /, "").replace(/^(a|an|the) /, "");
-      add(k, parts.length === fparts.length ? fparts[i] : f);
+      add(k, tr);
     });
   }));
   (window.IRREGULARS || []).forEach(([base, past, pp, f]) => {
@@ -360,12 +408,51 @@ function buildDict() {
   (window.LAB || []).forEach((x) => x.words.forEach(([en, f]) => { const ps = en.split(" / "), fs = f.split(" / "); ps.forEach((k, i) => add(k.replace(/^(to|a|an|the) /, ""), ps.length === fs.length ? fs[i] : f)); }));
   S.myWords.forEach((w) => add(w.en, w.fr));
   /* General dictionary last: the course's own translations always win. */
-  Object.entries(window.DICT_EN_FR || {}).forEach(([k, v]) => add(k, v));
+  Object.entries(window.DICT_TARGET || window.DICT_EN_FR || {}).forEach(([k, v]) => add(k, v));
 }
+/* French: elided words (l'eau, j'habite), plurals, feminine forms, verb endings, and irregular forms (suis → être). */
+const FR_ELISION = /^(l|d|j|m|t|s|n|c|qu|jusqu|lorsqu|puisqu)'/;
+function lookupFr(w) {
+  if (DICT.has(w)) return { base: w, fr: DICT.get(w) };
+  const bare = w.replace(FR_ELISION, "");
+  const forms = window.FR_FORMS || {};
+  for (const c of [w, bare]) {
+    const f = forms[c];
+    if (f) return { base: f[0], fr: (DICT.get(f[0]) || "") + (f[1] ? ` (${f[1]})` : "") };
+  }
+  const cands = [];
+  const push = (x) => { if (x && x.length > 1 && !cands.includes(x)) cands.push(x); };
+  push(w); push(bare);
+  [w, bare].forEach((x) => {
+    if (/eaux$/.test(x)) push(x.slice(0, -1));
+    if (/aux$/.test(x)) push(x.slice(0, -3) + "al");
+    if (/[sx]$/.test(x)) push(x.slice(0, -1));
+    if (/es$/.test(x)) push(x.slice(0, -2));
+    if (/e$/.test(x)) push(x.slice(0, -1));
+    if (/ives?$/.test(x)) push(x.replace(/ives?$/, "if"));
+    if (/euses?$/.test(x)) push(x.replace(/euses?$/, "eux"));
+    if (/ères?$/.test(x)) push(x.replace(/ères?$/, "er"));
+    if (/ennes?$/.test(x)) push(x.replace(/ennes?$/, "en"));
+    if (/onnes?$/.test(x)) push(x.replace(/onnes?$/, "on"));
+    if (/elles?$/.test(x)) push(x.replace(/elles?$/, "el"));
+    const er = x.match(/^(.+?)(erai|eras|era|erons|erez|eront|erais|erait|eraient|aient|ais|ait|ions|iez|ant|ons|ez|ent|ées|és|ée|é|es|e)$/);
+    if (er) push(er[1] + "er");
+    const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|is|it|ie|ies|i)$/);
+    if (ir) push(ir[1] + "ir");
+    const re = x.match(/^(.+?)(ons|ez|ent|ds|d|us|ues|ue|u|s)$/);
+    if (re) push(re[1] + "re");
+  });
+  for (const c of cands) if (DICT.has(c)) return { base: c, fr: DICT.get(c) };
+  if (w.includes("-")) { const bits = w.split("-").map((b) => lookupFr(b)).filter(Boolean); if (bits.length) return { base: w, fr: bits.map((b) => b.fr).join(" + ") }; }
+  return null;
+}
+/* English words that are also French forms: in the English interface of the French course, they stay plain text. */
+const EN_STOP = new Set("a an the on in is it as at to of for by or and but if me he she we you they us our your his her its my no not so do up be are was were has have had will can may all one two six an son pour".split(" "));
 buildDict();
 function lookup(raw, gloss) {
   const w = String(raw).toLowerCase().replace(/’/g, "'");
-  if (gloss) { const g = gloss[w] || gloss[w.replace(/'s$/, "")]; if (g) return { base: w, fr: g }; }
+  if (gloss) { const g = gloss[w] || gloss[w.replace(/'s$/, "")] || (FRENCH_COURSE && gloss[w.replace(FR_ELISION, "")]); if (g) return { base: w, fr: g }; }
+  if (FRENCH_COURSE) return lookupFr(w);
   const cands = [w];
   const push = (x) => { if (x && x.length > 1 && !cands.includes(x)) cands.push(x); };
   push(w.replace(/'s$/, "")); push(w.replace(/s'$/, "s"));
@@ -411,8 +498,8 @@ function wordify(root) {
     let buf = "", wrapped = 0;
     parts.forEach((part, k) => {
       if (!part) return;
-      /* French interface: only the English words we can translate are clickable. */
-      if (k % 2 === 1 && !fragmentAt(parts, k) && (!isFr() || lookup(part))) {
+      /* Interface in the learner's own language: only the words of the language learnt that we can translate are clickable. */
+      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (lookup(part) && !(FRENCH_COURSE && EN_STOP.has(part.toLowerCase()))))) {
         if (buf) { frag.appendChild(document.createTextNode(buf)); buf = ""; }
         const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); wrapped++;
       } else buf += part;
@@ -450,7 +537,7 @@ function showPop(w) {
       <button class="btn btn-sm" data-say="${esc(word)}" aria-label="${T("Listen")}">${ic("volume-2")}</button>
       <button class="btn btn-sm" id="addW" title="Ajouter à mes mots">${ic("plus")} ${T("My words")}</button>
       ${sentenceEl ? `<button class="btn btn-sm" id="popSent" title="Traduire la phrase">${ic("languages")} ${T("Sentence")}</button>` : ""}
-      <a class="btn btn-sm" href="https://www.wordreference.com/enfr/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>
+      <a class="btn btn-sm" href="https://www.wordreference.com/${FRENCH_COURSE ? "fren" : "enfr"}/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>
     </div>`;
   document.body.appendChild(pop);
   const rect = w.getBoundingClientRect();
@@ -748,7 +835,7 @@ function runQuiz(el, items, done) {
         $("#sMic").onclick = () => {
           if ($("#sMic").classList.contains("listening")) { try { rec.stop(); } catch (e) {} return; }
           stopAudio();
-          rec = new SR(); rec.lang = "en-US"; rec.interimResults = false; rec.maxAlternatives = 5;
+          rec = new SR(); rec.lang = APP.srLang; rec.interimResults = false; rec.maxAlternatives = 5;
           rec.onstart = () => { $("#sMic").classList.add("listening"); $("#sHint").textContent = T("I'm listening… speak now"); };
           rec.onend = () => { if ($("#sMic")) { $("#sMic").classList.remove("listening"); $("#sHint").textContent = T("Press the microphone and say the sentence"); } };
           rec.onerror = (e) => toast(T(e.error === "not-allowed" ? "Allow microphone access in your browser" : e.error === "no-speech" ? "I didn't hear anything, try a bit louder" : "Microphone problem, try again"));
@@ -863,7 +950,7 @@ function runQuiz(el, items, done) {
 const CONTR = [[/\bcan't\b/g, "can not"], [/\bcannot\b/g, "can not"], [/\bwon't\b/g, "will not"], [/\bshan't\b/g, "shall not"], [/n't\b/g, " not"], [/'m\b/g, " am"], [/'re\b/g, " are"], [/'ve\b/g, " have"], [/'ll\b/g, " will"], [/'d\b/g, " would"], [/\blet's\b/g, "let us"], [/\b(it|he|she|that|what|there|here|who|where|how)'s\b/g, "$1 is"]];
 function normAnswer(s) {
   let t = dictTokens(s).join(" ");
-  CONTR.forEach(([re, rep]) => { t = t.replace(re, rep); });
+  if (!FRENCH_COURSE) CONTR.forEach(([re, rep]) => { t = t.replace(re, rep); });
   return t.replace(/\s+/g, " ").trim();
 }
 /* Free production (role-plays): same words in the same order, contractions expanded,
@@ -980,9 +1067,22 @@ function mistakeItem(k) {
 /* ================= Dictation comparison ================= */
 const UNITS_W = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
 const TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
-const numWords = (n) => n < 20 ? UNITS_W[n] : n < 100 ? TENS[Math.floor(n / 10)] + (n % 10 ? " " + UNITS_W[n % 10] : "") : String(n);
-const dictTokens = (s) => String(s).toLowerCase().replace(/[’`]/g, "'").replace(/-/g, " ")
-  .replace(/\d+/g, (d) => numWords(+d)).replace(/[^a-z0-9' ]/g, " ").split(/\s+/).filter(Boolean);
+/* French numbers in words, up to 99 (70 = soixante-dix, 80 = quatre-vingts, 21 = vingt et un). */
+const FR_UNITS = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
+const FR_TENS = ["", "", "vingt", "trente", "quarante", "cinquante", "soixante"];
+function frNum(n) {
+  if (n < 20) return FR_UNITS[n];
+  if (n >= 100) return String(n);
+  if (n < 70) { const t = FR_TENS[Math.floor(n / 10)], u = n % 10; return t + (u === 1 ? " et un" : u ? "-" + FR_UNITS[u] : ""); }
+  if (n < 80) return n === 71 ? "soixante et onze" : "soixante-" + FR_UNITS[n - 60];
+  return n === 80 ? "quatre-vingts" : "quatre-vingt-" + FR_UNITS[n - 80];
+}
+const numWords = (n) => FRENCH_COURSE ? frNum(n) : n < 20 ? UNITS_W[n] : n < 100 ? TENS[Math.floor(n / 10)] + (n % 10 ? " " + UNITS_W[n % 10] : "") : String(n);
+/* French answers are compared without accents (ça = ca): typing them is hard on an English keyboard, and the right
+   form is always shown afterwards. */
+const fold = (s) => FRENCH_COURSE ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").replace(/æ/g, "ae") : String(s);
+const dictTokens = (s) => fold(String(s).toLowerCase()).replace(/[’`]/g, "'").replace(/-/g, " ")
+  .replace(/\d+/g, (d) => fold(numWords(+d))).replace(/[^a-z0-9' ]/g, " ").split(/\s+/).filter(Boolean);
 function lcsMatch(a, b) {
   const dp = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
   for (let i = a.length - 1; i >= 0; i--) for (let j = b.length - 1; j >= 0; j--)
@@ -1069,7 +1169,10 @@ function viewHome() {
   }
   const hour = new Date().getHours();
   const hello = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  const helloT = T(hello);
+  /* The greeting is in the language learnt in the French course (Bonjour, Bonsoir), with the learner's name if known. */
+  const helloT = FRENCH_COURSE ? (hour < 18 ? "Bonjour" : "Bonsoir") : T(hello);
+  const name = learnerName();
+  const greet = `${helloT}${name ? `, ${name}` : ""}${FRENCH_COURSE ? " !" : "!"}`;
   const first = S.xp === 0;
   const todayMin = Math.round(((log.sec || 0) / 60) + (log.ext || 0));
 
@@ -1077,9 +1180,9 @@ function viewHome() {
   <section class="hero">
     <div class="hero-main">
       <p class="small" style="margin:0 0 6px;opacity:.8">${new Date().toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" })}</p>
-      <h1>${helloT}, Stella! ${sayBtn(hello + ", Stella!")}</h1>
+      <h1>${esc(greet)} ${sayBtn(FRENCH_COURSE ? greet : hello + (name ? ", " + name : "") + "!")}</h1>
       <p>${first
-        ? (isFr() ? "Bienvenue dans ton cours d'anglais. L'interface est en français ; tout ce que tu apprends est en anglais : <b>clique sur un mot anglais</b> pour voir sa traduction, ou sur <b>FR</b> pour traduire une phrase entière. Tu peux passer l'interface en anglais en haut de la page." : `Welcome to your English course. Everything here is in English: <b>click on any word</b> to see its translation, or on <b>FR</b> to translate a whole sentence. Prefer the menus in French? Click <b>EN</b> at the top of the page.${fr("Bienvenue dans ton cours d'anglais. Tout est en anglais : clique sur n'importe quel mot pour voir sa traduction, ou sur FR pour traduire une phrase entière. Tu préfères les menus en français ? Clique sur EN en haut de la page.")}`)
+        ? APP.welcome ? APP.welcome[lang()] || APP.welcome.en : (isFr() ? "Bienvenue dans ton cours d'anglais. L'interface est en français ; tout ce que tu apprends est en anglais : <b>clique sur un mot anglais</b> pour voir sa traduction, ou sur <b>FR</b> pour traduire une phrase entière. Tu peux passer l'interface en anglais en haut de la page." : `Welcome to your English course. Everything here is in English: <b>click on any word</b> to see its translation, or on <b>FR</b> to translate a whole sentence. Prefer the menus in French? Click <b>EN</b> at the top of the page.${fr("Bienvenue dans ton cours d'anglais. Tout est en anglais : clique sur n'importe quel mot pour voir sa traduction, ou sur FR pour traduire une phrase entière. Tu préfères les menus en français ? Clique sur EN en haut de la page.")}`)
         : allDone ? T("Today's programme is done. Well done! Anything extra is a bonus.")
         : T("You've done {a} of {b} activities today ({m} min of English). Shall we continue?", { a: doneCount, b: tasks.length, m: todayMin })}</p>
       ${up && !first ? `<p class="hero-next">${ic(up.icon)}<span>${T(allDone ? "If you'd like to go on:" : "Next:")} <b>${esc(up.label)}</b></span></p>` : ""}
@@ -1221,10 +1324,17 @@ function viewMore(part) {
       ["#/methode", "lightbulb", "B1", "The method", "The learning techniques best supported by research, why they work, and where you'll find them in the app."]
     ]]
   ];
+  /* Written out in both interface languages, not through T(): the French course swaps the language names. */
+  const courses = [
+    ["index.html", "en", isFr() ? "Cours d'anglais" : "English course", isFr() ? "Du A1 au C2, pour les francophones" : "From A1 to C2, for French speakers", "graduation-cap", "B1"],
+    ["francais.html", "fr", isFr() ? "Cours de français" : "French course", isFr() ? "Du A1 au C2, pour les anglophones" : "From A1 to C2, for English speakers", "languages", "A2"]
+  ];
   app.innerHTML = `
     <h1>${T("More")}</h1>
     <p class="muted">${T("Everything that isn't in the main tabs: exams, practice tools, your level, university skills and the settings. The course already brings you to these tools when they're useful.")}</p>
-    ${groups.map(([h, items]) => `<h2 class="tools-h">${T(h)}</h2>
+    <h2 class="tools-h">${T("My courses")}</h2>
+    <div class="tools">${courses.map(([href, id, title, d, icon, lv]) => `<a class="tool ${id === APP.id ? "tool-here" : ""}" href="${id === APP.id ? "#/cours" : href}">${tile(icon, lv)}<span><b>${esc(title)}</b><span class="muted">${id === APP.id ? T("You are here") : esc(d)}</span></span>${ic("arrow-right", "tool-go")}</a>`).join("")}</div>
+    ${groups.map(([h, items]) => [h, items.filter(([href]) => hasTool(href.slice(2)))]).filter(([, items]) => items.length).map(([h, items]) => `<h2 class="tools-h">${T(h)}</h2>
       <div class="tools">${items.map(([href, icon, lv, title, d]) => `<a class="tool" href="${href}">${tile(icon, lv)}<span><b>${T(title)}</b><span class="muted">${T(d)}</span></span>${ic("arrow-right", "tool-go")}</a>`).join("")}</div>`).join("")}
     <h2 class="tools-h" id="settings">${ic("settings")} ${T("Settings: language, voice and backup")}</h2>
     <section class="card">${settingsHtml()}</section>`;
@@ -1233,6 +1343,9 @@ function viewMore(part) {
 }
 function settingsHtml() {
   return `<div class="stack">
+      <label class="small muted" for="nameIn">${T("Your first name (for the greeting)")}</label>
+      <input id="nameIn" class="field" value="${esc(S.name || "")}" placeholder="${esc(APP.learner || "")}" autocomplete="given-name">
+      <hr class="sep">
       <label class="small muted" for="langSel2">${T("Interface language")}</label>
       <select id="langSel2" class="field">${LANGS.map(([k, n]) => `<option value="${k}" ${lang() === k ? "selected" : ""}>${n}</option>`).join("")}</select>
       <p class="small muted" style="margin:0">${T("Only the menus, buttons and explanations change: what you learn is always in English.")}</p>
@@ -1256,8 +1369,9 @@ function settingsHtml() {
     </div>`;
 }
 function bindSettings() {
+  $("#nameIn").onchange = (e) => { S.name = e.target.value.trim(); save(); toast(T("Saved")); };
   $("#langSel2").onchange = (e) => setLang(e.target.value);
-  $("#voiceSel").onchange = (e) => { S.voice = e.target.value; save(); speak("Hello Stella!"); };
+  $("#voiceSel").onchange = (e) => { S.voice = e.target.value; save(); speak(FRENCH_COURSE ? "Bonjour ! Voici ma voix." : "Hello Stella!"); };
   $("#rate").oninput = (e) => { S.rate = +e.target.value; $("#rateVal").textContent = S.rate; save(); };
   $("#exportBtn").onclick = () => {
     const blob = new Blob([JSON.stringify(S, null, 2)], { type: "application/json" });
@@ -1381,6 +1495,7 @@ function viewCourse() {
     <a class="card ear-cta" href="#/competences" style="margin-top:12px">${tile("graduation-cap", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Academic skills, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} chapters taught as in a university English course: note-taking, essays, data, presentations, seminars, sources, critical thinking, reports, mediation, synthesis, research writing, exams.", { n: ACAD().length })}</p></div><span class="muted small">${ACAD().filter((c) => acadDone(c.id)).length} / ${ACAD().length}</span>${ic("arrow-right")}</a>
     ${LV.map((L) => {
       const units = COURSE.filter((u) => u.level === L);
+      if (!units.length) return ""; /* a level still being written (French course) */
       const done = units.filter(unitDone).length;
       const ex = S.exams[L];
       return `<details class="level-block" ${L === currentLevel() || done ? "open" : ""}>
@@ -1603,7 +1718,7 @@ function viewUnitTest(id) {
   });
 }
 function viewExam(L) {
-  if (!LV.includes(L)) return viewCourse();
+  if (!LV.includes(L) || !COURSE.some((u) => u.level === L)) return viewCourse();
   const lessons = LESSONS.filter((l) => l.level === L);
   const themes = VOCAB.filter((t) => t.level === L && !t.toeic);
   const rs = shuffle(READINGS.filter((r) => r.level === L)).slice(0, 2);
@@ -1643,9 +1758,9 @@ function viewCertificate(L) {
     ${back("#/cours", "Course")}
     <section class="cert">
       <div class="cert-badge">${L}</div>
-      <p class="small muted" style="margin:0">${T("Step by Step · English course")}</p>
+      <p class="small muted" style="margin:0">${FRENCH_COURSE ? "Pas à pas · French course" : T("Step by Step · English course")}</p>
       <h1 style="margin:8px 0">${T("Level {l} completed", { l: L })}</h1>
-      <p class="en" style="font-size:20px">Stella has completed level ${L} (${esc(lv.name)}) and passed the level exam with <b>${p}%</b>.</p>
+      <p class="en" style="font-size:20px">${FRENCH_COURSE ? `${esc(learnerName() || "J'ai")}${learnerName() ? " a" : ""} terminé le niveau ${L} (${esc(lv.name)}) et réussi l'examen de niveau avec <b>${p} %</b>.` : `${esc(learnerName() || "I")} ${learnerName() ? "has" : "have"} completed level ${L} (${esc(lv.name)}) and passed the level exam with <b>${p}%</b>.`}</p>
       <ul class="checklist" style="text-align:left;max-width:520px;margin:16px auto">${loc(lv, "can").map((c) => `<li>${ic("check")}<span>${esc(c)}</span></li>`).join("")}</ul>
       <p class="muted small">${T("This is a personal record of your progress, not an official certificate. For an official result, take the TOEIC or a Cambridge exam.")}</p>
       ${next ? `<a class="btn btn-primary" href="#/cours">${T("Start level {l}", { l: next })} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/toeic">${T("Prepare the TOEIC")} ${ic("arrow-right")}</a>`}
@@ -1842,7 +1957,7 @@ function viewGrammarRef(lv) {
 
 function renderBody(html) {
   return html
-    .replace(/<s-en>([\s\S]*?)<\/s-en>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
+    .replace(/<s-(?:en|fr)>([\s\S]*?)<\/s-(?:en|fr)>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
     .replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`)
     .replace(/<st>/g, '<span class="st">').replace(/<\/st>/g, "</span>")
     .replace(/<ipa>([\s\S]*?)<\/ipa>/g, (_, t) => ipaSpan(t))
@@ -2056,8 +2171,8 @@ function viewVocab() {
     </div>
     <div class="row" style="margin-bottom:4px"><h2 style="margin:0">${T("Topics")}</h2><span class="spacer"></span><span class="muted small">${T("{a} mastered · {b} in progress", { a: mastered(), b: learning() })}</span></div>
     ${levelGroups(VOCAB.filter((t) => !t.toeic), themeCard, { grid: "lib-list", started: (its) => its.some((t) => themeStats(t).seen), stat: (its) => T("{n} words", { n: its.reduce((a, t) => a + t.words.length, 0) }) })}
-    <div class="section-title"><h2>${ic("briefcase")} ${T("Business English for the TOEIC")}</h2></div>
-    <div class="grid lib-list">${VOCAB.filter((t) => t.toeic).map(themeCard).join("")}</div>`;
+    ${VOCAB.some((t) => t.toeic) ? `<div class="section-title"><h2>${ic("briefcase")} ${T("Business English for the TOEIC")}</h2></div>
+    <div class="grid lib-list">${VOCAB.filter((t) => t.toeic).map(themeCard).join("")}</div>` : ""}`;
 }
 function themeCard(t) {
   const s = themeStats(t);
@@ -2190,7 +2305,7 @@ function viewFlash(mode, themeId) {
   onCleanup(() => document.removeEventListener("keydown", onKey));
   render();
 }
-const normAns = (s) => s.toLowerCase().replace(/[’`]/g, "'").replace(/\((uk|us)\)/g, "").replace(/[.?!,…]/g, "").replace(/\s+/g, " ").trim();
+const normAns = (s) => fold(s.toLowerCase()).replace(/[’`]/g, "'").replace(/\((uk|us)\)/g, "").replace(/[.?!,…]/g, "").replace(/\s+/g, " ").trim();
 function variants(en) {
   const out = new Set();
   en.split(" / ").forEach((v) => { const n = normAns(v); out.add(n); out.add(n.replace(/^to /, "")); });
@@ -2263,8 +2378,10 @@ function viewWrite(themeId) {
       const vs = variants(w.en);
       const exact = vs.has(g);
       const close = !exact && g.length > 3 && Array.from(vs).some((v) => lev(g, v) === 1);
-      return { ok: exact || close, say: w.en,
-        html: `${exact ? ic("circle-check") + " " + T("Perfect!") : close ? ic("circle-check") + " " + T("Almost! Watch the spelling:") : ic("circle-x") + " " + T("The answer was:")} <b class="en">${esc(w.en)}</b> ${sayBtn(w.en)}${w.ex ? `<br><span class="small en" style="font-style:italic">${esc(w.ex)}</span>` : ""}` };
+      /* French nouns: the right word without its article counts, but the article (which gives the gender) is shown. */
+      const noArt = FRENCH_COURSE && !exact && !close && Array.from(vs).some((v) => v.replace(/^(?:(?:les|le|la|une|un|des|du)\s+|l'|d')/, "") === g.replace(/^(?:(?:les|le|la|une|un|des|du)\s+|l'|d')/, ""));
+      return { ok: exact || close || noArt, say: w.en,
+        html: `${exact ? ic("circle-check") + " " + T("Perfect!") : close ? ic("circle-check") + " " + T("Almost! Watch the spelling:") : noArt ? ic("circle-check") + " " + T("Good! Learn it with its article:") : ic("circle-x") + " " + T("The answer was:")} <b class="en">${esc(w.en)}</b> ${sayBtn(w.en)}${w.ex ? `<br><span class="small en" style="font-style:italic">${esc(w.ex)}</span>` : ""}` };
     },
     onEnd: (score) => addXP(score * 2, "vocab")
   });
@@ -2480,11 +2597,11 @@ function viewReading(id, mode) {
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const CONTRACTIONS = { "i'm": "i am", "you're": "you are", "he's": "he is", "she's": "she is", "it's": "it is", "we're": "we are", "they're": "they are", "that's": "that is", "what's": "what is", "there's": "there is", "isn't": "is not", "aren't": "are not", "don't": "do not", "doesn't": "does not", "didn't": "did not", "can't": "can not", "cannot": "can not", "won't": "will not", "i'd": "i would", "i'll": "i will", "we'll": "we will", "you'd": "you would", "let's": "let us", "wasn't": "was not", "where's": "where is", "i've": "i have", "you've": "you have", "we've": "we have", "haven't": "have not", "hasn't": "has not", "shouldn't": "should not", "wouldn't": "would not", "couldn't": "could not" };
 function normSpeech(s) {
-  return s.toLowerCase().replace(/[’`]/g, "'").replace(/-/g, " ")
-    .replace(/\d+/g, (d) => numWords(+d))
+  return fold(s.toLowerCase()).replace(/[’`]/g, "'").replace(/-/g, " ")
+    .replace(/\d+/g, (d) => fold(numWords(+d)))
     .replace(/[^a-z' ]/g, " ").split(/\s+/).filter(Boolean)
-    .flatMap((w) => (CONTRACTIONS[w] || w).split(" "))
-    .map((w) => w.replace(/'s$/, "").replace(/'/g, ""));
+    .flatMap((w) => (FRENCH_COURSE ? w : CONTRACTIONS[w] || w).split(" "))
+    .map((w) => (FRENCH_COURSE ? w : w.replace(/'s$/, "")).replace(/'/g, ""));
 }
 function compare(target, heard) {
   const t = normSpeech(target), h = normSpeech(heard);
@@ -2551,7 +2668,7 @@ function viewDialogue(id, mode) {
       const mic = $("#rpMic");
       if (mic.classList.contains("listening")) { try { rec.stop(); } catch (e) {} return; }
       stopAudio();
-      rec = new SR(); rec.lang = "en-US"; rec.interimResults = false; rec.maxAlternatives = 5;
+      rec = new SR(); rec.lang = APP.srLang; rec.interimResults = false; rec.maxAlternatives = 5;
       rec.onstart = () => mic.classList.add("listening");
       rec.onend = () => mic.classList.remove("listening");
       rec.onerror = (e) => toast(T(e.error === "not-allowed" ? "Allow microphone access in your browser" : e.error === "no-speech" ? "I didn't hear anything, try a bit louder" : "Microphone problem, try again"));
@@ -2737,7 +2854,7 @@ function viewSpeak(set, backHref, backLabel, onDone) {
       if (listening) { try { rec.stop(); } catch (e) {} return; }
       stopAudio();
       rec = new SR();
-      rec.lang = "en-US"; rec.interimResults = false; rec.maxAlternatives = 5;
+      rec.lang = APP.srLang; rec.interimResults = false; rec.maxAlternatives = 5;
       const mic = $("#mic");
       rec.onstart = () => { listening = true; mic.classList.add("listening"); $("#micHint").textContent = T("I'm listening… speak now"); };
       rec.onend = () => { listening = false; if ($("#mic")) { mic.classList.remove("listening"); $("#micHint").textContent = T("Press and say the sentence in English"); } };
@@ -2844,7 +2961,7 @@ function viewPrompt(id) {
     $("#after").innerHTML = "";
     timer = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); tEl.textContent = mmss(s); tEl.classList.toggle("reached", s >= rounds[round]); }, 250);
     if (SR) {
-      rec = new SR(); rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true;
+      rec = new SR(); rec.lang = APP.srLang; rec.continuous = true; rec.interimResults = true;
       rec.onresult = (e) => {
         let interim = "";
         for (let k = e.resultIndex; k < e.results.length; k++) { const r = e.results[k]; if (r.isFinal) finalText += r[0].transcript.trim() + " "; else interim += r[0].transcript; }
@@ -4914,6 +5031,22 @@ function viewBooks() {
 
 /* ================= Router ================= */
 const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "plus", methode: "plus", lecons: "plus", "revision-grammaire": "plus", grammaire: "plus", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "plus", oreille: "oral", comprehension: "oral", contexte: "cours", lexique: "vocabulaire", prononciation: "oral", competences: "plus", placement: "plus", bilan: "plus", grilles: "plus", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "plus", livres: "plus", plus: "plus" };
+/* Tools a course doesn't have yet (the French course grows level by level): their links disappear and their pages
+   lead to More. */
+const HAS = {
+  toeic: () => (TOEIC.parts || []).length > 0, livres: () => BOOKS.length > 0, prononciation: () => PRON().length > 0,
+  comprehension: () => LAB().length > 0, oreille: () => SOUNDS.length > 0, conversation: () => !!window.CONVERSATION,
+  ecoute: () => !!window.LISTENING, placement: () => !!window.PLACEMENT, bilan: () => !!window.PLACEMENT || CANDO.length > 0,
+  grilles: () => CANDO.length > 0, competences: () => ACAD().length > 0, grammaire: () => GRAMMAR_REF.length > 0,
+  lexique: () => Object.keys(LEX()).length > 0, irreguliers: () => IRREGULARS.length > 0, methode: () => METHODS.length > 0
+};
+const hasTool = (k) => !HAS[k] || HAS[k]();
+function hideMissingTools() {
+  $$("main a[href^='#/'], .footer a[href^='#/']").forEach((a) => {
+    const m = a.getAttribute("href").match(/^#\/([a-z-]+)/);
+    if (m && !hasTool(m[1])) a.remove();
+  });
+}
 function route() {
   try { trackPath(); } catch (e) {}
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
@@ -4977,7 +5110,8 @@ function route() {
     livres: viewBooks,
     plus: () => viewMore(b)
   };
-  (views[a] || viewHome)();
+  (hasTool(a) ? views[a] || viewHome : viewMore)();
+  hideMissingTools();
   const nav = NAV_OF[a] || "home";
   applyStatic();
   $$("[data-nav]").forEach((l) => l.classList.toggle("active", l.dataset.nav === nav));

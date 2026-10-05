@@ -1112,5 +1112,8 @@ window.UI_TEXT.fr = {
   "Take the placement test: it tells you which level to start at. The grammar part alone takes about {m} min.": "Passe le test de placement : il t'indique à quel niveau commencer. La partie grammaire seule prend environ {m} min.",
   "2. How much time per day?": "2. Combien de temps par jour ?",
   "Today's programme adapts to it, and you can change it at any time. Then choose a fixed moment in “My routine”: that's what turns a good intention into a habit.": "Le programme du jour s'y adapte, et tu peux le changer quand tu veux. Choisis ensuite un moment fixe dans « Ma routine » : c'est ce qui transforme une bonne intention en habitude.",
-  "All the texts": "Tous les textes"
+  "All the texts": "Tous les textes",
+  "My courses": "Mes cours",
+  "Your first name (for the greeting)": "Ton prénom (pour le message d'accueil)",
+  "Good! Learn it with its article:": "Bien ! Apprends-le avec son article :"
 };
