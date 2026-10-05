@@ -37,5 +37,10 @@ window.DICT_TARGET = {
   "tout le monde": "everybody", "tous": "all, everyone", "tout": "all, everything", "super": "great", "bienvenue": "welcome",
   "content": "happy, pleased", "contente": "happy, pleased", "fatigué": "tired", "fatiguée": "tired", "nouveau": "new", "nouvelle": "new; piece of news",
   "petit": "small, little", "petite": "small, little", "grand": "big, tall", "grande": "big, tall", "drôle": "funny", "sympa": "nice, friendly",
+  "aider": "to help", "adorer": "to love, to adore", "voir": "to see", "montrer": "to show", "présenter": "to introduce, to present",
+  "garçon": "boy; waiter (old-fashioned)", "seulement": "only", "pas encore": "not yet", "même": "same; even", "en même temps": "at the same time",
+  "mignon": "cute", "mignonne": "cute", "plaisir": "pleasure", "avec plaisir": "with pleasure, I'd love to", "dimanche": "Sunday", "samedi": "Saturday",
+  "fête": "party; holiday, celebration", "gauche": "left", "devant": "in front of", "derrière": "behind", "à côté": "next to it, nearby", "côté": "side",
+  "fatigués": "tired", "grands": "big, tall", "petits": "small", "chez moi": "at my place", "vieux": "old", "vieille": "old", "noir": "black", "noire": "black",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
