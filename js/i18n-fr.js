@@ -954,7 +954,7 @@ window.UI_TEXT.fr = {
   "{n} points": "{n} points",
   "Listening lab": "Atelier d'écoute",
   "Listening lab:": "Atelier d'écoute :",
-  "{n} recordings, one per unit from A1 to C1, with several voices and accents: main idea, details, every word, then repeat.": "{n} enregistrements, un par unité du A1 au C1, avec plusieurs voix et accents : l'idée générale, les détails, chaque mot, puis répéter.",
+  "{n} recordings, one per unit from A1 to C2, with several voices and accents: main idea, details, every word, then repeat.": "{n} enregistrements, un par unité du A1 au C2, avec plusieurs voix et accents : l'idée générale, les détails, chaque mot, puis répéter.",
   "Before you listen": "Avant d'écouter",
   "Listen to the key words. Then take ten seconds to imagine the conversation: who says what? Predicting makes listening much easier.": "Écoute les mots-clés. Puis prends dix secondes pour imaginer la conversation : qui dit quoi ? Anticiper rend l'écoute beaucoup plus facile.",
   "Slower": "Plus lent",
@@ -1076,5 +1076,9 @@ window.UI_TEXT.fr = {
   "Your words are up to date": "Tes mots sont à jour",
   "Unit {n} dictation": "Dictée de l'unité {n}",
   "{n} course activity done today": "{n} activité du cours faite aujourd'hui",
-  "{n} course activities done today": "{n} activités du cours faites aujourd'hui"
+  "{n} course activities done today": "{n} activités du cours faites aujourd'hui",
+  "{a}/{b} activities": "{a}/{b} activités",
+  "Activity {a} of {b}": "Activité {a} sur {b}",
+  "{n} card practised, and you knew it well.": "{n} carte travaillée, et tu la connaissais bien.",
+  "{n} cards practised, and you knew them all well.": "{n} cartes travaillées, et tu les connaissais toutes bien."
 };

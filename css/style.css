@@ -129,6 +129,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 40px; outline: none
   padding: 20px; box-shadow: var(--shadow);
 }
 .card + .card { margin-top: 16px; }
+.grid > .card + .card { margin-top: 0; } /* in a grid, the gap already spaces the cards */
 .grid { display: grid; gap: 16px; }
 .grid-2 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .grid-3 { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
@@ -563,6 +564,9 @@ details.card > summary::-webkit-details-marker { display: none; }
 .step-dots i { width: 22px; height: 6px; border-radius: 99px; background: var(--surface-2); }
 .step-dots i.on { background: var(--green); }
 .step-dots span { margin-left: 6px; }
+.unit-prog { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
+.unit-prog .progress { flex: 1; height: 6px; }
+.unit-prog span { white-space: nowrap; }
 .exam-card { text-decoration: none; color: inherit; display: block; border-style: dashed; }
 .exam-card.done { border-style: solid; border-color: var(--green); }
 .unit-head { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
@@ -801,8 +805,8 @@ mark.wm sup { font: 700 11px var(--font); color: var(--ink-soft); margin-left: 2
 @media (max-width: 1180px) { .topbar .next-top { margin-left: auto; } .topbar-stats { margin-left: 0; } }
 @media (max-width: 640px) {
   .next-top { display: none !important; }
-  .next-fab:not([hidden]) { display: inline-flex; position: fixed; right: 16px; bottom: calc(78px + env(safe-area-inset-bottom)); z-index: 19; }
-  .next-fab .next-what { display: none; }
+  /* On a phone, a slim bar just above the tabs, with the destination written out. */
+  .next-fab:not([hidden]) { display: flex; position: fixed; left: 12px; right: 12px; bottom: calc(70px + env(safe-area-inset-bottom)); z-index: 19; max-width: none; justify-content: center; padding: 9px 14px; font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .next-btn.fresh { animation: none; } }
 .hero-next { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 14px; }
@@ -829,4 +833,33 @@ mark.wm sup { font: 700 11px var(--font); color: var(--ink-soft); margin-left: 2
 .brand-name { white-space: nowrap; }
 .next-top { max-width: 300px; flex: none; }
 @media (max-width: 1440px) { .next-top { max-width: 220px; } .topbar { gap: 16px; } }
-@media (max-width: 640px) { main { padding-bottom: 96px; } }
+@media (max-width: 640px) { main { padding-bottom: 120px; } }
+/* The Continue button at the end of an activity: what comes next, written out. */
+.btn-cont { max-width: 100%; }
+.btn-cont .cont-what { font-weight: 500; opacity: .9; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn-cont .cont-what::before { content: "· "; }
+@media (max-width: 640px) { .btn-cont .cont-what { max-width: 150px; } }
+
+/* Where you are in the course, on every activity of a unit */
+.path-strip { background: var(--surface); border-bottom: 1px solid var(--line); }
+.path-strip[hidden] { display: none; }
+.path-strip .ps-in { max-width: 1040px; margin: 0 auto; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+.ps-unit { display: inline-flex; align-items: center; gap: 8px; min-width: 0; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14px; }
+.ps-unit svg.lucide { width: 16px; height: 16px; flex: none; color: var(--ink-soft); }
+.ps-unit span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ps-unit:hover span:last-child { text-decoration: underline; }
+.ps-step { margin-left: auto; white-space: nowrap; font-size: 13px; color: var(--ink-soft); }
+.path-strip .progress { width: 110px; height: 6px; flex: none; }
+@media (max-width: 640px) { .path-strip .progress { display: none; } .ps-unit .tag { display: none; } }
+
+/* Home: today's programme is the main column, the small cards sit beside it */
+.home-grid { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) {
+  .home-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+  .home-grid > .home-main { grid-row: span 3; }
+}
+@media (max-width: 640px) {
+  .stats { gap: 10px; }
+  .stat { padding: 12px 14px; }
+  .stat b { font-size: 24px; }
+}

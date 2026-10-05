@@ -132,8 +132,8 @@ function streak() {
 }
 const GOALS = {
   15: { words: 10, steps: 1, speak: 5, free: 1, dictee: 0, ext: 0 },
-  30: { words: 15, steps: 2, speak: 8, free: 1, dictee: 5, ext: 0 },
-  60: { words: 25, steps: 3, speak: 10, free: 2, dictee: 10, ext: 20 }
+  30: { words: 15, steps: 3, speak: 8, free: 1, dictee: 5, ext: 0 },
+  60: { words: 25, steps: 4, speak: 10, free: 2, dictee: 10, ext: 20 }
 };
 const goal = () => GOALS[S.goal] || GOALS[30];
 const totalHours = () => (S.siteSec || 0) / 3600 + (S.extMin || 0) / 60;
@@ -202,6 +202,8 @@ const dueIds = () => Object.keys(S.srs).filter((id) => S.srs[id].due <= today() 
 const mastered = () => Object.keys(S.srs).filter((id) => S.srs[id].box >= 4).length;
 const learning = () => Object.keys(S.srs).filter((id) => S.srs[id].box < 4).length;
 function gradeWord(id, g) {
+  /* Reviews (words already met) are counted apart from new words: only they make today's "Study" task. */
+  if (S.srs[id]) { const L = todayLog(); L.rev = (L.rev || 0) + 1; }
   const c = S.srs[id] || { box: 0, due: today(), n: 0 };
   c.n++;
   if (g === "again") { c.box = 0; c.due = today(); }
@@ -514,8 +516,46 @@ function renderNext() {
     if (fresh) { el.classList.remove("fresh"); void el.offsetWidth; el.classList.add("fresh"); }
   });
 }
+/* The main button at the end of an activity: straight on to what the Next button would open, so the thread never
+   sends you back to a hub page first. Falls back to the given button when there's nothing next or it's this page. */
+function continueBtn(fallback) {
+  let up = null;
+  try { up = nextUp(); } catch (e) {}
+  if (!up || up.href === location.hash) return fallback || "";
+  return `<a class="btn btn-primary btn-cont" href="${up.href}" title="${esc(T("Next") + ": " + up.label)}"><span class="cont-k">${T("Continue")}</span><span class="cont-what">${esc(up.label)}</span>${ic("arrow-right")}</a>`;
+}
+/* Where the current page sits in a unit's path, if it is one of its activities. */
+const PATH_ROUTES = /^#\/(apprendre|lecons|contexte|lexique|lecture|comprehension|repeter|oral|dialogue|parler|ecrit|dictee-unite|test)\//;
+function pathContext() {
+  const h = location.hash;
+  if (!PATH_ROUTES.test(h)) return null;
+  const cu = currentUnit();
+  for (const u of [cu, ...COURSE.filter((x) => x !== cu)]) {
+    const p = unitPath(u);
+    const i = p.findIndex((x) => x.href === h);
+    if (i >= 0) return { u, p, i };
+  }
+  return null;
+}
+/* A slim strip under the top bar on every activity of the course: which unit, which step, how far. */
+function renderPathStrip() {
+  const el = $("#pathStrip");
+  if (!el) return null;
+  let ctx = null;
+  try { ctx = pathContext(); } catch (e) {}
+  el.hidden = !ctx;
+  if (!ctx) { el.innerHTML = ""; return null; }
+  const { u, p, i } = ctx;
+  const done = p.filter((x) => x.done).length;
+  el.innerHTML = `<div class="ps-in"><a class="ps-unit" href="#/unite/${u.id}">${ic("arrow-left")}${levelTag(u.level)}<span>${T("Unit")} ${unitNum(u)} · ${esc(loc(u, "title"))}</span></a><span class="ps-step">${T("Activity {a} of {b}", { a: i + 1, b: p.length })}</span><div class="progress" title="${T("{a}/{b} activities", { a: done, b: p.length })}"><div style="width:${pct(done, p.length)}%"></div></div></div>`;
+  /* The page's own link back to the same unit would say the same thing twice. */
+  $$("main .back").forEach((b) => { if (b.getAttribute("href") === `#/unite/${u.id}`) b.style.display = "none"; });
+  return ctx;
+}
 function renderTopStats() {
   renderNext();
+  const ctx = renderPathStrip();
+  if (ctx) $$("[data-nav]").forEach((l) => l.classList.toggle("active", l.dataset.nav === "cours"));
   $("#topStats").innerHTML = `<label class="pill lang-pill" title="${T("Interface language")}">${ic("languages")}<select id="langSel" aria-label="${T("Interface language")}">${LANGS.map(([k]) => `<option value="${k}" ${lang() === k ? "selected" : ""}>${k.toUpperCase()}</option>`).join("")}</select></label><span class="pill" title="${T("Day streak")}">${ic("flame", "c-accent")} ${streak()}</span><span class="pill" title="${T("Experience points")}">${ic("star", "c-yellow")} ${S.xp}</span>`;
   $("#langSel").onchange = (e) => setLang(e.target.value);
 }
@@ -980,7 +1020,7 @@ function dailyTasks() {
   const promptId = unit.prompt || (PROMPTS.find((p) => p.level === cur) || PROMPTS[0]).id;
   /* New words come with the course (each unit's themes, just before their lesson); this task is only the spaced review. */
   const tasks = [];
-  if (due > 0 || (log.vocab || 0) > 0) tasks.push({ pillar: T("Study"), done: due === 0 || (log.vocab || 0) >= G.words * 2, href: "#/reviser", icon: "layers",
+  if (due > 0 || (log.rev || 0) > 0) tasks.push({ pillar: T("Study"), done: due === 0 || (log.rev || 0) >= G.words * 2, href: "#/reviser", icon: "layers",
     t: due > 0 ? T("Review your words ({n} due)", { n: due }) : T("Your words are up to date"), d: T("spaced repetition") });
   tasks.push(
     nx && pathToday() >= G.steps
@@ -990,12 +1030,16 @@ function dailyTasks() {
           t: nx ? nx.label : T("Course complete"), d: nx && nx.unit ? `${T("Unit")} ${unitNum(nx.unit)} · ${loc(nx.unit, "title")}` : T("End of level"), n: `${Math.min(pathToday(), G.steps)}/${Tn(G.steps, "{n} activity", "{n} activities")}` });
   const dueM = dueMistakes().length;
   if (dueL.length || dueM) tasks.push({ pillar: T("Review"), done: (log.review || 0) >= 1, href: "#/revision-grammaire", icon: "shuffle", t: `${T("Grammar review")} (${[dueL.length ? Tn(dueL.length, "{n} lesson", "{n} lessons") : "", dueM ? Tn(dueM, "{n} mistake", "{n} mistakes") : ""].filter(Boolean).join(" + ")})`, d: T("mixed practice") });
-  const rpU = RP().find((x) => unit.lessons.includes(x.lesson) && (!(S.dialogues || {})[x.id] || S.dialogues[x.id].date === today()));
+  /* Speaking and dictation of the day only use what has been taught: a role-play once its lesson is done,
+     the key sentences of a unit whose lessons are done (or of the previous unit, as review). */
+  const rpU = RP().find((x) => unit.lessons.includes(x.lesson) && S.lessons[x.lesson] && (!(S.dialogues || {})[x.id] || S.dialogues[x.id].date === today()));
+  const prevU = COURSE[COURSE.indexOf(unit) - 1];
+  const repU = unit.lessons.every((id) => S.lessons[id]) ? unit : prevU && unitDone(prevU) ? prevU : null;
   if (rpU) tasks.push({ pillar: T("Speak"), done: !!((S.dialogues || {})[rpU.id] && S.dialogues[rpU.id].date === today()), href: `#/dialogue/${rpU.id}`, icon: "messages-square", t: T("{a}: {b}", { a: T("Role-play"), b: loc(rpU, "title") }), d: T("talk to {p}, out loud", { p: rpU.partner }) });
-  else tasks.push(advanced
+  else if (advanced || repU) tasks.push(advanced
     ? { pillar: T("Speak"), done: (log.free || 0) >= G.free, href: `#/parler/${promptId}`, icon: "mic", t: T("Speak freely for 1-2 minutes"), d: T("answer out loud, then compare"), n: G.free > 1 ? `${Math.min(log.free || 0, G.free)}/${G.free}` : "" }
-    : { pillar: T("Speak"), done: (log.speak || 0) >= G.speak, href: unit.speak ? `#/oral/${unit.speak}` : `#/repeter/${unit.id}`, icon: "mic", t: T("Repeat {n} sentences out loud", { n: G.speak }), d: T("listen, repeat, record yourself"), n: `${Math.min(log.speak || 0, G.speak)}/${G.speak}` });
-  if (G.dictee) tasks.push({ pillar: T("Listen"), done: (log.dictee || 0) >= G.dictee, href: "#/dictee", icon: "ear", t: T("Dictation: {n} sentences", { n: G.dictee }), d: T("listen, then write"), n: `${Math.min(log.dictee || 0, G.dictee)}/${G.dictee}` });
+    : { pillar: T("Speak"), done: (log.speak || 0) >= G.speak, href: repU.speak ? `#/oral/${repU.speak}` : `#/repeter/${repU.id}`, icon: "mic", t: T("Repeat {n} sentences out loud", { n: G.speak }), d: T("listen, repeat, record yourself"), n: `${Math.min(log.speak || 0, G.speak)}/${G.speak}` });
+  if (G.dictee && studiedSentences().length >= G.dictee) tasks.push({ pillar: T("Listen"), done: (log.dictee || 0) >= G.dictee, href: "#/dictee", icon: "ear", t: T("Dictation: {n} sentences", { n: G.dictee }), d: T("listen, then write"), n: `${Math.min(log.dictee || 0, G.dictee)}/${G.dictee}` });
   if (G.ext) tasks.push({ pillar: T("Listen"), done: (log.ext || 0) >= G.ext, href: "#ext", icon: "tv", t: T("{n} min of series or podcasts in English", { n: G.ext }), d: T("then add it in “Outside the app”"), n: `${Math.min(log.ext || 0, G.ext)}/${G.ext} min` });
   return tasks;
 }
@@ -1064,8 +1108,8 @@ function viewHome() {
     <p class="small" style="margin:8px 0 0">${Object.keys(placeState()).some((k) => PLACE_SECS.some((x) => x.id === k)) || Object.keys(S.cando || {}).length ? `<a href="#/bilan">${ic("chart-column")} ${T("My skills report")}</a>` : `<a href="#/placement">${ic("compass")} ${T("Not sure where to start? Take the placement test")}</a>`}</p>
   </section>
 
-  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-    <section class="card" style="grid-row:span 3">
+  <div class="grid home-grid">
+    <section class="card home-main">
       <div class="row"><h2 style="margin:0">${T("Today's programme")}</h2><span class="spacer"></span><span class="muted small">${doneCount}/${tasks.length}</span></div>
       <div class="goal-row">
         <span class="small muted">${T("My pace")}</span>
@@ -1078,7 +1122,7 @@ function viewHome() {
           <li>
             <span class="check ${t.done ? "on" : ""}">${t.done ? ic("check") : ic(t.icon)}</span>
             <span class="txt"><span class="pillar">${t.pillar}</span><b>${esc(t.t)}</b><span class="muted small">${esc(t.d)}${t.n && !t.done ? ` · <b>${t.n}</b>` : ""}</span></span>
-            <a class="btn btn-sm ${t.done ? "" : "btn-dark"}" href="${t.href}">${T(t.btn || (t.done ? "Again" : "Go"))}</a>
+            <a class="btn btn-sm ${t.done ? "btn-ghost" : t === tasks.find((x) => !x.done) ? "btn-primary" : ""}" href="${t.href}">${T(t.btn || (t.done ? "Again" : "Go"))}</a>
           </li>`).join("")}
       </ul>
       <p class="muted small" style="margin:12px 0 0">${T("The other tabs (vocabulary, reading, speaking, TOEIC…) are libraries for extra practice, whenever you like: the course doesn't depend on them.")}</p>
@@ -1275,12 +1319,12 @@ function viewCourse() {
         <summary><span class="lvl-sum">${levelTag(L)}<b>${esc(lvName(L))}</b><span class="muted small">${T("{a} / {b} units", { a: done, b: units.length })}${ex != null ? ` · ${T("exam")} ${ex}%` : ""}${placedOut(L) && done < units.length ? ` · ${T("Skipped after the placement test")}` : ""}</span></span>${ic("chevron-down", "chev")}</summary>
         <div class="grid grid-2">
           ${units.map((u) => {
-            const st = unitSteps(u);
-            const n = st.filter((s) => s.done).length;
+            const pa = unitPath(u);
+            const n = pa.filter((a) => a.done).length;
             return `<a class="card unit-card ${unitDone(u) ? "done" : ""}" href="#/unite/${u.id}">
               <div class="row">${tile(u.icon, u.level)}<div style="flex:1;min-width:0"><span class="muted small">${T("Unit")} ${unitNum(u)}</span><h3 style="margin:0">${esc(loc(u, "title"))}</h3></div>${unitDone(u) ? `<span class="tag tag-done">${ic("check")} ${S.units[u.id].test}%</span>` : ""}</div>
               <ul class="mini-can">${loc(u, "can").map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
-              <div class="step-dots">${st.map((s) => `<i class="${s.done ? "on" : ""}" title="${T(s.label)}"></i>`).join("")}<span class="muted small">${n}/${st.length}</span></div>
+              <div class="unit-prog"><div class="progress"><div style="width:${pct(n, pa.length)}%"></div></div><span class="muted small">${T("{a}/{b} activities", { a: n, b: pa.length })}</span></div>
             </a>`;
           }).join("")}
           <a class="card exam-card ${ex >= 70 ? "done" : ""}" href="#/examen/${L}">
@@ -1331,7 +1375,7 @@ function viewUnit(id) {
           return `<li class="pl-item ${a.done ? "done" : ""} ${isNext ? "next" : ""}">
             <span class="pl-num">${a.done ? ic("check") : n}</span>
             <span class="pl-txt"><span class="pillar">${T(a.kind)}${isNext ? ` · ${T("You are here")}` : ""}</span><b>${esc(a.label)}</b></span>
-            <a class="btn btn-sm ${isNext ? "btn-primary" : a.done ? "" : "btn-dark"}" href="${a.href}">${T(isNext ? "Start" : a.done ? "Again" : "Open")}</a>
+            <a class="btn btn-sm ${isNext ? "btn-primary" : a.done ? "btn-ghost" : ""}" href="${a.href}">${T(isNext ? "Start" : a.done ? "Again" : "Open")}</a>
           </li>`;
         }).join("")}</ol>`;
       }).join("")}
@@ -1485,7 +1529,7 @@ function viewUnitTest(id) {
       us.test = Math.max(us.test || 0, p);
       addXP(firstPass ? 30 : 5, "step");
       const next = COURSE[COURSE.indexOf(u) + 1];
-      $("#afterTest").innerHTML = `<a class="btn" href="#/unite/${u.id}">${T("Back to the unit")}</a>${p >= 70 ? (next && next.level === u.level ? `<a class="btn btn-primary" href="#/unite/${next.id}">${T("Unit")} ${unitNum(next)} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/examen/${u.level}">${T("{l} exam", { l: u.level })} ${ic("arrow-right")}</a>`) : `<button class="btn btn-primary" id="retest">${T("Try again")}</button>`}`;
+      $("#afterTest").innerHTML = `<a class="btn" href="#/unite/${u.id}">${T("Back to the unit")}</a>${p >= 70 ? continueBtn(next && next.level === u.level ? `<a class="btn btn-primary" href="#/unite/${next.id}">${T("Unit")} ${unitNum(next)} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/examen/${u.level}">${T("{l} exam", { l: u.level })} ${ic("arrow-right")}</a>`) : `<button class="btn btn-primary" id="retest">${T("Try again")}</button>`}`;
       if ($("#retest")) $("#retest").onclick = () => viewUnitTest(id);
     });
   });
@@ -1827,7 +1871,7 @@ function viewLesson(id) {
         <p style="text-align:center">${scoreMsg(score, total)}${firstTime ? `<br><span class='muted small'>${T("This lesson will come back in your grammar review tomorrow, then less and less often.")}</span>` : ""}</p>
         <div class="row" style="justify-content:center">
           <button class="btn" id="retry">${T("Practise again")}</button>
-          ${u ? `<a class="btn btn-primary" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })} ${ic("arrow-right")}</a>` : next ? `<a class="btn btn-primary" href="#/lecons/${next.id}">${T("Next lesson")} ${ic("arrow-right")}</a>` : ""}
+          ${u ? `<a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a>${continueBtn()}` : next ? `<a class="btn btn-primary" href="#/lecons/${next.id}">${T("Next lesson")} ${ic("arrow-right")}</a>` : ""}
         </div>`;
       $("#retry").onclick = () => { viewLesson(id); $("#startQuiz").click(); $("#quizBox").scrollIntoView({ block: "start" }); };
     });
@@ -1921,8 +1965,8 @@ function viewVocab() {
   const total = VOCAB.reduce((a, t) => a + t.words.length, 0);
   app.innerHTML = `
     <h1>${T("Vocabulary")}</h1>
-    <a class="card ear-cta" href="#/lexique" style="margin:12px 0 0">${tile("puzzle", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Language workshop, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("Collocations, idioms, word formation and sentence transformations for each B2, C1 and C2 unit, as in the Cambridge exams.")}</p></div>${ic("arrow-right")}</a>
     <p class="muted">${T("{n} words and expressions, with <b>spaced repetition</b>: when you know a word, it comes back in 1 day, then 3, 7, 14, 30… Difficult words come back quickly. Words you already know a little are asked from French to English: it's harder, so it works better.", { n: total })}</p>
+    <a class="card ear-cta" href="#/lexique" style="margin:16px 0 0">${tile("puzzle", "C1")}<div style="flex:1;min-width:0"><h3 style="margin:0">${T("Language workshop, B2 to C2")}</h3><p class="muted small" style="margin:4px 0 0">${T("Collocations, idioms, word formation and sentence transformations for each B2, C1 and C2 unit, as in the Cambridge exams.")}</p></div>${ic("arrow-right")}</a>
     <div class="grid grid-3" style="margin:20px 0">
       <div class="card">
         <h2>${ic("rotate-ccw")} ${T("Today's review")}</h2>
@@ -2061,11 +2105,11 @@ function viewFlash(mode, themeId) {
       <div class="card flash-wrap" style="text-align:center">
         ${celebrate()}
         <h2>${T("Session finished!")}</h2>
-        <p class="muted">${Tn(total, "{n} card practised, including {k} you already knew well. The others will come back soon.", "{n} cards practised, including {k} you already knew well. The others will come back soon.", { k: known })}</p>
+        <p class="muted">${(known >= total ? Tn(total, "{n} card practised, and you knew it well.", "{n} cards practised, and you knew them all well.") : Tn(total, "{n} card practised, including {k} you already knew well. The others will come back soon.", "{n} cards practised, including {k} you already knew well. The others will come back soon.", { k: known }))}</p>
         <div class="row" style="justify-content:center">
-          <a class="btn" href="${backHref}">${T("Back")}</a>
           ${themeId && themeId !== "mine" ? `<a class="btn" href="#/ecrire/${themeId}">${ic("keyboard")} ${T("Practise writing")}</a>` : ""}
-          ${u ? `<a class="btn btn-primary" href="#/unite/${u.id}">${T("Unit")} ${unitNum(u)} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/">${T("My programme")} ${ic("arrow-right")}</a>`}
+          ${u ? `<a class="btn" href="#/unite/${u.id}">${T("Unit")} ${unitNum(u)}</a>` : `<a class="btn" href="${backHref}">${T("Back")}</a>`}
+          ${continueBtn(`<a class="btn btn-primary" href="#/">${T("My programme")} ${ic("arrow-right")}</a>`)}
         </div>
       </div>`;
   }
@@ -2336,7 +2380,7 @@ function viewReading(id, mode) {
         <p style="text-align:center">${scoreMsg(score, total)}${listen ? `<br><span class='muted small'>${T("Now read the text and listen again: notice what you missed.")}</span>` : ""}</p>
         <div class="row" style="justify-content:center">
           <a class="btn" href="#/mes-mots">${ic("star")} ${T("My words")}</a>
-          ${u ? `<a class="btn btn-primary" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })} ${ic("arrow-right")}</a>` : nextSame ? `<a class="btn btn-primary" href="#/lecture/${nextSame.id}">${T("Next text")} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/livres">${T("Choose a real book")} ${ic("arrow-right")}</a>`}
+          ${u ? `<a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a>${continueBtn()}` : nextSame ? `<a class="btn btn-primary" href="#/lecture/${nextSame.id}">${T("Next text")} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/livres">${T("Choose a real book")} ${ic("arrow-right")}</a>`}
         </div>`;
     });
   };
@@ -2508,7 +2552,7 @@ function viewDialogue(id, mode) {
       <div class="row" style="justify-content:center">
         <button class="btn" id="rpReplay">${ic("volume-2")} ${T("Listen to the whole conversation")}</button>
         ${speakMode ? `<a class="btn" href="#/dialogue/${d.id}/speak" id="rpAgain">${ic("rotate-ccw")} ${T("Again")}</a>` : `<a class="btn btn-primary" href="#/dialogue/${d.id}/speak">${ic("mic")} ${T("Now without help")}</a>`}
-        ${lesson ? `<a class="btn" href="#/lecons/${lesson.id}">${T("Back to the lesson")}</a>` : `<a class="btn" href="#/oral">${T("More role-plays")}</a>`}
+        ${speakMode ? continueBtn(lesson ? `<a class="btn" href="#/lecons/${lesson.id}">${T("Back to the lesson")}</a>` : `<a class="btn" href="#/oral">${T("More role-plays")}</a>`) : lesson ? `<a class="btn" href="#/lecons/${lesson.id}">${T("Back to the lesson")}</a>` : `<a class="btn" href="#/oral">${T("More role-plays")}</a>`}
       </div>`;
     $("#rpReplay").onclick = (e) => playLines(lines, e.currentTarget);
     if ($("#rpAgain")) $("#rpAgain").onclick = (e) => { e.preventDefault(); viewDialogue(id, "speak"); };
@@ -2523,7 +2567,7 @@ function viewSpeaking() {
     <p class="muted">${T("To speak, you need to hear, then <b>dare to speak out loud</b>. Start by repeating sentences (shadowing), train your ear, then learn to speak freely.")}</p>
     ${SR ? "" : `<div class="card" style="background:var(--yellow-soft);border-color:var(--yellow)">${ic("triangle-alert")} ${T("Your browser doesn't support speech recognition. Use <b>Chrome</b> or <b>Safari</b> to get a score. You can still listen and record yourself.")}</div>`}
     <a class="card ear-cta pron-cta" href="#/prononciation">${tile("audio-lines", "A1")}<div style="flex:1"><h3 style="margin:0">${T("Pronunciation course")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} chapters from A1 to C2: all the sounds and the phonetic alphabet, stress, rhythm, linking, intonation and accents.", { n: PRON().length })}</p></div><span class="muted small">${T("{a} / {b}", { a: PRON().filter((c) => pronDone(c.id)).length, b: PRON().length })}</span>${ic("arrow-right")}</a>
-    <a class="card ear-cta" href="#/comprehension">${tile("headphones", "A2")}<div style="flex:1"><h3 style="margin:0">${T("Listening lab")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} recordings, one per unit from A1 to C1, with several voices and accents: main idea, details, every word, then repeat.", { n: LAB().length })}</p></div><span class="muted small">${LAB().filter((x) => labDone(x.id)).length} / ${LAB().length}</span>${ic("arrow-right")}</a>
+    <a class="card ear-cta" href="#/comprehension">${tile("headphones", "A2")}<div style="flex:1"><h3 style="margin:0">${T("Listening lab")}</h3><p class="muted small" style="margin:4px 0 0">${T("{n} recordings, one per unit from A1 to C2, with several voices and accents: main idea, details, every word, then repeat.", { n: LAB().length })}</p></div><span class="muted small">${LAB().filter((x) => labDone(x.id)).length} / ${LAB().length}</span>${ic("arrow-right")}</a>
     <div class="grid grid-2">
       <a class="card ear-cta" href="#/oreille">${tile("ear", "B1")}<div style="flex:1"><h3 style="margin:0">${T("Train your ear")}</h3><p class="muted small" style="margin:4px 0 0">${T("Ship or sheep? Think or sink? Recognise very similar words, spoken by different voices.")}</p></div>${ic("arrow-right")}</a>
       <a class="card ear-cta" href="#/conversation">${tile("messages-square", "B2")}<div style="flex:1"><h3 style="margin:0">${T("Talk with someone")}</h3><p class="muted small" style="margin:4px 0 0">${T("Real conversations out loud: with Claude at any time, and with real people. Role-plays, debates and exam simulations, A1 to C2.")}</p></div>${ic("arrow-right")}</a>
@@ -3284,7 +3328,7 @@ function viewContext(id) {
       <p style="text-align:center">${scoreMsg(score, total)}</p>
       <p class="muted small">${T("These sentences come from:")}</p>
       <div class="gr-links">${srcs.map((k) => { const [t, sid] = k.split(":"); const r = t === "r" ? READINGS.find((x) => x.id === sid) : labById(sid); return r ? `<a href="#/${t === "r" ? "lecture" : "comprehension"}/${sid}">${ic(t === "r" ? "book-open-text" : "headphones")} ${esc(loc(r, "title"))}</a>` : ""; }).join("")}</div>
-      <div class="row" style="justify-content:center;margin-top:16px"><a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a><button class="btn btn-primary" id="ctxAgain">${T("New sentences")}</button></div>`;
+      <div class="row" style="justify-content:center;margin-top:16px"><a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a><button class="btn" id="ctxAgain">${T("New sentences")}</button>${continueBtn()}</div>`;
     $("#ctxAgain").onclick = () => viewContext(id);
   });
 }
@@ -3484,7 +3528,7 @@ function viewLab(id) {
     $("#labTips").innerHTML = `
       <div class="result-big">${score} / ${total}</div>
       ${LAB_HARD.filter(([k]) => picked.has(k)).map(([, t, tip, link]) => `<div class="tip">${ic("lightbulb", "box-ic")} <b>${T(t)}.</b> ${T(tip)}${link ? ` <a href="${link[0]}">${T(link[1])}</a>` : ""}</div>`).join("")}
-      <div class="row" style="justify-content:center;margin-top:12px">${u ? `<a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a>` : ""}${next ? `<a class="btn btn-primary" href="#/comprehension/${next.id}">${T("Next recording")} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/comprehension">${T("Listening lab")}</a>`}</div>`;
+      <div class="row" style="justify-content:center;margin-top:12px">${u ? `<a class="btn" href="#/unite/${u.id}">${T("Back to Unit {n}", { n: unitNum(u) })}</a>${continueBtn()}` : next ? `<a class="btn btn-primary" href="#/comprehension/${next.id}">${T("Next recording")} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/comprehension">${T("Listening lab")}</a>`}</div>`;
     $("#labFinish").remove();
     $("#labTips").scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -4077,6 +4121,8 @@ function viewReport() {
 }
 
 /* ================= Dictation ================= */
+/* Sentences from the lessons already studied: the daily dictation and repetition only use what was taught. */
+const studiedSentences = () => sentencePool(LESSONS.filter((l) => S.lessons[l.id]));
 function dictPool(L) {
   const maxW = { A1: 8, A2: 11, B1: 14, B2: 18, C1: 22, C2: 26 }[L] || 14;
   const out = [];
@@ -4089,7 +4135,8 @@ function viewDictee(level, unitId) {
   const u = unitId ? COURSE.find((x) => x.id === unitId) : null;
   const L = u ? u.level : LV.includes(level) ? level : currentLevel();
   const N = Math.max(5, goal().dictee || 5);
-  const items = u ? sentencePool(u.lessons.map(lessonById).filter(Boolean)).slice(0, 6) : shuffle(dictPool(L)).slice(0, N);
+  const studied = !u && !level ? studiedSentences() : [];
+  const items = u ? sentencePool(u.lessons.map(lessonById).filter(Boolean)).slice(0, 6) : studied.length >= N ? studied.slice(0, N) : shuffle(dictPool(L)).slice(0, N);
   const backHref = u ? `#/unite/${u.id}` : "#/oral";
   let i = 0, total = 0;
   if (!items.length) { app.innerHTML = `${back(backHref, "Back")}<div class="card empty">${T("No sentences for this level yet.")}</div>`; return; }
@@ -4097,7 +4144,7 @@ function viewDictee(level, unitId) {
     if (i >= items.length) {
       const avg = Math.round(total / items.length);
       if (u) { const us = unitState(u.id); const first = !us.dict; us.dict = Math.max(us.dict || 0, avg); if (first) markStep(); else save(); }
-      app.innerHTML = `${back(backHref, "Back")}<div class="card flash-wrap" style="text-align:center">${celebrate()}<div class="result-big">${avg}%</div><p>${T(avg >= 90 ? "Excellent ear!" : avg >= 70 ? "Very good! Listen again to the sentences where you struggled." : "Keep going: dictation is hard at first, then everything speeds up.")}</p><div class="row" style="justify-content:center"><button class="btn" id="again">${T("New dictation")}</button><a class="btn btn-primary" href="${u ? backHref : "#/"}">${u ? T("Back to Unit {n}", { n: unitNum(u) }) : T("My programme")} ${ic("arrow-right")}</a></div></div>`;
+      app.innerHTML = `${back(backHref, "Back")}<div class="card flash-wrap" style="text-align:center">${celebrate()}<div class="result-big">${avg}%</div><p>${T(avg >= 90 ? "Excellent ear!" : avg >= 70 ? "Very good! Listen again to the sentences where you struggled." : "Keep going: dictation is hard at first, then everything speeds up.")}</p><div class="row" style="justify-content:center"><button class="btn" id="again">${T("New dictation")}</button>${continueBtn(`<a class="btn btn-primary" href="${u ? backHref : "#/"}">${u ? T("Back to Unit {n}", { n: unitNum(u) }) : T("My programme")} ${ic("arrow-right")}</a>`)}</div></div>`;
       $("#again").onclick = () => viewDictee(L, unitId);
       return;
     }
