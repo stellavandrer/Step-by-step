@@ -1027,7 +1027,7 @@ function dailyTasks() {
       ? { pillar: T("Course"), done: true, href: nx.href, icon: "graduation-cap", btn: "Continue",
           t: Tn(pathToday(), "{n} course activity done today", "{n} course activities done today"), d: `${T("Next:")} ${nx.label}` }
       : { pillar: T("Course"), done: !nx, href: nx ? nx.href : "#/cours", icon: "graduation-cap",
-          t: nx ? nx.label : T("Course complete"), d: nx && nx.unit ? `${T("Unit")} ${unitNum(nx.unit)} · ${loc(nx.unit, "title")}` : T("End of level"), n: `${Math.min(pathToday(), G.steps)}/${Tn(G.steps, "{n} activity", "{n} activities")}` });
+          t: nx ? nx.label : T("Course complete"), d: nx && nx.unit ? `${T("Unit")} ${unitNum(nx.unit)} · ${loc(nx.unit, "title")}${nx.min ? ` · ${nx.min} min` : ""}` : T("End of level"), n: `${Math.min(pathToday(), G.steps)}/${Tn(G.steps, "{n} activity", "{n} activities")}` });
   const dueM = dueMistakes().length;
   if (dueL.length || dueM) tasks.push({ pillar: T("Review"), done: (log.review || 0) >= 1, href: "#/revision-grammaire", icon: "shuffle", t: `${T("Grammar review")} (${[dueL.length ? Tn(dueL.length, "{n} lesson", "{n} lessons") : "", dueM ? Tn(dueM, "{n} mistake", "{n} mistakes") : ""].filter(Boolean).join(" + ")})`, d: T("mixed practice") });
   /* Speaking and dictation of the day only use what has been taught: a role-play once its lesson is done,
@@ -1092,6 +1092,18 @@ function viewHome() {
       <div class="stat"><b>${mastered()}</b><span>${T("words mastered · {n} in progress", { n: learning() })}</span></div>
     </div>
   </section>
+
+  ${first ? `<section class="card welcome">
+    <h2 style="margin-top:0">${T("Before you start: two choices")}</h2>
+    <h3>${T("1. Where do you start?")}</h3>
+    <div class="welcome-choices">
+      <a class="welcome-choice" href="${up ? up.href : "#/cours"}">${tile("sprout", "A1")}<span><b>${T("I'm a beginner, or almost")}</b><span class="muted small">${T("Start with Unit 1: the course explains everything from the start.")}</span></span></a>
+      <a class="welcome-choice" href="#/placement">${tile("compass", "B1")}<span><b>${T("I already know some English")}</b><span class="muted small">${T("Take the placement test: it tells you which level to start at. The grammar part alone takes about {m} min.", { m: (PLACE_SECS.find((x) => x.id === "grammar") || { min: 15 }).min })}</span></span></a>
+    </div>
+    <h3>${T("2. How much time per day?")}</h3>
+    <div class="seg" role="group" aria-label="${T("Time per day")}">${[15, 30, 60].map((m) => `<button data-goal="${m}" class="${S.goal === m ? "on" : ""}">${m} min</button>`).join("")}</div>
+    <p class="muted small" style="margin:10px 0 0">${T("Today's programme adapts to it, and you can change it at any time. Then choose a fixed moment in “My routine”: that's what turns a good intention into a habit.")}</p>
+  </section>` : ""}
 
   <section class="card" style="margin-bottom:16px">
     <div class="row"><h2 style="margin:0">${T("Your path to {l}", { l: LV[LV.length - 1] })}</h2><span class="spacer"></span><a class="btn btn-sm" href="#/parcours">${T("Details")} ${ic("arrow-right")}</a></div>
@@ -1161,10 +1173,66 @@ function viewHome() {
       <div class="week" style="margin-top:16px">${week.map((d) => `<div><i class="${d.on ? "on" : ""}"></i>${d.l}</div>`).join("")}</div>
     </section>
   </div>
+`;
 
-  <details class="card" style="margin-top:16px">
-    <summary>${ic("settings")} <span>${T("Settings: language, voice and backup")}</span></summary>
-    <div class="stack" style="margin-top:16px">
+  $$("[data-goal]").forEach((b) => (b.onclick = () => { S.goal = +b.dataset.goal; save(); viewHome(); }));
+  $$("[data-ext]").forEach((b) => (b.onclick = () => {
+    const m = +b.dataset.ext;
+    const d = todayLog();
+    const delta = Math.max(-(d.ext || 0), m);
+    d.ext = (d.ext || 0) + delta;
+    S.extMin = Math.max(0, (S.extMin || 0) + delta);
+    if (delta > 0) { S.xp += Math.round(delta / 5); d.xp += Math.round(delta / 5); toast(T("{n} min of English added", { n: delta })); }
+    save(); viewHome();
+    $("#ext").scrollIntoView({ block: "center" });
+  }));
+  $("#ritualForm").onsubmit = (e) => { e.preventDefault(); S.ritual = { when: $("#rWhen").value }; save(); toast(T("Routine saved")); viewHome(); };
+  if ($("#editRitual")) $("#editRitual").onclick = () => { $("#ritualForm").hidden = false; $("#editRitual").hidden = true; };
+}
+
+/* ================= More: every tool in one place, and the settings ================= */
+function viewMore(part) {
+  const groups = [
+    ["Exams", [["#/toeic", "timer", "B2", "TOEIC preparation", "Each part of the test explained and practised, a short test and a full mock exam with an estimated score."]]],
+    ["Practise", [
+      ["#/lecons", "book-open", "A2", "Lessons", "All the grammar and everyday English lessons from A1 to C2, to open at any time."],
+      ["#/erreurs", "notebook-pen", "A1", "My mistakes", "The questions you got wrong: they come back in your grammar review until you get them right."],
+      ["#/irreguliers", "zap", "B1", "Irregular verbs", T("{n} verbs to know by heart: go, went, gone…", { n: (window.IRREGULARS || []).length || 108 })],
+      ["#/mes-mots", "star", "A2", "My words", "The words you've saved from texts or added yourself, in your reviews like the others."],
+      ["#/lexique", "puzzle", "C1", "Language workshop, B2 to C2", "Collocations, idioms, word formation and sentence transformations for each B2, C1 and C2 unit, as in the Cambridge exams."],
+      ["#/livres", "library", "B2", "Books", "Real books chosen for each level, and how to read them with pleasure."]
+    ]],
+    ["Listen and speak", [
+      ["#/prononciation", "audio-lines", "A1", "Pronunciation course", T("{n} chapters from A1 to C2: all the sounds and the phonetic alphabet, stress, rhythm, linking, intonation and accents.", { n: PRON().length })],
+      ["#/comprehension", "headphones", "A2", "Listening lab", T("{n} recordings, one per unit from A1 to C2, with several voices and accents: main idea, details, every word, then repeat.", { n: LAB().length })],
+      ["#/dictee", "pen-line", "A2", "Dictations", "Listen to a sentence, write it, and see your mistakes word by word."],
+      ["#/conversation", "messages-square", "B1", "Talk with someone", "Real conversations out loud: with Claude at any time, and with real people. Role-plays, debates and exam simulations, A1 to C2."],
+      ["#/ecoute", "radio", "B2", "Listening plan", "Real podcasts, series and videos for your level, and how to listen to them."]
+    ]],
+    ["Your level", [
+      ["#/placement", "compass", "A1", "Placement test", "An adaptive test in each skill, can-do grids and a report of your level in listening, reading, speaking, writing, grammar and vocabulary."],
+      ["#/grilles", "list-checks", "A2", "Can-do grids", "What you can do at each level, skill by skill: tick what you could do tomorrow, without preparing."],
+      ["#/bilan", "chart-column", "B1", "My skills report", "Your level in each skill, with the placement test, Claude's assessment and the can-do grids."],
+      ["#/parcours", "route", "B2", "My path A1 → C2", "The six levels of the European framework, what each one means, and where you are."]
+    ]],
+    ["University level", [
+      ["#/competences", "graduation-cap", "C1", "Academic skills, B2 to C2", T("{n} chapters taught as in a university English course: note-taking, essays, data, presentations, seminars, sources, critical thinking, reports, mediation, synthesis, research writing, exams.", { n: ACAD().length })],
+      ["#/grammaire", "book-marked", "C2", "Grammar reference A1 → C2", T("{n} grammar points with the rule, an example and the lessons that teach them. Perfect for revising or checking a doubt.", { n: (window.GRAMMAR_REF || []).length || 105 })],
+      ["#/methode", "lightbulb", "B1", "The method", "The learning techniques best supported by research, why they work, and where you'll find them in the app."]
+    ]]
+  ];
+  app.innerHTML = `
+    <h1>${T("More")}</h1>
+    <p class="muted">${T("Everything that isn't in the main tabs: exams, practice tools, your level, university skills and the settings. The course already brings you to these tools when they're useful.")}</p>
+    ${groups.map(([h, items]) => `<h2 class="tools-h">${T(h)}</h2>
+      <div class="tools">${items.map(([href, icon, lv, title, d]) => `<a class="tool" href="${href}">${tile(icon, lv)}<span><b>${T(title)}</b><span class="muted">${T(d)}</span></span>${ic("arrow-right", "tool-go")}</a>`).join("")}</div>`).join("")}
+    <h2 class="tools-h" id="settings">${ic("settings")} ${T("Settings: language, voice and backup")}</h2>
+    <section class="card">${settingsHtml()}</section>`;
+  bindSettings();
+  if (part === "settings") setTimeout(() => { const el = $("#settings"); if (el) el.scrollIntoView({ block: "start" }); }, 0);
+}
+function settingsHtml() {
+  return `<div class="stack">
       <label class="small muted" for="langSel2">${T("Interface language")}</label>
       <select id="langSel2" class="field">${LANGS.map(([k, n]) => `<option value="${k}" ${lang() === k ? "selected" : ""}>${n}</option>`).join("")}</select>
       <p class="small muted" style="margin:0">${T("Only the menus, buttons and explanations change: what you learn is always in English.")}</p>
@@ -1185,22 +1253,9 @@ function viewHome() {
       </div>
       <p class="small muted">${T("Your progress is saved in this browser. Make a backup from time to time, or to move it to another device.")}</p>
       <p class="small muted">${T("In private browsing and in Tor Browser, everything is erased when you close the browser: save your progress before closing. Tor Browser also blocks reading aloud.")}</p>
-    </div>
-  </details>`;
-
-  $$("[data-goal]").forEach((b) => (b.onclick = () => { S.goal = +b.dataset.goal; save(); viewHome(); }));
-  $$("[data-ext]").forEach((b) => (b.onclick = () => {
-    const m = +b.dataset.ext;
-    const d = todayLog();
-    const delta = Math.max(-(d.ext || 0), m);
-    d.ext = (d.ext || 0) + delta;
-    S.extMin = Math.max(0, (S.extMin || 0) + delta);
-    if (delta > 0) { S.xp += Math.round(delta / 5); d.xp += Math.round(delta / 5); toast(T("{n} min of English added", { n: delta })); }
-    save(); viewHome();
-    $("#ext").scrollIntoView({ block: "center" });
-  }));
-  $("#ritualForm").onsubmit = (e) => { e.preventDefault(); S.ritual = { when: $("#rWhen").value }; save(); toast(T("Routine saved")); viewHome(); };
-  if ($("#editRitual")) $("#editRitual").onclick = () => { $("#ritualForm").hidden = false; $("#editRitual").hidden = true; };
+    </div>`;
+}
+function bindSettings() {
   $("#langSel2").onchange = (e) => setLang(e.target.value);
   $("#voiceSel").onchange = (e) => { S.voice = e.target.value; save(); speak("Hello Stella!"); };
   $("#rate").oninput = (e) => { S.rate = +e.target.value; $("#rateVal").textContent = S.rate; save(); };
@@ -1256,7 +1311,7 @@ function unitPath(u) {
   const addTheme = (t) => { const s = themeStats(t); add("v:" + t.id, "learn", "layers", "Words", T("Learn the words: {t}", { t: loc(t, "title") }), `#/apprendre/${t.id}`, s.total && s.seen / s.total >= 0.8); };
   lessons.forEach((l, i) => {
     themes.slice(i * per, (i + 1) * per).forEach(addTheme);
-    add("l:" + l.id, "learn", "book-open", "Grammar", `${T("Lesson")} ${lnum(l)} · ${loc(l, "title")}`, `#/lecons/${l.id}`, S.lessons[l.id]);
+    add("l:" + l.id, "learn", "book-open", l.kind === "functional" ? "Everyday English" : "Grammar", loc(l, "title"), `#/lecons/${l.id}`, S.lessons[l.id]);
   });
   if (!lessons.length) themes.forEach(addTheme);
   add("ctx", "learn", "search", "Words", T("Words in context"), `#/contexte/${u.id}`, (S.ctx || {})[u.id]);
@@ -1274,8 +1329,21 @@ function unitPath(u) {
   add("w", "write", "pen-line", "Writing", g ? loc(g, "genre") : T("The unit's writing task"), `#/ecrit/${u.id}`, us.wdone);
   add("d", "check", "ear", "Dictation", T("Unit {n} dictation", { n: unitNum(u) }), `#/dictee-unite/${u.id}`, (us.dict || 0) > 0);
   add("t", "check", "list-checks", "Unit test", T("Unit {n} test", { n: unitNum(u) }), `#/test/${u.id}`, (us.test || 0) >= 70);
+  /* About how long each activity takes, rounded to 5 minutes: to fit the day's activities into the time you have. */
+  const wc = r ? r.paragraphs.map((x) => x.en).join(" ").split(/\s+/).length : 0;
+  const writeMin = { A1: 15, A2: 15, B1: 20, B2: 20, C1: 30, C2: 30 }[u.level] || 20;
+  const base = { ctx: 5, lex: 25, lab: 12, sp: 5, rp: 6, pr: 5, w: writeMin, d: 6, t: 12, l: 20 };
+  out.forEach((a) => {
+    const k = a.key.slice(u.id.length + 1), kind = k.split(":")[0];
+    let m = base[kind];
+    if (kind === "v") { const t = themes.find((x) => "v:" + x.id === k); m = t ? t.words.length / 3 : 5; }
+    if (kind === "r") m = wc / 120 + 5 + (u.listen ? 3 : 0);
+    a.min = Math.max(5, Math.round((m || 5) / 5) * 5);
+  });
   return out;
 }
+/* 75 → "1 h 15", 40 → "40 min". */
+const fmtDur = (m) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${m % 60 ? ` ${String(m % 60).padStart(2, "0")}` : ""}`);
 /* The next activity of the whole course: a level exam as soon as all its units are done, otherwise the current unit's thread. */
 function nextActivity() {
   for (const L of LV) {
@@ -1324,7 +1392,7 @@ function viewCourse() {
             return `<a class="card unit-card ${unitDone(u) ? "done" : ""}" href="#/unite/${u.id}">
               <div class="row">${tile(u.icon, u.level)}<div style="flex:1;min-width:0"><span class="muted small">${T("Unit")} ${unitNum(u)}</span><h3 style="margin:0">${esc(loc(u, "title"))}</h3></div>${unitDone(u) ? `<span class="tag tag-done">${ic("check")} ${S.units[u.id].test}%</span>` : ""}</div>
               <ul class="mini-can">${loc(u, "can").map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
-              <div class="unit-prog"><div class="progress"><div style="width:${pct(n, pa.length)}%"></div></div><span class="muted small">${T("{a}/{b} activities", { a: n, b: pa.length })}</span></div>
+              <div class="unit-prog"><div class="progress"><div style="width:${pct(n, pa.length)}%"></div></div><span class="muted small">${T("{a}/{b} activities", { a: n, b: pa.length })} · ${fmtDur(pa.reduce((m, a) => m + a.min, 0))}</span></div>
             </a>`;
           }).join("")}
           <a class="card exam-card ${ex >= 70 ? "done" : ""}" href="#/examen/${L}">
@@ -1363,7 +1431,7 @@ function viewUnit(id) {
       <ul class="checklist">${u.can.map((c, i) => `<li>${ic("target")}<span>${instr(c, u.can_fr && u.can_fr[i])}</span></li>`).join("")}</ul>
     </section>
     <section class="card unit-path">
-      <div class="row"><h2 style="margin:0">${ic("route")} ${T("Your path through this unit")}</h2><span class="spacer"></span><span class="muted small">${T("{a} / {b} done", { a: doneN, b: path.length })}</span></div>
+      <div class="row"><h2 style="margin:0">${ic("route")} ${T("Your path through this unit")}</h2><span class="spacer"></span><span class="muted small">${T("{a} / {b} done", { a: doneN, b: path.length })}${doneN < path.length ? ` · ${T("about {t} left", { t: fmtDur(path.filter((a) => !a.done).reduce((m, a) => m + a.min, 0)) })}` : ""}</span></div>
       <div class="progress" style="margin:12px 0"><div style="width:${pct(doneN, path.length)}%"></div></div>
       <p class="muted small" style="margin:0">${T("Do the activities in this order, one at a time. The <b>Next</b> button at the top of every page takes you to the right one. You can also open any activity whenever you like.")}</p>
       ${PHASES.map(([ph, title]) => {
@@ -1374,7 +1442,7 @@ function viewUnit(id) {
           const n = path.indexOf(a) + 1, isNext = nx && a.key === nx.key;
           return `<li class="pl-item ${a.done ? "done" : ""} ${isNext ? "next" : ""}">
             <span class="pl-num">${a.done ? ic("check") : n}</span>
-            <span class="pl-txt"><span class="pillar">${T(a.kind)}${isNext ? ` · ${T("You are here")}` : ""}</span><b>${esc(a.label)}</b></span>
+            <span class="pl-txt"><span class="pillar">${T(a.kind)} · ${a.min} min${isNext ? ` · ${T("You are here")}` : ""}</span><b>${esc(a.label)}</b></span>
             <a class="btn btn-sm ${isNext ? "btn-primary" : a.done ? "btn-ghost" : ""}" href="${a.href}">${T(isNext ? "Start" : a.done ? "Again" : "Open")}</a>
           </li>`;
         }).join("")}</ol>`;
@@ -1779,7 +1847,9 @@ function renderBody(html) {
     .replace(/<st>/g, '<span class="st">').replace(/<\/st>/g, "</span>")
     .replace(/<ipa>([\s\S]*?)<\/ipa>/g, (_, t) => ipaSpan(t))
     .replace(/<div class="tip">/g, `<div class="tip">${ic("lightbulb", "box-ic")}`)
-    .replace(/<div class="warn">/g, `<div class="warn">${ic("triangle-alert", "box-ic")}`);
+    .replace(/<div class="warn">/g, `<div class="warn">${ic("triangle-alert", "box-ic")}`)
+    /* Wide tables scroll inside their own frame on a phone, instead of widening the page. */
+    .replace(/<table\b/g, '<div class="table-wrap"><table').replace(/<\/table>/g, "</table></div>");
 }
 function viewLesson(id) {
   const l = lessonById(id);
@@ -1792,7 +1862,7 @@ function viewLesson(id) {
   app.innerHTML = `
     ${back(u ? `#/unite/${u.id}` : "#/lecons", u ? `Unit ${unitNum(u)} · ${loc(u, "title")}` : "All lessons")}
     <article class="card lesson-body">
-      <div class="row" style="margin-bottom:8px">${levelTag(l.level)}<span class="muted small">${T("Lesson")} ${lnum(l)} / ${LESSONS.length}</span><span class="spacer"></span>${l.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${showFr ? (isFr() ? "En anglais" : "In English") : "En français"}</button>` : ""}</div>
+      <div class="row" style="margin-bottom:8px">${levelTag(l.level)}<span class="muted small">${u ? (() => { const ul = u.lessons.map(lessonById).filter(Boolean).sort((x, y) => LESSONS.indexOf(x) - LESSONS.indexOf(y)); return `${T("Unit")} ${unitNum(u)} · ${T("Lesson {a} of {b}", { a: ul.indexOf(l) + 1, b: ul.length })}`; })() : `${T("Lesson")} ${lnum(l)}`}</span><span class="spacer"></span>${l.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${showFr ? (isFr() ? "En anglais" : "In English") : "En français"}</button>` : ""}</div>
       <div class="row" style="flex-wrap:nowrap;align-items:center">${tile(l.icon, l.level)}<h1 style="margin:0">${esc(loc(l, "title"))}</h1></div>
       <p class="muted" style="margin-top:10px">${esc(loc(l, "subtitle"))}</p>
       <div id="lbody" class="${showFr ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? l.body_fr : l.body)}</div>
@@ -1985,17 +2055,14 @@ function viewVocab() {
       </div>
     </div>
     <div class="row" style="margin-bottom:4px"><h2 style="margin:0">${T("Topics")}</h2><span class="spacer"></span><span class="muted small">${T("{a} mastered · {b} in progress", { a: mastered(), b: learning() })}</span></div>
-    ${levelGroups(VOCAB.filter((t) => !t.toeic), themeCard, { grid: "grid-3", started: (its) => its.some((t) => themeStats(t).seen), stat: (its) => T("{n} words", { n: its.reduce((a, t) => a + t.words.length, 0) }) })}
+    ${levelGroups(VOCAB.filter((t) => !t.toeic), themeCard, { grid: "lib-list", started: (its) => its.some((t) => themeStats(t).seen), stat: (its) => T("{n} words", { n: its.reduce((a, t) => a + t.words.length, 0) }) })}
     <div class="section-title"><h2>${ic("briefcase")} ${T("Business English for the TOEIC")}</h2></div>
-    <div class="grid grid-3">${VOCAB.filter((t) => t.toeic).map(themeCard).join("")}</div>`;
+    <div class="grid lib-list">${VOCAB.filter((t) => t.toeic).map(themeCard).join("")}</div>`;
 }
 function themeCard(t) {
   const s = themeStats(t);
-  return `<a class="card theme-card" href="#/vocabulaire/${t.id}">
-    <div class="row">${tile(t.icon, t.level)}<span class="spacer"></span>${levelTag(t.level)}</div>
-    <h3 style="margin:12px 0 4px">${esc(loc(t, "title"))}</h3>
-    <p class="muted small" style="margin-bottom:10px">${T("{a} / {b} seen · {c} mastered", { a: s.seen, b: s.total, c: s.m })}</p>
-    <div class="progress"><div style="width:${(s.seen / s.total) * 100}%"></div></div>
+  return `<a class="lib-row" href="#/vocabulaire/${t.id}">
+    ${tile(t.icon, t.level)}<span class="lib-txt"><b>${esc(loc(t, "title"))}</b><span class="muted small">${T("{a} / {b} seen · {c} mastered", { a: s.seen, b: s.total, c: s.m })}</span><span class="lib-bar"><i style="width:${(s.seen / s.total) * 100}%"></i></span></span>
   </a>`;
 }
 function viewTheme(id) {
@@ -2217,9 +2284,9 @@ function viewIrregulars() {
       }).join("")}
     </div>
     <details class="card"><summary>${ic("list")} <span>${T("See all the verbs")}</span></summary>
-      <table class="irr-table"><tr><th>${T("Verb")}</th><th>${T("Past")}</th><th>${T("Participle")}</th><th>${T("French")}</th></tr>
+      <div class="table-wrap"><table class="irr-table"><tr><th>${T("Verb")}</th><th>${T("Past")}</th><th>${T("Participle")}</th><th>${T("French")}</th></tr>
       ${IRREGULARS.map(([b, p, pp, f]) => `<tr><td><b>${esc(b)}</b> ${sayBtn(`${b}, ${p.replace(" / ", ", ")}, ${pp.replace(/\(.*\)/, "").replace(" / ", ", ")}`)}</td><td>${esc(p)}</td><td>${esc(pp)}</td><td class="fr">${esc(f)}</td></tr>`).join("")}
-      </table>
+      </table></div>
     </details>`;
   $$("[data-irr]").forEach((b) => (b.onclick = () => {
     const vs = IRREGULARS.filter((v) => v[4] === b.dataset.irr);
@@ -2280,15 +2347,25 @@ function addMyWord(en, f, ex) {
 
 /* ================= Reading & listening ================= */
 function viewReadings() {
+  /* Which unit each text belongs to, so the list says where you'll meet it in the course. */
+  const unitOf = {};
+  COURSE.forEach((u) => [u.reading, ...(u.extra || [])].forEach((id) => { if (id && !unitOf[id]) unitOf[id] = u; }));
+  const mins = (r) => Math.max(2, Math.round(r.paragraphs.map((x) => x.en).join(" ").split(/\s+/).length / 120));
   app.innerHTML = `
     <h1>${T("Reading and listening")}</h1>
     <p class="muted">${T("{n} texts, from the simplest to the richest. <b>Click on any word</b> to hear it and translate it. Underlined words have a translation ready for this text. Every text can also be <b>listened to first</b>, without reading: the best listening practice.", { n: READINGS.length })}</p>
-    ${levelGroups(READINGS, (r) => `
-        <a class="card theme-card" href="#/lecture/${r.id}">
-          <div class="row">${tile(r.icon, r.level)}<span class="spacer"></span>${r.genre ? `<span class="muted small">${esc(tg(r.genre))}</span>` : ""}${S.readings[r.id] ? `<span class="tag tag-done">${ic("check")} ${T("Read ✓")}</span>` : ""}</div>
-          <h3 style="margin:12px 0 4px" class="en">${esc(loc(r, "title"))}</h3>
-          <p class="muted small" style="margin:0">${esc(loc(r, "intro"))}</p>
-        </a>`, { started: (its) => its.some((r) => S.readings[r.id]), stat: (its) => T("{a} / {b} read", { a: its.filter((r) => S.readings[r.id]).length, b: its.length }) })}
+    <div class="lib-filters">
+      <div class="seg" role="group" aria-label="${T("Show")}">${[["all", "All the texts"], ["todo", "Not read yet"], ["done", "Already read"]].map(([k, t]) => `<button data-rf="${k}" class="${(S.readFilter || "all") === k ? "on" : ""}">${T(t)}</button>`).join("")}</div>
+      <input class="field" id="rSearch" type="search" placeholder="${T("Search a text or a topic")}" aria-label="${T("Search a text or a topic")}">
+    </div>
+    ${levelGroups(READINGS, (r) => {
+      const u = unitOf[r.id];
+      const meta = [r.genre ? esc(tg(r.genre)) : "", u ? `${T("Unit")} ${unitNum(u)}` : "", `${mins(r)} min`].filter(Boolean).join(" · ");
+      return `<a class="lib-row" href="#/lecture/${r.id}" title="${esc(loc(r, "intro"))}" data-read="${S.readings[r.id] ? 1 : 0}" data-q="${esc([r.title, r.title_fr, r.intro, r.genre].join(" ").toLowerCase())}">
+          ${tile(r.icon, r.level)}<span class="lib-txt"><b class="en">${esc(loc(r, "title"))}</b><span class="muted small">${meta}</span></span>${S.readings[r.id] ? `<span class="lib-done" title="${T("Read ✓")}">${ic("circle-check")}</span>` : ""}
+        </a>`;
+    }, { grid: "lib-list", started: (its) => its.some((r) => S.readings[r.id]), stat: (its) => T("{a} / {b} read", { a: its.filter((r) => S.readings[r.id]).length, b: its.length }) })}
+    <p class="muted small" id="rNone" hidden>${T("No text matches.")}</p>
     <div class="card" style="margin-top:20px">
       <h3>${ic("lightbulb")} ${T("How to read well in English")}</h3>
       <ol class="muted" style="margin:0;padding-left:20px">
@@ -2297,6 +2374,19 @@ function viewReadings() {
         <li>${T("<b>Third time</b>: listen to the text while following with your eyes, then read it out loud. Re-reading a text you already understand, faster, is the best fluency exercise.")}</li>
       </ol>
     </div>`;
+  const apply = () => {
+    const f = S.readFilter || "all", q = ($("#rSearch").value || "").trim().toLowerCase();
+    let shown = 0;
+    $$(".lib-row").forEach((row) => {
+      const ok = (f === "all" || (f === "done") === (row.dataset.read === "1")) && (!q || row.dataset.q.includes(q));
+      row.hidden = !ok; if (ok) shown++;
+    });
+    $$(".level-block").forEach((b) => { const any = $$(".lib-row", b).some((r) => !r.hidden); b.hidden = !any; if (q && any) b.open = true; });
+    $("#rNone").hidden = shown > 0;
+  };
+  $$("[data-rf]").forEach((b) => (b.onclick = () => { S.readFilter = b.dataset.rf; save(); $$("[data-rf]").forEach((x) => x.classList.toggle("on", x === b)); apply(); }));
+  $("#rSearch").oninput = apply;
+  apply();
 }
 function tokenize(text, gloss) {
   return text.split(WORD_RE).map((part, k) => {
@@ -2407,10 +2497,8 @@ function compare(target, heard) {
 const RP = () => window.ROLEPLAYS || [];
 function rpCard(d) {
   const st = (S.dialogues || {})[d.id] || {};
-  return `<a class="card theme-card" href="#/dialogue/${d.id}">
-    <div class="row">${tile(d.icon, d.level)}<span class="spacer"></span>${st.speak >= 70 ? `<span class="tag tag-done">${ic("mic")} ${st.speak}%</span>` : st.guided != null ? `<span class="tag">${ic("check")} ${st.guided}%</span>` : ""}</div>
-    <h3 style="margin:12px 0 4px">${esc(loc(d, "title"))}</h3>
-    <p class="muted small" style="margin:0">${T("With {p}, {r}", { p: esc(d.partner), r: esc(T(d.role)) })}</p>
+  return `<a class="lib-row" href="#/dialogue/${d.id}">
+    ${tile(d.icon, d.level)}<span class="lib-txt"><b>${esc(loc(d, "title"))}</b><span class="muted small">${T("With {p}, {r}", { p: esc(d.partner), r: esc(T(d.role)) })}</span></span>${st.speak >= 70 ? `<span class="tag tag-done">${ic("mic")} ${st.speak}%</span>` : st.guided != null ? `<span class="tag">${ic("check")} ${st.guided}%</span>` : ""}
   </a>`;
 }
 function viewDialogue(id, mode) {
@@ -2576,7 +2664,7 @@ function viewSpeaking() {
     </div>
     <div class="section-title"><h2>${T("Role-plays: real conversations")}</h2><span class="spacer"></span><span class="muted small">${T("{a} / {b} done", { a: RP().filter((d) => (S.dialogues || {})[d.id]).length, b: RP().length })}</span></div>
     <p class="muted">${T("Someone talks to you: choose what to say, hear it and say it out loud. Then do the same conversation again without help, speaking only.")}</p>
-    ${levelGroups(RP(), rpCard, { grid: "grid-3", started: (its) => its.some((d) => (S.dialogues || {})[d.id]) })}
+    ${levelGroups(RP(), rpCard, { grid: "lib-list", started: (its) => its.some((d) => (S.dialogues || {})[d.id]) })}
     <div class="section-title"><h2>${T("Repeat sentences")}</h2><span class="spacer"></span><span class="muted small">${T("{a} / {b} mastered", { a: done, b: totalP })}</span></div>
     ${levelGroups(SPEAKING, (c) => {
       const n = c.phrases.filter(([en]) => (S.spoken[en] || 0) >= 80).length;
@@ -4238,7 +4326,7 @@ function viewToeic() {
     <a class="card ear-cta" style="margin-top:20px" href="#/ecoute">${tile("headphones", "B2")}<div style="flex:1"><h3 style="margin:0">${T("Real listening for the TOEIC")}</h3><p class="muted small" style="margin:4px 0 0">${T("Podcasts and series with American, British, Canadian and Australian accents: see your listening plan.")}</p></div>${ic("arrow-right")}</a>
     <div class="card" style="margin-top:12px"><div class="row" style="flex-wrap:nowrap;align-items:flex-start">${tile("globe", "C1")}<div style="flex:1"><h3 style="margin:0">${T("Two classic Listening traps")}</h3><p class="muted small" style="margin:4px 0 10px">${T("The four accents of the test, and numbers that sound alike (13 or 30?). Two pronunciation chapters train your ear for them.")}</p><a class="btn btn-sm" href="#/prononciation/p-accents">${ic("globe")} ${T("Accents of English")}</a> <a class="btn btn-sm" href="#/prononciation/p-numbers">${ic("calculator")} ${T("Numbers, dates and prices")}</a></div></div></div>
     <div class="section-title"><h2>${ic("briefcase")} ${T("Business vocabulary")}</h2></div>
-    <div class="grid grid-3">${VOCAB.filter((t) => t.toeic).map(themeCard).join("")}</div>
+    <div class="grid lib-list">${VOCAB.filter((t) => t.toeic).map(themeCard).join("")}</div>
     <p class="muted small" style="margin-top:20px">${T("The practice questions here are original, written in the official format. For official practice tests, ETS publishes preparation books (“Official Guide to the TOEIC Test”).")}</p>`;
 }
 function toeicBlocks(n, count) {
@@ -4825,7 +4913,7 @@ function viewBooks() {
 }
 
 /* ================= Router ================= */
-const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "cours", methode: "home", lecons: "lecons", "revision-grammaire": "lecons", grammaire: "lecons", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "lecons", oreille: "oral", comprehension: "oral", contexte: "cours", lexique: "vocabulaire", prononciation: "oral", competences: "cours", placement: "cours", bilan: "cours", grilles: "cours", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "toeic", livres: "livres" };
+const NAV_OF = { "": "home", cours: "cours", unite: "cours", ecrit: "cours", test: "cours", examen: "cours", certificat: "cours", "dictee-unite": "cours", repeter: "cours", parcours: "plus", methode: "plus", lecons: "plus", "revision-grammaire": "plus", grammaire: "plus", vocabulaire: "vocabulaire", reviser: "vocabulaire", apprendre: "vocabulaire", ecrire: "vocabulaire", "mes-mots": "vocabulaire", irreguliers: "vocabulaire", lecture: "lecture", oral: "oral", parler: "oral", dialogue: "oral", erreurs: "plus", oreille: "oral", comprehension: "oral", contexte: "cours", lexique: "vocabulaire", prononciation: "oral", competences: "plus", placement: "plus", bilan: "plus", grilles: "plus", ecoute: "oral", conversation: "oral", dictee: "oral", toeic: "plus", livres: "plus", plus: "plus" };
 function route() {
   try { trackPath(); } catch (e) {}
   cleanups.forEach((f) => { try { f(); } catch (e) {} });
@@ -4886,7 +4974,8 @@ function route() {
     conversation: () => viewConversation(b, c),
     dictee: () => viewDictee(b),
     toeic: () => (b === "part" ? viewToeicPart(c) : b === "mock" ? viewToeicMock() : b === "full" ? viewToeicMock(true) : viewToeic()),
-    livres: viewBooks
+    livres: viewBooks,
+    plus: () => viewMore(b)
   };
   (views[a] || viewHome)();
   const nav = NAV_OF[a] || "home";
