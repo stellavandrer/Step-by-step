@@ -48,5 +48,8 @@ window.DICT_TARGET = {
   "boire": "to drink", "manger": "to eat", "acheter": "to buy", "sentir": "to feel; to smell", "vendre": "to sell", "commander": "to order",
   "servir": "to serve", "sers": "(I / you) serve", "ceci": "this", "tout": "all, everything", "c'est tout": "that's all", "délicieux": "delicious", "délicieuse": "delicious",
   "chaud": "hot, warm", "chaude": "hot, warm", "froid": "cold", "froide": "cold", "rouge": "red", "blanc": "white", "blanche": "white", "il faut": "you need, we need, it's necessary",
+  "lumineux": "bright, full of light", "porte": "wears; door", "fumer": "to smoke", "désolé": "sorry", "désolés": "sorry", "intéresser": "to interest", "têtu": "stubborn", "têtue": "stubborn",
+  "raconter": "to tell (a story)", "histoire": "story; history", "incroyable": "incredible, amazing", "incroyables": "incredible, amazing", "perdre": "to lose", "perdu": "lost", "trouvé": "found", "attendre": "to wait", "attendez": "wait (formal)",
+  "signer": "to sign", "poche": "pocket", "couverture": "cover; blanket", "roman": "novel", "policier": "police officer; detective (story)", "soleil": "sun", "cent": "a hundred", "quatre cent": "four hundred",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
