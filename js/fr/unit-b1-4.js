@@ -14,7 +14,7 @@
     ["l'article", "the article", "J'ai lu un article passionnant sur les abeilles."],
     ["le titre", "the headline, the title", "Le titre est un peu exagéré."],
     ["la une", "the front page", "L'incendie fait la une de tous les journaux."],
-    ["le / la journaliste", "the journalist (m) / the journalist (f)", "La journaliste a interrogé les habitants."],
+    ["le journaliste / la journaliste", "the journalist (m) / the journalist (f)", "La journaliste a interrogé les habitants."],
     ["la chaîne", "the (TV) channel", "Sur quelle chaîne passe le match ?"],
     ["le reportage", "the report, the documentary", "J'ai vu un reportage sur l'Antarctique."],
     ["en direct", "live", "Le concert est diffusé en direct."],

@@ -163,5 +163,15 @@ window.DICT_TARGET = {
   "résumer": "to sum up", "solaire": "solar", "sujet": "subject (au sujet de: about)", "tasse": "cup", "terre": "earth, soil, ground", "vrac": "en vrac: loose, in bulk",
   "arroser": "to water", "économiser": "to save (money, energy)", "réparer": "to repair",
   "fontaine": "fountain",
+  "accrocher": "to hang up; to get into (a book, a film)", "adapter": "to adapt", "amérique": "America", "astronaute": "astronaut", "aviateur": "aviator, pilot", "bain": "bath (le grand bain: the deep end)",
+  "bienvenu": "welcome", "breton": "Breton, from Brittany", "celle": "the one (f)", "celles": "the ones (f)", "celui": "the one (m)", "ci": "here (celui-ci: this one)",
+  "déconseiller": "to advise against", "déprimé": "depressed", "désert": "desert", "détail": "detail", "détour": "detour (ça vaut le détour: it's well worth a visit)", "dont": "whose, of which, about which; including",
+  "espoir": "hope", "guerre": "war", "humour": "humour", "idéal": "ideal", "impressionnant": "impressive", "inconnu": "unknown",
+  "outil": "tool", "lâcher": "to let go of, to put down", "mélange": "mix, blend", "nôtre": "ours (le nôtre)", "nôtres": "ours (les nôtres)", "vôtre": "yours (le vôtre)",
+  "vôtres": "yours (les vôtres)", "sien": "his, hers (le sien)", "sienne": "his, hers (la sienne)", "siens": "his, hers (les siens)", "siennes": "his, hers (les siennes)", "tien": "yours (le tien)",
+  "tienne": "yours (la tienne)", "tiens": "yours (les tiens); hold on!", "tiennes": "yours (les tiennes)", "miens": "mine (les miens)", "miennes": "mine (les miennes)", "parapluie": "umbrella",
+  "priorité": "priority", "renard": "fox", "récent": "recent", "rêver": "to dream", "scène": "scene; stage", "suivre": "to follow",
+  "sûrement": "surely, probably", "synchronisé": "synchronised", "théâtre": "theatre", "traite": "d'une traite: in one go", "travers": "à travers: across, through", "vf": "dubbed into French (version française)",
+  "vo": "original version (version originale)", "vostfr": "original version with French subtitles", "vivement": "strongly, warmly",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
