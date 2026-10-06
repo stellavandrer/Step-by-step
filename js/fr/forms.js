@@ -191,4 +191,5 @@
   add("contenir", [["contient", "il / elle contient"], ["contiennent", "ils / elles contiennent"]]); add("rejoindre", [["rejoignent", "ils / elles rejoignent"], ["rejoint", "il / elle rejoint; past participle"]]);
   add("réunir", [["réunissent", "ils / elles réunissent"], ["réunit", "il / elle réunit"]]); add("prescrire", [["prescrit", "il / elle prescrit; past participle"]]); subj("refaire", "refasse refassions refassent");
   fut("rejeter", "rejetter"); add("réunir", [["réuni", "past participle"], ["réunie", "past participle (f)"], ["réunis", "past participle (pl)"], ["réunies", "past participle (f pl)"]]);
+  add("parvenir", [["parvenu", "past participle"], ["parvenue", "past participle (f)"], ["parviens", "je / tu parviens"], ["parvient", "il / elle parvient"], ["parviennent", "ils / elles parviennent"]]); add("conclure", [["conclu", "past participle"], ["conclut", "il / elle conclut"]]);
 })();
