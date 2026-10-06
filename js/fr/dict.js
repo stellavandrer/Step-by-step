@@ -62,5 +62,8 @@ window.DICT_TARGET = {
   "connaître": "to know (a person, a place)", "sortir": "to go out", "venir": "to come", "partir": "to leave", "dormir": "to sleep", "emmener": "to take (someone somewhere)", "offrir": "to give (a present), to offer",
   "pleurer": "to cry", "joie": "joy", "gentillesse": "kindness", "glace": "ice cream; ice; mirror", "bras": "arm", "casser": "to break", "se casser": "to break (a part of your body)", "chanson": "song", "chanter": "to sing",
   "nager": "to swim", "pêcher": "to fish", "dauphin": "dolphin", "peur": "fear", "avoir peur": "to be afraid", "noir": "black; the dark", "différent": "different", "ligne": "line", "lignes": "lines", "doigts": "fingers",
+  "renvoyer": "to send back", "toucher": "to touch", "confiance": "trust", "faire confiance": "to trust", "en plus": "what's more", "presque": "almost", "rapide": "quick, fast",
+  "conseiller": "to advise", "conseil": "advice", "confortable": "comfortable", "laine": "wool", "manche": "sleeve", "déchiré": "torn", "déchirée": "torn", "emballage": "packaging",
+  "rapporter": "to bring back", "un avoir": "a credit note", "étiquette": "label, tag", "au-dessus": "above; the next one up", "c'est-à-dire": "that is to say, meaning", "bon d'achat": "voucher",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
