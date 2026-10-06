@@ -134,5 +134,13 @@ window.DICT_TARGET = {
   "poubelle": "bin", "ressembler": "to look like, to be like", "rire": "to laugh; laughter", "route": "road", "résoudre": "to solve", "réveil": "alarm clock; waking up",
   "serrurier": "locksmith", "technicien": "technician", "tellement": "so, so much", "tracteur": "tractor", "truc": "thing, thingy", "vérifier": "to check",
   "émission": "programme, show", "évidemment": "obviously, of course", "excité": "excited (careful: often sexual in French)",
+  "application": "app; application", "avaler": "to swallow", "bancaire": "bank (adjective)", "changement": "change", "chef": "boss; chef", "congé": "leave, time off (un congé sans solde: unpaid leave)",
+  "courrier": "post, mail", "hôte": "host; guest (une chambre d'hôtes: a B&B)", "dehors": "outside", "domicile": "home, address", "employeur": "employer", "gens": "people",
+  "imprévu": "unexpected event, emergency", "justement": "exactly, precisely", "justificatif": "proof, supporting document", "assurance": "insurance", "avance": "advance (à l'avance: in advance)", "imprimer": "to print",
+  "loto": "lottery", "mien": "mine (le mien)", "mienne": "mine (la mienne)", "mille": "thousand", "moitié": "half", "peine": "trouble (ça ne vaut pas la peine: it's not worth it)",
+  "prime": "bonus", "précis": "precise, exact", "prélèvement": "direct debit", "relevé": "statement (un relevé d'identité bancaire: a RIB)", "rib": "bank details document (relevé d'identité bancaire)", "risque": "risk",
+  "romantique": "romantic", "saison": "season", "semblable": "similar", "société": "company; society", "solde": "balance (sans solde: unpaid)", "suite": "continuation (tout de suite: straight away)",
+  "tenir": "to hold, to keep (tenir au courant: to keep informed)", "tenue": "keeping, running; outfit", "travaux": "building work, works", "valoir": "to be worth", "vivre": "to live", "économie": "economy (des économies: savings)",
+  "épargne": "savings", "accepter": "to accept", "refuser": "to refuse", "jeu": "game",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

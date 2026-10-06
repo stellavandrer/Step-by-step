@@ -82,11 +82,18 @@
   add("avoir", [["avions", "imperfect"], ["aviez", "imperfect"], ["avaient", "imperfect"]]);
   add("falloir", [["faut", "il faut: you have to, it's necessary"], ["fallait", "imperfect"], ["fallu", "past participle"]]);
   /* Irregular future stems (the endings are always -ai, -as, -a, -ons, -ez, -ont). */
-  const fut = (base, stem) => add(base, ["ai", "as", "a", "ons", "ez", "ont"].map((e) => [stem + e, "future"]));
+  const fut = (base, stem) => {
+    add(base, ["ai", "as", "a", "ons", "ez", "ont"].map((e) => [stem + e, "future"]));
+    add(base, ["ais", "ait", "ions", "iez", "aient"].map((e) => [stem + e, "conditional"]));
+  };
   fut("être", "ser"); fut("avoir", "aur"); fut("aller", "ir"); fut("faire", "fer"); fut("pouvoir", "pourr"); fut("vouloir", "voudr");
   fut("venir", "viendr"); fut("revenir", "reviendr"); fut("devenir", "deviendr"); fut("voir", "verr"); fut("devoir", "devr");
   fut("savoir", "saur"); fut("envoyer", "enverr"); fut("recevoir", "recevr"); fut("acheter", "achèter"); fut("appeler", "appeller");
-  add("falloir", [["faudra", "future"]]); add("pleuvoir", [["pleuvra", "future"]]);
+  fut("payer", "paier"); fut("valoir", "vaudr"); fut("tenir", "tiendr"); fut("courir", "courr"); fut("mourir", "mourr");
+  add("falloir", [["faudra", "future"], ["faudrait", "conditional"]]); add("pleuvoir", [["pleuvra", "future"], ["pleuvrait", "conditional"]]);
+  add("valoir", [["vaut", "il / elle vaut"], ["valait", "imperfect"], ["valu", "past participle"]]);
+  add("tenir", [["tiens", "je / tu tiens; hold on! (command)"], ["tient", "il / elle tient"], ["tenu", "past participle"]]);
+  add("vivre", [["vis", "je / tu vis"], ["vit", "il / elle vit"], ["vivons", "nous vivons"], ["vivez", "vous vivez"], ["vivent", "ils / elles vivent"], ["vécu", "past participle"]]);
   add("convenir", [["convient", "il / elle convient"], ["conviennent", "ils / elles conviennent"], ["convenu", "past participle"]]);
   add("répéter", [["répète", "je / il / elle répète; repeat (command)"], ["répètes", "tu répètes"], ["répètent", "ils / elles répètent"]]);
   add("transmettre", [["transmets", "je / tu transmets"], ["transmet", "il / elle transmet"], ["transmis", "past participle"]]);
