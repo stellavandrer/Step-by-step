@@ -42,5 +42,8 @@ window.DICT_TARGET = {
   "mignon": "cute", "mignonne": "cute", "plaisir": "pleasure", "avec plaisir": "with pleasure, I'd love to", "dimanche": "Sunday", "samedi": "Saturday",
   "fête": "party; holiday, celebration", "gauche": "left", "devant": "in front of", "derrière": "behind", "à côté": "next to it, nearby", "côté": "side",
   "fatigués": "tired", "grands": "big, tall", "petits": "small", "chez moi": "at my place", "vieux": "old", "vieille": "old", "noir": "black", "noire": "black",
+  "puis": "then", "ensuite": "then, next", "d'abord": "first", "jusqu'au": "as far as the, until the", "jusqu'à": "as far as, until", "au bout de": "at the end of", "bout": "end",
+  "chercher": "to look for", "trouver": "to find", "marcher": "to walk", "descendre": "to go down; to get off (a bus)", "monter": "to go up; to get on", "sortie": "exit, way out", "entrée": "entrance",
+  "ouvert": "open", "fermé": "closed", "fermée": "closed", "facile": "easy", "difficile": "difficult", "visite": "visit", "je vous en prie": "you're welcome (formal)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
