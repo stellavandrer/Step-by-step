@@ -155,4 +155,7 @@
   add("craindre", [["crains", "je / tu crains"], ["craint", "il / elle craint"], ["craignent", "ils / elles craignent"]]);
   add("maintenir", [["maintiens", "je / tu maintiens"], ["maintient", "il / elle maintient"]]);
   subj("disparaître", "disparaisse disparaissent"); add("disparaître", [["disparu", "past participle"], ["disparaissent", "ils / elles disparaissent"]]);
+  add("savoir", [["savais", "imperfect"], ["savait", "imperfect"]]);
+  add("construire", [["construisait", "imperfect"], ["construisais", "imperfect"]]);
+  fut("refaire", "refer"); add("refaire", [["refait", "il / elle refait; past participle"]]);
 })();

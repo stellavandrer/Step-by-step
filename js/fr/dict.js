@@ -202,5 +202,11 @@ window.DICT_TARGET = {
   "solliciter": "to request, to apply for", "spectaculaire": "spectacular", "spécialiste": "specialist", "supplémentaire": "extra, additional", "tester": "to test", "traduction": "translation",
   "traiter": "to deal with, to process", "travailleur": "worker", "vitesse": "speed",
   "prétendre": "to claim (prétendre à: to aim for, to be entitled to)",
+  "autrement": "otherwise; differently", "bête": "silly, stupid; animal (c'est bête: what a shame)", "catégorie": "category", "cela": "that", "classique": "classic, conventional", "conscient": "aware",
+  "contenter": "to satisfy (se contenter de: to make do with)", "créer": "to create", "décision": "decision", "dégoûté": "disgusted; gutted", "erreur": "mistake", "exprimer": "to express",
+  "formidable": "great, wonderful (a false friend)", "assumer": "to accept, to take responsibility for", "littérature": "literature", "malheur": "misfortune", "manière": "manner, way", "matériau": "material",
+  "matériaux": "materials", "parisien": "Parisian", "passionner": "to fascinate", "précieux": "precious", "raie": "stripe; ray", "scie": "saw",
+  "recul": "hindsight (avec le recul: with hindsight)", "refaire": "to redo", "retour": "return", "risquer": "to risk", "responsabilité": "responsibility", "sentiment": "feeling (a false friend)",
+  "sincère": "sincere", "spécialisé": "specialised", "tirer": "to pull; to draw (tirer une leçon: to learn a lesson)", "échouer": "to fail",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
