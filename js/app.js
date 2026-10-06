@@ -3633,18 +3633,18 @@ function viewLexis(id) {
     ${L.idioms ? `<section class="card">
       <h2 style="margin-top:0">${ic("sparkles")} ${T("Idioms and phrasal verbs")}</h2>
       <p class="muted small">${T("Their meaning can't be guessed from the words: learn each one with its example. Use them sparingly in writing, more freely when you speak.")}</p>
-      <div class="lex-list">${L.idioms.map(([e, m, f, ex]) => `<div class="lex-item"><div class="row" style="gap:8px;flex-wrap:wrap"><b class="en">${esc(e)}</b>${sayBtn(e)}</div><p class="small" style="margin:4px 0 0">${isFr() ? `<span class="no-tx">${esc(f)}</span>` : `${esc(m)} <span class="muted no-tx">· ${esc(f)}</span>`}</p><p class="en small" style="margin:4px 0 0">${esc(ex)} ${sayBtn(ex)}</p></div>`).join("")}</div>
+      <div class="lex-list">${L.idioms.map(([e, m, f, ex]) => `<div class="lex-item"><div class="row" style="gap:8px;flex-wrap:wrap"><b class="en">${esc(e)}</b>${sayBtn(e)}</div><p class="small" style="margin:4px 0 0">${isFr() && !FRENCH_COURSE ? `<span class="no-tx">${esc(f)}</span>` : isFr() ? `<span class="en">${esc(m)}</span>` : `<span class="en">${esc(m)}</span> <span class="muted no-tx">· ${esc(f)}</span>`}</p><p class="en small" style="margin:4px 0 0">${esc(ex)} ${sayBtn(ex)}</p></div>`).join("")}</div>
     </section>` : ""}
     <section class="card">
       <h2 style="margin-top:0">${ic("layers")} ${T("Word formation")}</h2>
       <p class="muted small">${T("In the exam, you get a sentence with a gap and a word in capitals to transform. Ask yourself three questions: what kind of word does the gap need (noun, adjective, adverb, verb)? Singular or plural? Positive or negative meaning?")}</p>
       <div class="table-wrap"><table class="irr-table"><tr><th>${T("To make…")}</th><th>${T("Common endings")}</th><th>${T("Examples")}</th></tr>
-        ${WF_TABLE.map(([en, f, end, ex]) => `<tr><td>${esc(isFr() ? f : en)}</td><td class="no-tx">${esc(end)}</td><td class="en">${esc(ex)}</td></tr>`).join("")}</table></div>
+        ${(APP.wfTable || WF_TABLE).map(([en, f, end, ex]) => `<tr><td>${esc(isFr() ? f : en)}</td><td class="no-tx">${esc(end)}</td><td class="en">${esc(ex)}</td></tr>`).join("")}</table></div>
     </section>
     ${L.kwt ? `<section class="card">
       <h2 style="margin-top:0">${ic("repeat")} ${T("Sentence transformations")}</h2>
       <p class="muted small">${T(c2 ? "Rewrite a sentence with a given word, keeping the meaning: three to eight words, and the word given must not change. It tests grammar and vocabulary at the same time." : "Rewrite a sentence with a given word, keeping the meaning: two to five words, and the word given must not change. It tests grammar and vocabulary at the same time.")}</p>
-      <div class="kwt-example"><p class="en" style="margin:0">I regret not going to university. <b>WISH</b></p><p class="en" style="margin:6px 0 0">I <u>wish I had gone</u> to university.</p></div>
+      ${(() => { const [k1, kk, k2, ku, k3] = APP.kwtExample || ["I regret not going to university.", "WISH", "I ", "wish I had gone", " to university."]; return `<div class="kwt-example"><p class="en" style="margin:0">${esc(k1)} <b>${esc(kk)}</b></p><p class="en" style="margin:6px 0 0">${esc(k2)}<u>${esc(ku)}</u>${esc(k3)}</p></div>`; })()}
       <p class="muted small" style="margin:10px 0 0">${T("Method: find the grammar point (here, a regret: wish + past perfect), write the answer, then check the word count and that the meaning hasn't changed.")}</p>
     </section>` : ""}
     <section class="card">

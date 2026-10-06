@@ -238,6 +238,51 @@
     plan: [["Write a subject line and state your request clearly.", "Écris un objet et formule clairement ta demande."], ["Justify it with your experience and the benefit for the company.", "Justifie-la par ton expérience et l'intérêt pour l'entreprise."], ["Give practical details (duration, cost, funding) with the conditional.", "Donne les détails pratiques (durée, coût, financement) au conditionnel."], ["Anticipate an objection and answer it.", "Anticipe une objection et réponds-y."], ["Close formally.", "Termine de façon formelle."]],
     marks: [["Je me permets de vous écrire afin de solliciter", "a formal request", "une demande formelle"], ["Elle serait financée en partie", "the conditional for a proposal", "le conditionnel pour une proposition"], ["J'ai bien conscience que", "anticipating an objection", "anticiper une objection"], ["J'aurais aimé vous en parler", "the past conditional", "le conditionnel passé"], ["Dès que j'aurai obtenu votre accord", "the futur antérieur", "le futur antérieur"], ["Je vous prie d'agréer", "the formal closing", "la formule finale"]] };
 
+  /* Language workshop: target-language fields first (collocation, French definition), then the English. */
+  W.LEXIS = W.LEXIS || {};
+  W.LEXIS["b2-1"] = {
+    colloc: [
+      ["prendre une décision", "to make a decision", "Il faut prendre une décision avant vendredi.", "prendre", ["faire", "donner"]],
+      ["poser sa candidature", "to apply (for a job)", "J'ai posé ma candidature dans trois entreprises.", "posé", ["mis", "fait"]],
+      ["remplir une mission", "to carry out a task", "Elle a rempli sa mission avec succès.", "rempli", ["joué", "tenu"]],
+      ["respecter un délai", "to meet a deadline", "Nous devons respecter les délais du client.", "respecter", ["garder", "obéir"]],
+      ["mener un projet", "to lead a project", "C'est elle qui mène le projet depuis le début.", "mène", ["fait", "joue"]],
+      ["toucher un salaire", "to earn a salary", "Il touche un bon salaire.", "touche", ["prend", "tient"]],
+      ["une lourde charge de travail", "a heavy workload", "Cette semaine, j'ai une lourde charge de travail.", "lourde", ["épaisse", "grave"]],
+      ["suivre une formation", "to take a training course", "Je suis une formation en comptabilité.", "suis", ["tiens", "porte"]],
+      ["atteindre un objectif", "to reach a target", "L'équipe a atteint tous ses objectifs.", "atteint", ["arrivé", "touché"]],
+      ["faire des heures supplémentaires", "to work overtime", "En décembre, je fais beaucoup d'heures supplémentaires.", "fais", ["travaille", "prends"]]
+    ],
+    wf: [
+      ["Sa ___ dans la boulangerie a surpris tout le monde. (RECONVERTIR)", "reconversion"],
+      ["L'___ des tâches répétitives va continuer. (AUTOMATISER)", "automatisation"],
+      ["Les salariés réclament une ___ de salaire. (AUGMENTER)", "augmentation"],
+      ["Ce poste demande une grande ___. (DISPONIBLE)", "disponibilité"],
+      ["C'est un travail ___ : il change tous les jours. (VARIER)", "varié"],
+      ["Le ___ de deux cents salariés a été annoncé hier. (LICENCIER)", "licenciement"],
+      ["Cette réunion était complètement ___. (UTILE)", "inutile"],
+      ["Elle a répondu ___ à toutes les questions du jury. (CALME)", "calmement"]
+    ],
+    kwt: [
+      ["Je regrette de ne pas avoir demandé une augmentation.", "AURAIS", "J'___ une augmentation.", "aurais dû demander|aurais aimé demander|aurais voulu demander"],
+      ["Il est possible qu'il ait oublié la réunion.", "AURA", "Il ___ la réunion.", "aura oublié"],
+      ["Tu as eu tort de ne pas me prévenir.", "PU", "Tu ___ me prévenir !", "aurais pu"],
+      ["Je finirai d'abord le rapport, puis je partirai en vacances.", "AURAI", "Quand j'___ le rapport, je partirai en vacances.", "aurai fini|aurai terminé"],
+      ["Selon certaines sources, le directeur a démissionné.", "AURAIT", "Le directeur ___, selon certaines sources.", "aurait démissionné"],
+      ["Ils ne sont pas arrivés à se mettre d'accord.", "COMPROMIS", "Ils n'ont pas ___.", "trouvé de compromis|réussi à trouver un compromis"]
+    ],
+    idioms: [
+      ["mettre la main à la pâte", "participer au travail, aider", "to roll up one's sleeves", "Tout le monde a mis la main à la pâte pour finir à temps.", "mis la main à la pâte"],
+      ["avoir du pain sur la planche", "avoir beaucoup de travail", "to have a lot on one's plate", "Avec ce nouveau client, on a du pain sur la planche !", "du pain sur la planche"],
+      ["être sur la sellette", "risquer d'être critiqué ou renvoyé", "to be in the hot seat", "Après ces mauvais résultats, le directeur est sur la sellette.", "sur la sellette"],
+      ["faire le pont", "ne pas travailler entre un jour férié et le week-end", "to take the extra day off between a holiday and the weekend", "Le jeudi de l'Ascension, beaucoup de gens font le pont.", "font le pont"],
+      ["poser un lapin", "ne pas venir à un rendez-vous", "to stand someone up", "Le candidat nous a posé un lapin : il n'est jamais venu à l'entretien.", "posé un lapin"],
+      ["mettre la clé sous la porte", "fermer définitivement une entreprise", "to shut up shop", "Après vingt ans, la librairie a mis la clé sous la porte.", "mis la clé sous la porte"],
+      ["travailler d'arrache-pied", "travailler très dur", "to work flat out", "Ils ont travaillé d'arrache-pied pour finir le projet.", "travaillé d'arrache-pied"],
+      ["c'est du gâteau", "c'est très facile", "it's a piece of cake", "Ce dossier ? C'est du gâteau !", "C'est du gâteau"]
+    ]
+  };
+
   W.COURSE.push({ id: "b2-1", level: "B2", icon: "cpu", title: "The future of work", title_fr: "Le travail de demain",
     intro: "In this first B2 unit, you'll talk about how work is changing: the futur antérieur, the past conditional for regrets, reproaches and unconfirmed news, and the French you need to negotiate with your employer.",
     intro_fr: "Dans cette première unité du B2, tu vas parler de l'évolution du travail : le futur antérieur, le conditionnel passé pour les regrets, les reproches et les informations non confirmées, et le français qu'il faut pour négocier avec ton employeur.",
