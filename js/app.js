@@ -438,11 +438,15 @@ function lookupFr(w) {
     if (/onnes?$/.test(x)) push(x.replace(/onnes?$/, "on"));
     if (/elles?$/.test(x)) push(x.replace(/elles?$/, "el"));
     const er = x.match(/^(.+?)(erai|eras|era|erons|erez|eront|erais|erait|eraient|aient|ais|ait|ions|iez|ant|ons|ez|ent|ées|és|ée|é|es|e)$/);
-    if (er) push(er[1] + "er");
+    /* mangeons → manger, commençons → commencer */
+    if (er) { push(er[1] + "er"); push(er[1].replace(/ge$/, "g").replace(/ç$/, "c") + "er"); }
     const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|is|it|ie|ies|i)$/);
     if (ir) push(ir[1] + "ir");
-    const re = x.match(/^(.+?)(ons|ez|ent|ds|d|us|ues|ue|u|s)$/);
+    const re = x.match(/^(.+?)(ons|ez|ent|us|ues|ue|u|s)$/);
     if (re) push(re[1] + "re");
+    /* attends, répond → attendre, répondre */
+    const dre = x.match(/^(.+d)(s|ons|ez|ent|ais|ait|ions|iez|aient|ant|u|ue|us|ues)?$/);
+    if (dre) push(dre[1] + "re");
   });
   for (const c of cands) if (DICT.has(c)) return { base: c, fr: DICT.get(c) };
   if (w.includes("-")) { const bits = w.split("-").map((b) => lookupFr(b)).filter(Boolean); if (bits.length) return { base: w, fr: bits.map((b) => b.fr).join(" + ") }; }
@@ -478,8 +482,8 @@ function lookup(raw, gloss) {
 }
 /* Wrap every English word of the page in a clickable span. */
 const SKIP = "button, a, input, textarea, select, option, script, style, svg, .fr-text, .fr, .no-tx, .popover, .w, .kbd, .tag, .pill, .seg, label, .speaker, .fr-ui, .lv-scale, .report-big, .report-lv, .result-big";
-/* Not real words: single letters (except a and I), suffixes and prefixes quoted alone (-tion, thir-), endings after a digit (2nd). */
-const fragmentAt = (parts, k) => /^[b-hj-z]$/i.test(parts[k]) || /(^|[\s(“"‘«,\/])[-–]$|\d$/.test(parts[k - 1] || "") || /^[-–](?![A-Za-z])/.test(parts[k + 1] || "");
+/* Not real words: single letters (except a and I, and the French y), suffixes and prefixes quoted alone (-tion, thir-), endings after a digit (2nd). */
+const fragmentAt = (parts, k) => (/^[b-hj-z]$/i.test(parts[k]) && !(FRENCH_COURSE && /^y$/i.test(parts[k]))) || /(^|[\s(“"‘«,\/])[-–]$|\d$/.test(parts[k - 1] || "") || /^[-–](?![A-Za-z])/.test(parts[k + 1] || "");
 function wordify(root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode: (n) => {

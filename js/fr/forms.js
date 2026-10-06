@@ -58,4 +58,27 @@
   add("connaître", [["connaissais", "imperfect"], ["connaissait", "imperfect"], ["connaissions", "imperfect"], ["connaissiez", "imperfect"], ["connaissaient", "imperfect"]]);
   /* Common words whose form hides the dictionary entry. */
   add("il y a", [["y", "il y a = there is / there are"]]);
+  add("croire", [["crois", "je / tu crois"], ["croit", "il / elle croit"], ["croyez", "vous croyez"], ["cru", "past participle"]]);
+  add("savoir", [["sais", "je / tu sais"], ["sait", "il / elle sait"], ["savons", "nous savons"], ["savez", "vous savez"], ["savent", "ils / elles savent"], ["su", "past participle"]]);
+  add("connaître", [["connais", "je / tu connais"], ["connaît", "il / elle connaît"], ["connaissez", "vous connaissez"], ["connaissent", "ils / elles connaissent"], ["connu", "past participle"]]);
+  add("conduire", [["conduis", "je / tu conduis"], ["conduit", "il / elle conduit"], ["conduisez", "vous conduisez"]]);
+  add("ouvrir", [["ouvrez", "vous ouvrez; open (command)"], ["ouvre", "j' / il / elle ouvre"]]);
+  add("offrir", [["offert", "past participle"], ["offre", "j' / il / elle offre"]]);
+  add("recevoir", [["reçois", "je / tu reçois"], ["reçoit", "il / elle reçoit"], ["reçu", "past participle"], ["reçue", "past participle"]]);
+  add("revenir", [["reviens", "je / tu reviens"], ["revient", "il / elle revient"], ["revenez", "vous revenez; come back (command)"], ["revenu", "past participle"]]);
+  add("devenir", [["deviens", "je / tu deviens"], ["devient", "il / elle devient"], ["devenu", "past participle"]]);
+  add("se souvenir", [["souviens", "je me / tu te souviens"], ["souvient", "il / elle se souvient"], ["souvenez", "vous vous souvenez"]]);
+  add("naître", [["né", "past participle"], ["née", "past participle"], ["nés", "past participle"]]);
+  add("mourir", [["mort", "past participle; dead"], ["morte", "past participle; dead"]]);
+  add("éteindre", [["éteint", "past participle; switched off"], ["éteinte", "past participle; switched off"]]);
+  add("préférer", [["préfère", "je / il / elle préfère"], ["préfères", "tu préfères"], ["préfèrent", "ils / elles préfèrent"]]);
+  add("espérer", [["espère", "j' / il / elle espère"], ["espères", "tu espères"]]);
+  add("payer", [["paie", "je / il / elle paie"], ["paies", "tu paies"], ["paient", "ils / elles paient"]]);
+  add("essayer", [["essaie", "j' / il / elle essaie"], ["essaies", "tu essaies"]]);
+  add("rappeler", [["rappelle", "je / il / elle rappelle"], ["rappelles", "tu rappelles"]]);
+  add("pleuvoir", [["pleuvait", "imperfect"]]);
+  add("sentir", [["sentait", "imperfect"], ["sentais", "imperfect"]]);
+  add("être", [["étions", "imperfect"], ["étiez", "imperfect"]]);
+  add("avoir", [["avions", "imperfect"], ["aviez", "imperfect"], ["avaient", "imperfect"]]);
+  add("falloir", [["faut", "il faut: you have to, it's necessary"], ["fallait", "imperfect"], ["fallu", "past participle"]]);
 })();
