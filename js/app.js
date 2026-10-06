@@ -22,7 +22,7 @@ const ic = (name, cls = "") => svgIcon(name, cls);
    saved progress change. "target" is the language taught, "helper" the learner's own language. */
 const APP = Object.assign({
   id: "en", target: "en", helper: "fr", helperCode: "FR", key: "stepbystep.v1",
-  voiceLang: "en-GB", srLang: "en-US", learner: "Stella", hello: null
+  voiceLang: "en-GB", srLang: "en-US", learner: "", hello: null
 }, window.APP || {});
 const TARGET_RE = new RegExp("^" + APP.target + "[-_]", "i");
 const FRENCH_COURSE = APP.target === "fr";
@@ -130,6 +130,8 @@ function load() {
   catch (e) { return defaults(); }
 }
 let S = load();
+/* The course was first written for Stella: her progress keeps her name; a new learner chooses theirs in the settings. */
+if (S.name == null && APP.id === "en" && S.xp > 0) S.name = "Stella";
 if (!S.toeic || !S.toeic.mocks) S.toeic = { mocks: [], parts: {} };
 function save() {
   try { trackPath(); } catch (e) { /* the course isn't loaded yet */ }
@@ -137,7 +139,7 @@ function save() {
   renderTopStats();
 }
 const unitState = (id) => (S.units[id] = S.units[id] || {});
-/* The learner's first name: the one given in the settings, or the course's default (Stella for the English course). */
+/* The learner's first name, given in the settings (or on the first visit). */
 const learnerName = () => (S.name || APP.learner || "").trim();
 
 /* ================= Dates & progress ================= */
@@ -1197,7 +1199,7 @@ function viewHome() {
   </section>
 
   ${first ? `<section class="card welcome">
-    <h2 style="margin-top:0">${T("Before you start: two choices")}</h2>
+    <h2 style="margin-top:0">${T("Before you start")}</h2>
     <h3>${T("1. Where do you start?")}</h3>
     <div class="welcome-choices">
       <a class="welcome-choice" href="${up ? up.href : "#/cours"}">${tile("sprout", "A1")}<span><b>${T("I'm a beginner, or almost")}</b><span class="muted small">${T("Start with Unit 1: the course explains everything from the start.")}</span></span></a>
@@ -1206,6 +1208,8 @@ function viewHome() {
     <h3>${T("2. How much time per day?")}</h3>
     <div class="seg" role="group" aria-label="${T("Time per day")}">${[15, 30, 60].map((m) => `<button data-goal="${m}" class="${S.goal === m ? "on" : ""}">${m} min</button>`).join("")}</div>
     <p class="muted small" style="margin:10px 0 0">${T("Today's programme adapts to it, and you can change it at any time. Then choose a fixed moment in “My routine”: that's what turns a good intention into a habit.")}</p>
+    <h3>${T("3. Your first name (optional)")}</h3>
+    <input id="nameWelcome" class="field" style="max-width:320px" value="${esc(S.name || "")}" autocomplete="given-name" aria-label="${T("Your first name (for the greeting)")}">
   </section>` : ""}
 
   <section class="card" style="margin-bottom:16px">
@@ -1279,6 +1283,7 @@ function viewHome() {
 `;
 
   $$("[data-goal]").forEach((b) => (b.onclick = () => { S.goal = +b.dataset.goal; save(); viewHome(); }));
+  if ($("#nameWelcome")) $("#nameWelcome").onchange = (e) => { S.name = e.target.value.trim(); save(); viewHome(); };
   $$("[data-ext]").forEach((b) => (b.onclick = () => {
     const m = +b.dataset.ext;
     const d = todayLog();
@@ -1344,7 +1349,7 @@ function viewMore(part) {
 function settingsHtml() {
   return `<div class="stack">
       <label class="small muted" for="nameIn">${T("Your first name (for the greeting)")}</label>
-      <input id="nameIn" class="field" value="${esc(S.name || "")}" placeholder="${esc(APP.learner || "")}" autocomplete="given-name">
+      <input id="nameIn" class="field" value="${esc(S.name || "")}" autocomplete="given-name">
       <hr class="sep">
       <label class="small muted" for="langSel2">${T("Interface language")}</label>
       <select id="langSel2" class="field">${LANGS.map(([k, n]) => `<option value="${k}" ${lang() === k ? "selected" : ""}>${n}</option>`).join("")}</select>

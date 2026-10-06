@@ -11,8 +11,8 @@
   W.LESSONS.push(
   {
     id: 137, after: 43, level: "B2", icon: "telescope",
-    title: "Likely, bound to, about to: how sure are you about the future?", title_fr: "Likely, bound to, about to : à quel point es-tu sûre de l'avenir ?",
-    subtitle: "Say how certain you are, from almost sure to very unlikely, and talk about what's planned or imminent.", subtitle_fr: "Dire à quel point tu es sûre, de presque certain à très improbable, et parler de ce qui est prévu ou imminent.",
+    title: "Likely, bound to, about to: how sure are you about the future?", title_fr: "Likely, bound to, about to : quel degré de certitude sur l'avenir ?",
+    subtitle: "Say how certain you are, from almost sure to very unlikely, and talk about what's planned or imminent.", subtitle_fr: "Exprimer ton degré de certitude, de presque certain à très improbable, et parler de ce qui est prévu ou imminent.",
     body: `
 <h2>From almost certain to unlikely</h2>
 <table>
@@ -148,7 +148,7 @@
       { y: ["As long as you're on Wi-Fi, it's free. In other words, it won't cost you more than your internet already does.", "Free.", "As long as you will be on Wi-Fi, it's free. In other words, it won't cost more than your internet already costs."], fr: "Tant que tu es en wifi, c'est gratuit. Autrement dit, ça ne te coûtera pas plus que ce que tu paies déjà pour internet.", why: "As long as + present, not will. In other words introduces a simpler explanation." },
       { p: "That's wonderful. And what if I can't hear him?", fr: "C'est formidable. Et si je ne l'entends pas ?" },
       { y: ["Then check that the volume is turned up: it's the button on the side. Does that make sense?", "Volume.", "Then check that the volume is turned on high: it's the button of the side. Does it make sense?"], fr: "Alors vérifie que le volume est monté : c'est le bouton sur le côté. C'est clair ?", why: "The button on the side. Does that make sense? checks understanding politely." },
-      { p: "Perfectly. Thank you, you're very patient!", fr: "Parfaitement. Merci, tu es très patiente !" },
+      { p: "Perfectly. Thank you, you're very patient!", fr: "Parfaitement. Merci pour ta patience !" },
       { y: ["My pleasure. Let's try it now, so that you feel confident next time.", "Pleasure. Try.", "My pleasure. Let's try it now, so as you feel confident next time."], fr: "Avec plaisir. Essayons maintenant, pour que tu te sentes à l'aise la prochaine fois.", why: "So that + clause; so as needs to + verb." }
     ] }
   );

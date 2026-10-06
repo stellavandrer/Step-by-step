@@ -270,7 +270,7 @@ window.PRON.push(
 <h3>Les choix et les question tags</h3>
 <ul>
 <li><s-en>Would you like tea or coffee?</s-en> avec tea ↗ et coffee ↘ = choisis l'un des deux ; avec une seule montée à la fin = tu veux boire quelque chose ?</li>
-<li>Question tags : descendant = tu es sûre et tu attends l'accord : <s-en>It's cold, isn't it?</s-en> ↘. Montant = une vraie question : <s-en>You've met him, haven't you?</s-en> ↗</li>
+<li>Question tags : descendant = tu affirmes et tu attends l'accord : <s-en>It's cold, isn't it?</s-en> ↘. Montant = une vraie question : <s-en>You've met him, haven't you?</s-en> ↗</li>
 </ul>
 <div class="warn">Une voix plate peut sembler ennuyée ou froide en anglais, même quand on veut être aimable. Utilise une <b>amplitude plus large</b> qu'en français, surtout sur le noyau.</div>`,
   practice: [["Where do you live?", "Où habites-tu ?"], ["Do you live near here?", "Tu habites près d'ici ?"], ["Would you like tea or coffee?", "Tu veux du thé ou du café ?"], ["It's a lovely day, isn't it?", "Il fait beau, n'est-ce pas ?"], ["I bought apples, bread and cheese.", "J'ai acheté des pommes, du pain et du fromage."]],
@@ -576,7 +576,7 @@ window.PRON.push(
 <div class="warn">Two classic non-native habits: speaking too fast to “get it over with”, especially at the start, and ending every sentence with a rise, which sounds unsure. End your statements with a confident fall.</div>`,
   body_fr: `<p>Dans une présentation, un discours ou un podcast, la voix fait la moitié du travail. Voici les techniques des orateurs professionnels, enseignées dans les cours de prise de parole en public.</p>
 <h3>Découper et faire des pauses</h3>
-<p>Parle par groupes de sens de 3 à 7 mots, avec une courte pause entre eux. Les pauses ne sont pas des vides : elles laissent au public le temps de comprendre, et elles te donnent l'air sûre de toi. Fais une pause <b>avant</b> une idée clé (pour créer l'attention) et <b>après</b> (pour la laisser s'installer).</p>
+<p>Parle par groupes de sens de 3 à 7 mots, avec une courte pause entre eux. Les pauses ne sont pas des vides : elles laissent au public le temps de comprendre, et elles te donnent de l'assurance. Fais une pause <b>avant</b> une idée clé (pour créer l'attention) et <b>après</b> (pour la laisser s'installer).</p>
 <p><s-en>Last year | we lost three clients. || This year | we've gained twelve. || The difference? || We started listening.</s-en></p>
 <h3>Le débit</h3>
 <p>Un débit confortable tourne autour de 130 à 160 mots par minute. Ralentis sur les chiffres, les noms, les termes clés et les conclusions ; accélère un peu sur les exemples et les anecdotes. Les changements de rythme retiennent bien mieux l'attention qu'une vitesse constante.</p>

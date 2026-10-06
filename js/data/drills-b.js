@@ -73,7 +73,7 @@ window.DRILLS = Object.assign(window.DRILLS || {}, {
   31: {
     gap: [["I ___ to play the piano as a child. (avais l'habitude)", "used"], ["I'm not used to ___ up early. (get)", "getting"], ["Did you ___ to live in Paris? (use)", "use"], ["You'll soon get used to ___ on the left. (drive)", "driving"]],
     fix: [["I use to go swimming every Sunday when I was young.", "I used to go swimming every Sunday when I was young.", "Past habit: used to."], ["I'm used to work at night.", "I'm used to working at night.", "Be used to + -ing."]],
-    task: ["How has your life changed? What did you use to do, and what are you used to now?", "Comment ta vie a-t-elle changé ? Ce que tu faisais avant, ce à quoi tu es habituée maintenant.", "I used to live in a big city. I used to take the metro every day. Now I live in the countryside and I'm used to driving everywhere."]
+    task: ["How has your life changed? What did you use to do, and what are you used to now?", "Comment ta vie a-t-elle changé ? Ce que tu faisais avant, ce qui est devenu une habitude maintenant.", "I used to live in a big city. I used to take the metro every day. Now I live in the countryside and I'm used to driving everywhere."]
   },
   65: {
     gap: [["___ of my friends like football. (la plupart)", "Most"], ["___ of them came. Nobody! (aucun)", "None"], ["___ of the students passed. Everyone! (tous)", "All"], ["___ of my colleagues work from home, but not all. (certains)", "Some"]],

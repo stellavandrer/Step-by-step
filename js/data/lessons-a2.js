@@ -149,7 +149,7 @@ window.LESSONS.push(
 <table>
 <tr><th>Anglais</th><th>Sens</th></tr>
 <tr><td>You mustn't smoke here.</td><td>Interdiction : tu ne dois pas.</td></tr>
-<tr><td>You don't have to come.</td><td>Absence d'obligation : tu n'es pas obligée.</td></tr>
+<tr><td>You don't have to come.</td><td>Absence d'obligation : tu n'as pas besoin de venir.</td></tr>
 </table>
 <div class="warn">« Tu ne dois pas » (interdit) = <b>mustn't</b>. « Tu n'as pas besoin de » = <b>don't have to</b>. Les confondre change complètement le sens !</div>
 <h2>Should : le conseil</h2>
@@ -165,7 +165,7 @@ window.LESSONS.push(
     ["What should I wear?", "Qu'est-ce que je devrais porter ?"]
   ],
   quiz: [
-    { q: "« Tu n'es pas obligée de venir » :", o: ["You mustn't come.", "You don't have to come.", "You shouldn't come."], a: 1, ex: "Absence d'obligation → don't have to." },
+    { q: "« Tu n'as pas besoin de venir » :", o: ["You mustn't come.", "You don't have to come.", "You shouldn't come."], a: 1, ex: "Absence d'obligation → don't have to." },
     { q: "« Il est interdit de courir ici » :", o: ["You mustn't run here.", "You don't have to run here."], a: 0, ex: "Interdiction → mustn't." },
     { q: "« Tu devrais te reposer » :", o: ["You must to rest.", "You should rest.", "You should to rest."], a: 1, ex: "Conseil → should + verbe, sans « to »." },
     { q: "« J'ai dû partir » (passé) :", o: ["I must left.", "I had to leave.", "I musted leave."], a: 1, ex: "Must n'a pas de passé : on utilise had to." },
@@ -226,7 +226,7 @@ window.LESSONS.push(
 <tr><td>make</td><td>made</td><td>made</td></tr>
 </table>
 <h2>Ever et never</h2>
-<p><s-en>Have you ever been to New York?</s-en> (Es-tu déjà allée à New York ?)</p>
+<p><s-en>Have you ever been to New York?</s-en> (As-tu déjà visité New York ?)</p>
 <p><s-en>I've never eaten sushi.</s-en> (Je n'ai jamais mangé de sushis.)</p>
 <div class="tip"><b>been</b> ou <b>gone</b> ? <s-en>She has been to Spain.</s-en> = elle y est allée (et revenue). <s-en>She has gone to Spain.</s-en> = elle y est partie (elle y est encore).</div>
 <h2>Le piège : un moment précis → prétérit</h2>
@@ -235,7 +235,7 @@ window.LESSONS.push(
 <div class="warn">Jamais « I have been to London last year ». « Last year » est un moment précis → <s-en>I went to London last year.</s-en></div>
 `,
   examples: [
-    ["Have you ever been to England?", "Es-tu déjà allée en Angleterre ?"],
+    ["Have you ever been to England?", "As-tu déjà visité l'Angleterre ?"],
     ["I've never seen the sea.", "Je n'ai jamais vu la mer."],
     ["She's visited twenty countries.", "Elle a visité vingt pays."],
     ["We've met before.", "Nous nous sommes déjà rencontrés."],

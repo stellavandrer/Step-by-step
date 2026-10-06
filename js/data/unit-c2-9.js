@@ -148,7 +148,7 @@
       { p: "And what happens if I don't take them?", fr: "Et qu'est-ce qui se passe si je ne les prends pas ?" },
       { y: ["That's the real question. Your doctor will have weighed the risk of the illness against the risk of the tablets. It's worth asking her directly before you decide.", "Nothing.", "That's the real question. Your doctor will weigh the risk of the illness against the tablets' risk. It worths asking her directly before you decide."], fr: "C'est la vraie question. Ton médecin aura mis en balance le risque de la maladie et celui des comprimés. Ça vaut la peine de lui demander directement avant de décider.", why: "Will have weighed: an assumption about the past. It's worth + -ing (never it worths)." },
       { p: "You're right. I'll call her tomorrow and ask.", fr: "Tu as raison. Je l'appelle demain pour lui demander." },
-      { y: ["Good idea. I'd sooner you asked her than stopped the treatment on your own.", "OK.", "Good idea. I'd sooner you ask her than you stop the treatment on your own."], fr: "Bonne idée. Je préfère que tu lui demandes plutôt que d'arrêter le traitement toute seule.", why: "Would sooner + subject + past tense: I'd sooner you asked." }
+      { y: ["Good idea. I'd sooner you asked her than stopped the treatment on your own.", "OK.", "Good idea. I'd sooner you ask her than you stop the treatment on your own."], fr: "Bonne idée. Je préfère que tu lui demandes plutôt que d'arrêter le traitement sans avis médical.", why: "Would sooner + subject + past tense: I'd sooner you asked." }
     ] }
   );
 

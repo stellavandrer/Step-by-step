@@ -145,13 +145,13 @@ window.ROLEPLAYS = [
   title: "Telling a bad morning story", title_fr: "Raconter une matinée catastrophe",
   setting: "You arrive late at work. A colleague asks what happened.", setting_fr: "Tu arrives en retard au travail. Un collègue te demande ce qui s'est passé.",
   turns: [
-    { p: "You look stressed! What happened?", fr: "Tu as l'air stressée ! Qu'est-ce qui s'est passé ?" },
+    { p: "You look stressed! What happened?", fr: "Ça n'a pas l'air d'aller ! Qu'est-ce qui s'est passé ?" },
     { y: ["You'll never guess what happened this morning!", "You will never guess what happens this morning!", "You never guess what it happened this morning!"], fr: "Tu ne devineras jamais ce qui m'est arrivé ce matin !", why: "A classic way to start a story: You'll never guess what happened…" },
     { p: "Go on, tell me!", fr: "Vas-y, raconte !" },
     { y: ["Well, first I missed my train, and then it started to rain.", "Well, first I miss my train, and then it start to rain.", "Well, first I have missed my train, and then it has started to rain."], fr: "Eh bien, d'abord j'ai raté mon train, puis il s'est mis à pleuvoir.", why: "A story in the past: past simple (missed, started)." },
     { p: "Oh no! And then?", fr: "Oh non ! Et ensuite ?" },
     { y: ["To make things worse, I had left my umbrella at home.", "To make things worse, I have left my umbrella at home.", "To make things more bad, I had left my umbrella at home."], fr: "Pour couronner le tout, j'avais laissé mon parapluie à la maison.", why: "Past perfect for the earlier action. Worse, never “more bad”." },
-    { p: "Poor you! Did you get here by bus in the end?", fr: "Ma pauvre ! Tu es venue en bus, finalement ?" },
+    { p: "Poor you! Did you get here by bus in the end?", fr: "Oh là là ! Tu as pris le bus, finalement ?" },
     { y: ["No, in the end a colleague gave me a lift.", "No, at the end a colleague gave me a lift.", "No, in the end a colleague gived me a lift."], fr: "Non, finalement une collègue m'a déposée en voiture.", why: "In the end = finalement. Give → gave." },
     { p: "Well, at least you're here now!", fr: "Bon, au moins tu es là maintenant !" }
   ] },
@@ -215,7 +215,7 @@ window.ROLEPLAYS = [
   setting: "Your team is choosing a date to launch a new website.", setting_fr: "Ton équipe choisit la date de lancement d'un nouveau site.",
   turns: [
     { p: "I think we should launch the new website in May.", fr: "Je pense qu'on devrait lancer le nouveau site en mai." },
-    { y: ["I see your point, but I'm not sure we'll be ready by then.", "You're wrong, we won't be ready.", "I see your point, but I'm not sure we'll be ready until then."], fr: "Je vois ce que tu veux dire, mais je ne suis pas sûre qu'on soit prêts d'ici là.", why: "Disagree politely. By then = d'ici là (until = jusqu'à)." },
+    { y: ["I see your point, but I'm not sure we'll be ready by then.", "You're wrong, we won't be ready.", "I see your point, but I'm not sure we'll be ready until then."], fr: "Je vois ce que tu veux dire, mais je doute qu'on soit prêts d'ici là.", why: "Disagree politely. By then = d'ici là (until = jusqu'à)." },
     { p: "Why not? The design is almost finished.", fr: "Pourquoi pas ? Le design est presque terminé." },
     { y: ["That's true, but testing will take at least a month.", "That's true, but testing will take at least of a month.", "That's true, but testing will last minimum one month more."], fr: "C'est vrai, mais les tests prendront au moins un mois.", why: "At least = au moins." },
     { p: "If we wait, we'll lose the summer sales.", fr: "Si on attend, on va perdre les ventes de l'été." },

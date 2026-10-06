@@ -275,7 +275,7 @@ Object.assign(window.LESSONS_EN, {
 <div class="tip">Friendly advice: <s-en>If I were you, I'd…</s-en> (si j'étais toi, je…). You'll study it at level B1.</div>
 `,
   quiz: [
-    { q: "Translate: « Tu n'es pas obligée de venir. »", ex: "Not necessary → don't have to." },
+    { q: "Translate: « Tu n'as pas besoin de venir. »", ex: "Not necessary → don't have to." },
     { q: "Translate: « Il est interdit de courir ici. »", ex: "Forbidden → mustn't." },
     { q: "Translate: « Tu devrais te reposer. »", ex: "Advice → should + verb, with no “to”." },
     { q: "Translate: « J'ai dû partir. » (past)", ex: "Must has no past form: use had to." },

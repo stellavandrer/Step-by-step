@@ -29,7 +29,7 @@ window.LESSONS.push(
 <tr><td>Le passé pour prendre de la distance</td><td>I want to ask you something.</td><td>I was wondering if I could ask you something. (Je me demandais si je pouvais te demander quelque chose.)</td></tr>
 <tr><td>La question négative</td><td>We should wait.</td><td>Wouldn't it be better to wait? (Ne vaudrait-il pas mieux attendre ?)</td></tr>
 <tr><td>Les atténuateurs</td><td>It's a problem.</td><td>It might be slightly problematic. (Cela pourrait poser un léger problème.)</td></tr>
-<tr><td>Not + mot positif</td><td>That's a bad idea.</td><td>I'm not sure that's the best approach. (Je ne suis pas sûre que ce soit la meilleure approche.)</td></tr>
+<tr><td>Not + mot positif</td><td>That's a bad idea.</td><td>I'm not sure that's the best approach. (Je doute que ce soit la meilleure approche.)</td></tr>
 <tr><td>« We » plutôt que « you »</td><td>You made a mistake.</td><td>It seems we've overlooked something. (On dirait que quelque chose nous a échappé.)</td></tr>
 </table>
 <h2>Dire non</h2>
@@ -161,7 +161,7 @@ window.LESSONS.push(
 <h2>Les taquineries amicales (banter)</h2>
 <p><s-en>Nice of you to join us!</s-en> (à un collègue en retard : « Content que tu nous rejoignes ! ») · <s-en>Don't give up the day job!</s-en> (après une chanson ou une blague ratée : « Garde ton boulot ! ») · <s-en>Are you always this cheerful in the morning?</s-en></p>
 <h2>Répondre</h2>
-<p>Jouer le jeu : <s-en>I do my best.</s-en> · <s-en>Guilty as charged!</s-en> (Coupable !) · <s-en>Touché.</s-en> · <s-en>Very funny.</s-en> (pince-sans-rire, faussement vexée) · Si tu n'es pas sûre : <s-en>Sorry, was that a joke?</s-en> (dit avec le sourire, c'est tout à fait acceptable)</p>
+<p>Jouer le jeu : <s-en>I do my best.</s-en> · <s-en>Guilty as charged!</s-en> (Coupable !) · <s-en>Touché.</s-en> · <s-en>Very funny.</s-en> (pince-sans-rire, faussement vexé) · En cas de doute : <s-en>Sorry, was that a joke?</s-en> (dit avec le sourire, c'est tout à fait acceptable)</p>
 <div class="warn">Les taquineries, c'est entre gens qui se connaissent. Avec des inconnus ou à une première rencontre, reste bienveillante et légère.</div>
 `,
   examples: [

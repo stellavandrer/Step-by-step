@@ -100,7 +100,7 @@
 <tr><td><s-en>At least…</s-en> (au moins…)</td><td>Ça fait paraître le problème plus petit qu'il n'est.</td></tr>
 <tr><td><s-en>You should just…</s-en> (tu n'as qu'à…)</td><td>Un conseil trop rapide sonne comme un jugement.</td></tr>
 </table>
-<div class="tip"><s-en>Must have been</s-en>, une déduction sur le passé, est la structure clé de l'empathie : <s-en>That must have been terrifying.</s-en> (ça a dû être terrifiant) · <s-en>You must have felt so alone.</s-en> (tu as dû te sentir si seule)</div>
+<div class="tip"><s-en>Must have been</s-en>, une déduction sur le passé, est la structure clé de l'empathie : <s-en>That must have been terrifying.</s-en> (ça a dû être terrifiant) · <s-en>You must have felt so alone.</s-en> (tu as dû souffrir de la solitude)</div>
 `,
     examples: [
       ["That sounds really hard.", "Ça a l'air vraiment dur."],

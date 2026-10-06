@@ -134,7 +134,7 @@ window.LESSONS.push(
 </table>
 <h2>Quand tu ne connais pas la réponse</h2>
 <p><s-en>I'm not sure off the top of my head, but I'll find out and get back to you.</s-en> (Je ne sais pas comme ça de tête, mais je vais me renseigner et je reviens vers vous.) · <s-en>Could you repeat the question, please?</s-en> (Pourriez-vous répéter la question ?)</p>
-<div class="tip">La règle de trois : on retient les listes de trois. <s-en>It's faster, cheaper and greener.</s-en> (C'est plus rapide, moins cher et plus écologique.) Fais une pause après chaque idée importante : le silence te donne l'air sûre de toi.</div>
+<div class="tip">La règle de trois : on retient les listes de trois. <s-en>It's faster, cheaper and greener.</s-en> (C'est plus rapide, moins cher et plus écologique.) Fais une pause après chaque idée importante : le silence te donne de l'assurance.</div>
 `,
   examples: [
     ["Today I'd like to talk about our new website.", "Aujourd'hui, j'aimerais vous parler de notre nouveau site."],

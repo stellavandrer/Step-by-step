@@ -62,7 +62,7 @@
 <table>
 <tr><th>Sens</th><th>Présent</th><th>Passé</th></tr>
 <tr><td>Obligatoire</td><td><s-en>You have to pay.</s-en> · <s-en>You must pay.</s-en> (il faut payer)</td><td><s-en>We had to pay.</s-en> (on a dû payer)</td></tr>
-<tr><td>Pas nécessaire (tu peux si tu veux)</td><td><s-en>You don't have to pay.</s-en> · <s-en>You don't need to pay.</s-en> (tu n'es pas obligée de payer)</td><td><s-en>We didn't have to pay.</s-en> · <s-en>We didn't need to pay.</s-en> (on n'a pas eu besoin de payer)</td></tr>
+<tr><td>Pas nécessaire (tu peux si tu veux)</td><td><s-en>You don't have to pay.</s-en> · <s-en>You don't need to pay.</s-en> (tu n'as pas besoin de payer)</td><td><s-en>We didn't have to pay.</s-en> · <s-en>We didn't need to pay.</s-en> (on n'a pas eu besoin de payer)</td></tr>
 <tr><td>Interdit</td><td><s-en>You mustn't camp here.</s-en> · <s-en>You can't camp here.</s-en> · <s-en>You aren't allowed to camp here.</s-en> (tu n'as pas le droit de camper ici)</td><td><s-en>We couldn't camp there.</s-en> · <s-en>We weren't allowed to camp there.</s-en> (on n'avait pas le droit d'y camper)</td></tr>
 <tr><td>Autorisé</td><td><s-en>You can camp here.</s-en> · <s-en>You're allowed to camp here.</s-en> (tu as le droit de camper ici)</td><td><s-en>We could camp there.</s-en> · <s-en>We were allowed to camp there.</s-en> (on avait le droit d'y camper)</td></tr>
 </table>
@@ -81,7 +81,7 @@
 `,
     examples: [
       ["You have to book the campsite in advance in summer.", "En été, il faut réserver le camping à l'avance."],
-      ["You don't have to bring a tent: you can rent one there.", "Tu n'es pas obligée d'apporter une tente : tu peux en louer une sur place."],
+      ["You don't have to bring a tent: you can rent one there.", "Pas besoin d'apporter une tente : tu peux en louer une sur place."],
       ["You mustn't swim here: the current is dangerous.", "Il ne faut pas nager ici : le courant est dangereux."],
       ["You're not allowed to light fires in the park.", "Il est interdit d'allumer des feux dans le parc."],
       ["When I was at school, we weren't allowed to use our phones.", "Quand j'étais à l'école, on n'avait pas le droit d'utiliser nos téléphones."],

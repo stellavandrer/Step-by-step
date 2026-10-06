@@ -157,7 +157,7 @@ window.LESSONS.push(
 <p><s-en>What does “awkward” mean?</s-en> (Que veut dire « awkward » ?)</p>
 <p><s-en>How do you say “boulangerie” in English?</s-en> (Comment dit-on « boulangerie » en anglais ?)</p>
 <p><s-en>How do you pronounce this word?</s-en> (Comment prononce-t-on ce mot ?)</p>
-<h2>Quand tu n'es pas sûre</h2>
+<h2>Quand tu as un doute</h2>
 <p><s-en>Is this correct?</s-en> (C'est correct ?) · <s-en>Can I say…?</s-en> (Est-ce que je peux dire… ?) · <s-en>I'm not sure.</s-en> · <s-en>I don't know.</s-en></p>
 <div class="warn">Ne dis jamais « What? » tout seul à un inconnu : c'est impoli. Dis <s-en>Sorry?</s-en> ou <s-en>Pardon?</s-en></div>
 `,
@@ -166,7 +166,7 @@ window.LESSONS.push(
     ["Could you speak more slowly?", "Vous pourriez parler plus lentement ?"],
     ["What does this word mean?", "Que veut dire ce mot ?"],
     ["How do you say “parapluie” in English?", "Comment dit-on « parapluie » en anglais ?"],
-    ["I'm not sure. Is this correct?", "Je ne suis pas sûre. C'est correct ?"]
+    ["I'm not sure. Is this correct?", "J'ai un doute. C'est correct ?"]
   ],
   quiz: [
     { q: "You didn't hear what someone said. The polite reaction is:", q_fr: "Tu n'as pas entendu ce qu'on t'a dit. La réaction polie :", o: ["What?", "Sorry?", "Again!"], a: 1, ex: "Sorry? or Pardon? are polite.", ex_fr: "Sorry? ou Pardon? sont polis." },

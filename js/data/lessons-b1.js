@@ -135,7 +135,7 @@ window.LESSONS.push(
 <div class="tip">Après « if », on peut aussi donner un ordre : <s-en>If you see Tom, say hello!</s-en></div>
 `,
   examples: [
-    ["If you're tired, go to bed.", "Si tu es fatiguée, va te coucher."],
+    ["If you're tired, go to bed.", "Si tu as sommeil, va te coucher."],
     ["If I have time, I'll call you.", "Si j'ai le temps, je t'appellerai."],
     ["I'll tell you when I know.", "Je te le dirai quand je saurai."],
     ["We won't go unless it stops raining.", "Nous n'irons pas à moins qu'il arrête de pleuvoir."],

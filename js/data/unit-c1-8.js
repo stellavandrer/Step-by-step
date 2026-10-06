@@ -45,7 +45,7 @@
 <p><s-en>as long as</s-en> · <s-en>provided (that)</s-en> : à condition que, seulement si. <s-en>The council will approve the project provided that it includes social housing.</s-en></p>
 <p><s-en>on condition that</s-en> (soutenu) : <s-en>The land was sold on condition that a park would be created.</s-en> (le terrain a été vendu à condition qu'un parc y soit créé)</p>
 <p><s-en>assuming (that)</s-en> : en supposant que. <s-en>Assuming the funding arrives, work will start in May.</s-en></p>
-<div class="tip">Choisis honnêtement : <s-en>given that…</s-en> présente un fait admis par tous ; <s-en>assuming that…</s-en> présente quelque chose dont tu n'es pas sûre. Le bon choix rend ton argument plus convaincant, et plus juste.</div>
+<div class="tip">Choisis honnêtement : <s-en>given that…</s-en> présente un fait admis par tous ; <s-en>assuming that…</s-en> présente quelque chose dont tu doutes. Le bon choix rend ton argument plus convaincant, et plus juste.</div>
 `,
     examples: [
       ["Given that rents have doubled, it's no surprise that young people are leaving.", "Étant donné que les loyers ont doublé, il n'est pas étonnant que les jeunes partent."],

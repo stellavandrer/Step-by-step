@@ -37,7 +37,7 @@ window.SPEAKING = [
   ["Is it far from here?", "Est-ce que c'est loin d'ici ?"],
   ["Turn left, then go straight on.", "Tournez à gauche, puis allez tout droit."],
   ["What time does the museum open?", "À quelle heure ouvre le musée ?"],
-  ["I'm lost. Can you help me?", "Je suis perdue. Pouvez-vous m'aider ?"],
+  ["I'm lost. Can you help me?", "Je ne trouve pas mon chemin. Pouvez-vous m'aider ?"],
   ["Is breakfast included?", "Le petit-déjeuner est-il compris ?"]
 ]},
 { id: "talk", level: "A2", icon: "message-circle", title: "Faire la conversation", phrases: [
@@ -45,7 +45,7 @@ window.SPEAKING = [
   ["What do you do for a living?", "Que fais-tu dans la vie ?"],
   ["That sounds great!", "Ça a l'air génial !"],
   ["I totally agree with you.", "Je suis tout à fait d'accord avec toi."],
-  ["I'm not sure about that.", "Je n'en suis pas sûre."],
+  ["I'm not sure about that.", "J'ai un doute."],
   ["What do you think?", "Qu'en penses-tu ?"],
   ["Have you ever been to France?", "Es-tu déjà allé en France ?"],
   ["It was really nice to talk to you.", "C'était vraiment sympa de discuter avec toi."]

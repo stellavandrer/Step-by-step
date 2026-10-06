@@ -202,7 +202,7 @@ window.ACAD.push(
 <h3>Gérer son temps (un sujet de 260 mots en 45 minutes)</h3>
 <ol><li><b>5 minutes</b> : analyser le sujet, souligner chaque point à traiter.</li><li><b>8 minutes</b> : planifier les paragraphes et le vocabulaire clé.</li><li><b>25 minutes</b> : écrire.</li><li><b>7 minutes</b> : vérifier, avec ta liste personnelle d'erreurs.</li></ol>
 <h3>Les erreurs classiques</h3>
-<ul><li>Oublier un point du sujet.</li><li>Des introductions apprises par cœur qui ne correspondent pas à la question.</li><li>Le mauvais registre : un rapport écrit comme un essai, une critique sans avis personnel.</li><li>Beaucoup trop de mots, ou beaucoup trop peu.</li><li>Placer du vocabulaire dont tu n'es pas sûre : l'étendue compte, mais la justesse aussi.</li></ul>`,
+<ul><li>Oublier un point du sujet.</li><li>Des introductions apprises par cœur qui ne correspondent pas à la question.</li><li>Le mauvais registre : un rapport écrit comme un essai, une critique sans avis personnel.</li><li>Beaucoup trop de mots, ou beaucoup trop peu.</li><li>Placer du vocabulaire dont tu doutes : l'étendue compte, mais la justesse aussi.</li></ul>`,
   bank: [
     { h: "Reviews", h_fr: "Critiques", items: [["Few books manage to …", "Peu de livres parviennent à …"], ["What makes it remarkable is …", "Ce qui le rend remarquable, c'est …"], ["That said, it is not without flaws.", "Cela dit, il n'est pas sans défauts."], ["I would recommend it to anyone who …", "Je le recommanderais à quiconque …"]] }
   ],

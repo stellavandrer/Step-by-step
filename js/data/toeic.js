@@ -17,7 +17,7 @@ window.TOEIC = {
       what: "You hear a question or a statement, then three responses. Choose the best response. Nothing is written: you only listen.",
       what_fr: "Tu entends une question ou une affirmation, puis trois réponses. Choisis la meilleure réponse. Rien n'est écrit : tu écoutes seulement.",
       tips: ["Concentrate on the first word: Who, Where, When, Why, How long… It tells you what kind of answer you need.", "A response that repeats a word from the question is often a trap.", "The right answer can be indirect: “When is the meeting?” — “Check the calendar.”", "Don't stay stuck: if you missed it, guess and move on."],
-      tips_fr: ["Concentre-toi sur le premier mot : Who, Where, When, Why, How long… Il t'indique le type de réponse attendu.", "Une réponse qui reprend un mot de la question est souvent un piège.", "La bonne réponse peut être indirecte : « When is the meeting? » — « Check the calendar. »", "Ne reste pas bloquée : si tu as raté, devine et passe à la suite."] },
+      tips_fr: ["Concentre-toi sur le premier mot : Who, Where, When, Why, How long… Il t'indique le type de réponse attendu.", "Une réponse qui reprend un mot de la question est souvent un piège.", "La bonne réponse peut être indirecte : « When is the meeting? » — « Check the calendar. »", "Ne bloque pas : si tu as raté, devine et passe à la suite."] },
     { n: 3, section: "Listening", name: "Conversations", count: 39, practice: true,
       what: "You hear short conversations between two or three people, then answer three questions about each one. The questions are written.",
       what_fr: "Tu entends de courtes conversations entre deux ou trois personnes, puis tu réponds à trois questions sur chacune. Les questions sont écrites.",

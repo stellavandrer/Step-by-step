@@ -2,7 +2,7 @@
 window.SPEAKING.push(
 { id: "avis", level: "B1", icon: "message-square-more", title: "Donner son avis", phrases: [
   ["In my opinion, it's a great idea.", "À mon avis, c'est une super idée."],
-  ["I'm not sure I agree with you.", "Je ne suis pas sûre d'être d'accord avec toi."],
+  ["I'm not sure I agree with you.", "Je ne sais pas si je suis d'accord avec toi."],
   ["That's a good point, actually.", "C'est un bon argument, en fait."],
   ["I see what you mean, but…", "Je vois ce que tu veux dire, mais…"],
   ["It depends on the situation.", "Ça dépend de la situation."],
@@ -82,7 +82,7 @@ window.PROMPTS = [
   { level: "B2", q: "Is social media doing more harm than good?", fr: "Les réseaux sociaux font-ils plus de mal que de bien ?", time: 120,
     phrases: ["It's a complex question…", "On the positive side…", "However, there's a darker side…", "What worries me most is…", "All things considered, I'd say…"],
     model: "It's a complex question, and I don't think there's a simple answer. On the positive side, social media allows us to keep in touch with friends abroad, discover new ideas and even find work. However, there's a darker side: it can be incredibly addictive, and constantly comparing ourselves with others can damage our self-esteem. What worries me most is the effect on teenagers. All things considered, I'd say it's a tool, and the problem isn't the tool itself, but how we use it." },
-  { level: "B2", q: "Tell me about a decision you regret, or a risk you're glad you took.", fr: "Parle-moi d'une décision que tu regrettes, ou d'un risque que tu es contente d'avoir pris.", time: 120,
+  { level: "B2", q: "Tell me about a decision you regret, or a risk you're glad you took.", fr: "Parle-moi d'une décision que tu regrettes, ou d'un risque que tu ne regrettes pas d'avoir pris.", time: 120,
     phrases: ["A few years ago, I decided to…", "At the time, I was worried that…", "Looking back,…", "If I hadn't…, I would never have…", "I wish I had…"],
     model: "A few years ago, I decided to leave a stable job and start working for myself. At the time, I was really worried that I wouldn't find enough clients and that I'd regret it. The first year was tough, to be honest. But looking back, it was the best decision I've ever made. If I hadn't taken that risk, I would never have discovered how much I enjoy choosing my own projects. The only thing I wish I had done differently is to save a bit more money beforehand." },
   { level: "B2", q: "Should everyone learn a foreign language at school?", fr: "Tout le monde devrait-il apprendre une langue étrangère à l'école ?", time: 120,

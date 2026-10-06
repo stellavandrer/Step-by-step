@@ -29,7 +29,7 @@
     body_fr: `
 <h2>Will pour une supposition sur le présent</h2>
 <p><s-en>Will</s-en> ne sert pas qu'au futur. Il peut exprimer une supposition assurée sur le présent, à partir de ce que tu sais.</p>
-<p><s-en>The doorbell! That'll be the delivery.</s-en> (la sonnette ! ça doit être la livraison) · <s-en>Don't call her now: she'll be asleep.</s-en> (ne l'appelle pas maintenant : elle doit dormir) · <s-en>You'll be tired after your journey.</s-en> (tu dois être fatiguée après ton voyage)</p>
+<p><s-en>The doorbell! That'll be the delivery.</s-en> (la sonnette ! ça doit être la livraison) · <s-en>Don't call her now: she'll be asleep.</s-en> (ne l'appelle pas maintenant : elle doit dormir) · <s-en>You'll be tired after your journey.</s-en> (ton voyage a dû te fatiguer)</p>
 <h2>Will have pour une supposition sur le passé</h2>
 <p><s-en>will have</s-en> + participe passé : une supposition assurée sur quelque chose qui a sans doute déjà eu lieu.</p>
 <p><s-en>You'll have heard the news.</s-en> (tu as sûrement appris la nouvelle) · <s-en>They'll have arrived by now.</s-en> (ils doivent être arrivés, maintenant) · <s-en>As many of you will have noticed, prices have risen.</s-en> (comme beaucoup d'entre vous l'auront remarqué…)</p>
@@ -167,7 +167,7 @@
     tip: "Experts often make confident guesses with will: you'll have been losing heat, that'll be why… These aren't predictions about the future: they're conclusions about the present or the past, based on evidence.", tip_fr: "Les spécialistes font souvent des suppositions assurées avec will : you'll have been losing heat, that'll be why… Ce ne sont pas des prédictions : ce sont des conclusions sur le présent ou le passé, fondées sur des indices."
   }]);
 
-  W.PROMPTS.push({ id: "c1-energy", level: "C1", q: "What changes are you willing to make for the planet, and which ones would you find really hard?", fr: "Quels changements es-tu prête à faire pour la planète, et lesquels te seraient vraiment difficiles ?", time: 120,
+  W.PROMPTS.push({ id: "c1-energy", level: "C1", q: "What changes are you willing to make for the planet, and which ones would you find really hard?", fr: "Quels changements accepterais-tu de faire pour la planète, et lesquels te seraient vraiment difficiles ?", time: 120,
     phrases: ["I'd have no problem with…", "What I'd find really hard is…", "Given that…,", "It's not so much… as…", "By the time…, I'll have…"],
     model: "I'd have no problem with taking the train instead of the plane for most holidays in Europe, or with eating much less meat. What I'd find really hard is giving up travelling further away altogether: some places simply can't be reached by train. Given that my flat is badly insulated, I suspect the biggest difference I could make is actually at home, not on holiday. It's not so much about one big sacrifice as about lots of small, boring decisions. By the time I'm sixty, I'll have made thousands of them, so they'd better be the right ones!" });
 

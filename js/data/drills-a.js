@@ -101,7 +101,7 @@ window.DRILLS = Object.assign(window.DRILLS || {}, {
   12: {
     gap: [["I ___ a new phone last week. (buy)", "bought"], ["We ___ to Spain last summer. (go)", "went"], ["She ___ me a nice present. (give)", "gave"], ["Did you ___ the news? (see)", "see"]],
     fix: [["I goed to the cinema.", "I went to the cinema.", "Go → went."], ["Did you saw him?", "Did you see him?", "After did: base verb."]],
-    task: ["Write about your last holiday: where did you go, what did you see, what did you eat?", "Raconte tes dernières vacances : où es-tu allée, qu'as-tu vu, qu'as-tu mangé ?", "Last summer I went to Portugal. I saw the old town of Lisbon. I ate a lot of fish and I drank fresh orange juice every morning."]
+    task: ["Write about your last holiday: where did you go, what did you see, what did you eat?", "Raconte tes dernières vacances : quelle destination, qu'as-tu vu, qu'as-tu mangé ?", "Last summer I went to Portugal. I saw the old town of Lisbon. I ate a lot of fish and I drank fresh orange juice every morning."]
   },
   61: {
     gap: [["When I was five, I ___ swim. (savais)", "could"], ["I ___ open the door: it was locked. (n'ai pas pu)", "couldn't|could not"], ["After two hours, we ___ to fix the car. (avons réussi à)", "were able|managed"], ["She ___ speak three languages as a child. (savait)", "could"]],

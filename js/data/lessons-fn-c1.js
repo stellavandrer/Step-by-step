@@ -175,7 +175,7 @@ window.LESSONS.push(
   body_fr: `
 <h2>Présenter une source</h2>
 <p><s-en>According to the author,…</s-en> (Selon l'auteur…) · <s-en>The article argues / claims / suggests that…</s-en> (L'article soutient / affirme / laisse entendre que…) · <s-en>The writer points out that…</s-en> (L'auteur fait remarquer que…) · <s-en>In the author's view,…</s-en> (Pour l'auteur…)</p>
-<p>Choisis bien le verbe introducteur : <b>claims</b> (tu n'es pas sûre que ce soit vrai), <b>shows</b> (c'est prouvé), <b>suggests</b> (c'est prudent), <b>maintains</b> (l'auteur insiste).</p>
+<p>Choisis bien le verbe introducteur : <b>claims</b> (tu doutes que ce soit vrai), <b>shows</b> (c'est prouvé), <b>suggests</b> (c'est prudent), <b>maintains</b> (l'auteur insiste).</p>
 <h2>Quatre façons de paraphraser</h2>
 <table>
 <tr><th>Technique</th><th>Original → Paraphrase</th></tr>
@@ -229,7 +229,7 @@ window.LESSONS.push(
 <h2>Faire des offres sous condition</h2>
 <p><s-en>If you could…, we'd be prepared to…</s-en> (Si vous pouviez…, nous serions prêts à…) · <s-en>We could consider…, provided that…</s-en> (Nous pourrions envisager…, à condition que…) · <s-en>On condition that…</s-en> (À condition que…) · <s-en>That would depend on…</s-en> (Cela dépendrait de…)</p>
 <h2>Refuser avec diplomatie</h2>
-<p><s-en>I'm afraid that's not something we can agree to.</s-en> (Je crains que nous ne puissions pas accepter cela.) · <s-en>That's a little more than we had in mind.</s-en> (C'est un peu plus que ce que nous avions prévu.) · <s-en>I'm not sure that would work for us.</s-en> (Je ne suis pas sûre que cela nous convienne.)</p>
+<p><s-en>I'm afraid that's not something we can agree to.</s-en> (Je crains que nous ne puissions pas accepter cela.) · <s-en>That's a little more than we had in mind.</s-en> (C'est un peu plus que ce que nous avions prévu.) · <s-en>I'm not sure that would work for us.</s-en> (Je doute que cela nous convienne.)</p>
 <h2>Aller vers un accord</h2>
 <table>
 <tr><th>Objectif</th><th>Formule</th></tr>
