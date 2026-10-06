@@ -59,5 +59,8 @@ window.DICT_TARGET = {
   "valable": "valid", "affiché": "displayed, shown", "affichée": "displayed, shown", "avant": "before", "départ": "departure", "arrivée": "arrival", "fond": "bottom, far end",
   "s'arrêter": "to stop", "arrête": "stops", "changer": "to change", "utiliser": "to use", "nouveau billet": "new ticket", "gaufre": "waffle", "gaufres": "waffles", "découvrir": "to discover", "découvert": "discovered",
   "bisous": "kisses (love from…)", "gros bisous": "lots of love", "depuis": "since, for", "seulement": "only",
+  "connaître": "to know (a person, a place)", "sortir": "to go out", "venir": "to come", "partir": "to leave", "dormir": "to sleep", "emmener": "to take (someone somewhere)", "offrir": "to give (a present), to offer",
+  "pleurer": "to cry", "joie": "joy", "gentillesse": "kindness", "glace": "ice cream; ice; mirror", "bras": "arm", "casser": "to break", "se casser": "to break (a part of your body)", "chanson": "song", "chanter": "to sing",
+  "nager": "to swim", "pêcher": "to fish", "dauphin": "dolphin", "peur": "fear", "avoir peur": "to be afraid", "noir": "black; the dark", "différent": "different", "ligne": "line", "lignes": "lines", "doigts": "fingers",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

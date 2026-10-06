@@ -36,6 +36,26 @@
   add("comprendre", [["compris", "past participle"], ["comprends", "je / tu comprends"], ["comprend", "il comprend"]]);
   add("apprendre", [["appris", "past participle"], ["apprends", "j'apprends, tu apprends"], ["apprend", "il apprend"]]);
   add("reprendre", [["repris", "past participle"]]);
+  /* Imperfect of the irregular verbs (the -er verbs are recognised by their endings). */
+  add("faire", [["faisais", "imperfect"], ["faisait", "imperfect"], ["faisions", "imperfect"], ["faisiez", "imperfect"], ["faisaient", "imperfect"]]);
+  add("prendre", [["prenais", "imperfect"], ["prenait", "imperfect"], ["prenions", "imperfect"], ["preniez", "imperfect"], ["prenaient", "imperfect"]]);
+  add("lire", [["lisais", "imperfect"], ["lisait", "imperfect"], ["lisions", "imperfect"], ["lisiez", "imperfect"], ["lisaient", "imperfect"]]);
+  add("dire", [["disais", "imperfect"], ["disait", "imperfect"], ["disions", "imperfect"], ["disiez", "imperfect"], ["disaient", "imperfect"]]);
+  add("écrire", [["écrivais", "imperfect"], ["écrivait", "imperfect"], ["écrivions", "imperfect"], ["écriviez", "imperfect"], ["écrivaient", "imperfect"]]);
+  add("boire", [["buvais", "imperfect"], ["buvait", "imperfect"], ["buvions", "imperfect"], ["buviez", "imperfect"], ["buvaient", "imperfect"]]);
+  add("voir", [["voyais", "imperfect"], ["voyait", "imperfect"], ["voyions", "imperfect"], ["voyiez", "imperfect"], ["voyaient", "imperfect"]]);
+  add("pouvoir", [["pouvais", "imperfect"], ["pouvait", "imperfect"], ["pouvions", "imperfect"], ["pouviez", "imperfect"], ["pouvaient", "imperfect"]]);
+  add("vouloir", [["voulais", "imperfect"], ["voulait", "imperfect"], ["voulions", "imperfect"], ["vouliez", "imperfect"], ["voulaient", "imperfect"]]);
+  add("devoir", [["devais", "imperfect"], ["devait", "imperfect"], ["devions", "imperfect"], ["deviez", "imperfect"], ["devaient", "imperfect"]]);
+  add("venir", [["venais", "imperfect"], ["venait", "imperfect"], ["venions", "imperfect"], ["veniez", "imperfect"], ["venaient", "imperfect"]]);
+  add("partir", [["partais", "imperfect"], ["partait", "imperfect"], ["partions", "imperfect"], ["partiez", "imperfect"], ["partaient", "imperfect"]]);
+  add("dormir", [["dormais", "imperfect"], ["dormait", "imperfect"], ["dormions", "imperfect"], ["dormiez", "imperfect"], ["dormaient", "imperfect"]]);
+  add("sortir", [["sortais", "imperfect"], ["sortait", "imperfect"], ["sortions", "imperfect"], ["sortiez", "imperfect"], ["sortaient", "imperfect"]]);
+  add("mettre", [["mettais", "imperfect"], ["mettait", "imperfect"], ["mettions", "imperfect"], ["mettiez", "imperfect"], ["mettaient", "imperfect"]]);
+  add("finir", [["finissais", "imperfect"], ["finissait", "imperfect"], ["finissions", "imperfect"], ["finissiez", "imperfect"], ["finissaient", "imperfect"]]);
+  add("comprendre", [["comprenais", "imperfect"], ["comprenait", "imperfect"], ["comprenions", "imperfect"], ["compreniez", "imperfect"], ["comprenaient", "imperfect"]]);
+  add("apprendre", [["apprenais", "imperfect"], ["apprenait", "imperfect"], ["apprenions", "imperfect"], ["appreniez", "imperfect"], ["apprenaient", "imperfect"]]);
+  add("connaître", [["connaissais", "imperfect"], ["connaissait", "imperfect"], ["connaissions", "imperfect"], ["connaissiez", "imperfect"], ["connaissaient", "imperfect"]]);
   /* Common words whose form hides the dictionary entry. */
   add("il y a", [["y", "il y a = there is / there are"]]);
 })();
