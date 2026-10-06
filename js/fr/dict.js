@@ -65,5 +65,9 @@ window.DICT_TARGET = {
   "renvoyer": "to send back", "toucher": "to touch", "confiance": "trust", "faire confiance": "to trust", "en plus": "what's more", "presque": "almost", "rapide": "quick, fast",
   "conseiller": "to advise", "conseil": "advice", "confortable": "comfortable", "laine": "wool", "manche": "sleeve", "déchiré": "torn", "déchirée": "torn", "emballage": "packaging",
   "rapporter": "to bring back", "un avoir": "a credit note", "étiquette": "label, tag", "au-dessus": "above; the next one up", "c'est-à-dire": "that is to say, meaning", "bon d'achat": "voucher",
+  "désagréable": "unpleasant", "grave": "serious", "sans doute": "probably", "tisane": "herbal tea", "coude": "elbow", "fenêtre": "window", "de temps en temps": "from time to time",
+  "respirer": "to breathe", "du mal à": "difficulty (avoir du mal à = to find it hard to)", "pharmacien": "pharmacist", "pharmacienne": "pharmacist", "angine": "throat infection, tonsillitis",
+  "sec": "dry", "sèche": "dry", "gras": "fatty; (cough) chesty", "grasse": "fatty; (cough) chesty", "gratter": "to scratch, to itch", "cuillère": "spoon", "conduire": "to drive", "pastille": "lozenge",
+  "asseyez-vous": "sit down (formal)", "consulter": "to see (a doctor), to consult", "généraliste": "GP, general practitioner", "plusieurs": "several",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
