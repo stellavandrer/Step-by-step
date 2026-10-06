@@ -413,7 +413,7 @@ function buildDict() {
   Object.entries(window.DICT_TARGET || window.DICT_EN_FR || {}).forEach(([k, v]) => add(k, v));
 }
 /* French: elided words (l'eau, j'habite), plurals, feminine forms, verb endings, and irregular forms (suis → être). */
-const FR_ELISION = /^(l|d|j|m|t|s|n|c|qu|jusqu|lorsqu|puisqu)'/;
+const FR_ELISION = /^(l|d|j|m|t|s|n|c|qu|jusqu|lorsqu|puisqu|quoiqu)'/;
 function lookupFr(w) {
   if (DICT.has(w)) return { base: w, fr: DICT.get(w) };
   const bare = w.replace(FR_ELISION, "");

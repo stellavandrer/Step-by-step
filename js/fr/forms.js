@@ -158,4 +158,10 @@
   add("savoir", [["savais", "imperfect"], ["savait", "imperfect"]]);
   add("construire", [["construisait", "imperfect"], ["construisais", "imperfect"]]);
   fut("refaire", "refer"); add("refaire", [["refait", "il / elle refait; past participle"]]);
+  add("convaincre", [["convaincs", "je / tu convaincs"], ["convainc", "il / elle convainc"], ["convaincu", "past participle; convinced"]]);
+  add("acquérir", [["acquiers", "j' / tu acquiers"], ["acquiert", "il / elle acquiert"], ["acquis", "past participle"]]);
+  add("essayer", [["essaient", "ils / elles essaient"]]);
+  add("interdire", [["interdit", "il / elle interdit; past participle; forbidden"], ["interdisent", "ils / elles interdisent"]]);
+  add("naître", [["naissent", "ils / elles naissent"], ["naît", "il / elle naît"]]);
+  add("rappeler", [["rappellent", "ils / elles rappellent"]]);
 })();

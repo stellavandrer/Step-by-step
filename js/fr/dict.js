@@ -208,5 +208,15 @@ window.DICT_TARGET = {
   "matériaux": "materials", "parisien": "Parisian", "passionner": "to fascinate", "précieux": "precious", "raie": "stripe; ray", "scie": "saw",
   "recul": "hindsight (avec le recul: with hindsight)", "refaire": "to redo", "retour": "return", "risquer": "to risk", "responsabilité": "responsibility", "sentiment": "feeling (a false friend)",
   "sincère": "sincere", "spécialisé": "specialised", "tirer": "to pull; to draw (tirer une leçon: to learn a lesson)", "échouer": "to fail",
+  "agir": "to act (il s'agit de: it's about)", "choquer": "to shock", "contrainte": "constraint, obligation", "coût": "cost", "acquérir": "to acquire", "obliger": "to force, to oblige",
+  "définitive": "en définitive: ultimately", "dénoncer": "to denounce, to condemn", "engagement": "commitment, involvement (a false friend)", "entier": "whole, entire", "faveur": "favour (en sa faveur: in its favour)", "fonctionner": "to work, to function",
+  "forcer": "to force", "gêner": "to bother, to embarrass", "ignorer": "not to know, to be unaware of (a false friend)", "imposer": "to impose", "interdiction": "ban", "interdire": "to forbid, to ban",
+  "intermédiaire": "intermediate, middle-ground", "indifférence": "indifference", "obésité": "obesity", "laquelle": "which (f)", "librement": "freely", "lutter": "to fight, to struggle",
+  "lycéen": "high-school student", "mener": "to lead, to run", "nutritionniste": "nutritionist", "outre": "en outre: furthermore", "parole": "word, speech (prendre la parole: to speak up)", "publicité": "advertising, advert",
+  "quoique": "although", "regard": "look, gaze; view", "rejeter": "to reject", "renforcer": "to strengthen", "scolaire": "school (adjective)", "sensible": "sensitive (a false friend)",
+  "solidaire": "supportive, showing solidarity", "somme": "sum (en somme: in short)", "souhaitable": "desirable", "tandis": "tandis que: whereas, while", "tel": "such", "telle": "such (f)",
+  "tolérer": "to tolerate", "télévision": "television", "valoriser": "to value, to showcase", "véritable": "real, genuine", "égal": "equal", "épicerie": "grocery shop (une épicerie solidaire: a community grocery)",
+  "établissement": "establishment; school", "simplement": "simply", "isoler": "to isolate", "vocation": "vocation, calling",
+  "occasion": "opportunity; occasion (d'occasion: second-hand)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
