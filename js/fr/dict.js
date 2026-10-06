@@ -127,5 +127,12 @@ window.DICT_TARGET = {
   "période": "period", "rapport": "report; relationship", "réception": "reception (desk)", "réceptionniste": "receptionist", "réponse": "answer, reply", "salarial": "salary (adjective)",
   "salutation": "greeting (salutations: regards)", "sauf": "except", "souhaiter": "to wish", "stressé": "stressed", "terminer": "to finish", "tourisme": "tourism",
   "type": "type (une journée type: a typical day)", "vente": "sale, sales",
+  "arrêter": "to stop", "assis": "sitting, seated", "blague": "joke (sans blague !: no kidding!)", "bref": "in short, anyway", "ciel": "sky", "compte": "account (se rendre compte: to realise)",
+  "costume": "suit", "courir": "to run", "deviner": "to guess", "directeur": "director, head, manager", "discuter": "to chat, to discuss", "dixième": "tenth",
+  "double": "spare copy (un double des clés); double", "expliquer": "to explain", "fermier": "farmer", "hâte": "haste (avoir hâte: can't wait)", "justesse": "de justesse: only just", "libérer": "to free, to release",
+  "location": "rental, hire", "nulle": "nulle part: nowhere", "orage": "storm", "ouf": "phew", "panne": "breakdown (tomber en panne: to break down)", "pauvre": "poor",
+  "poubelle": "bin", "ressembler": "to look like, to be like", "rire": "to laugh; laughter", "route": "road", "résoudre": "to solve", "réveil": "alarm clock; waking up",
+  "serrurier": "locksmith", "technicien": "technician", "tellement": "so, so much", "tracteur": "tractor", "truc": "thing, thingy", "vérifier": "to check",
+  "émission": "programme, show", "évidemment": "obviously, of course", "excité": "excited (careful: often sexual in French)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

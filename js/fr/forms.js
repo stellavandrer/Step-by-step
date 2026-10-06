@@ -93,4 +93,8 @@
   add("promettre", [["promets", "je / tu promets"], ["promet", "il / elle promet"]]);
   add("accueillir", [["accueille", "j' / il / elle accueille"], ["accueillent", "ils / elles accueillent"], ["accueillons", "nous accueillons"], ["accueilli", "past participle"]]);
   add("prévenir", [["préviens", "je / tu préviens"], ["prévient", "il / elle prévient"], ["prévenu", "past participle"]]);
+  add("courir", [["cours", "je / tu cours"], ["court", "il / elle court"], ["courons", "nous courons"], ["courez", "vous courez"], ["couru", "past participle"]]);
+  add("rire", [["ris", "je / tu ris"], ["rit", "il / elle rit"], ["rient", "ils / elles rient"], ["ri", "past participle"]]);
+  add("prévoir", [["prévois", "je / tu prévois"], ["prévoit", "il / elle prévoit"], ["prévu", "past participle; planned"], ["prévue", "past participle; planned"]]);
+  add("résoudre", [["résous", "je / tu résous"], ["résout", "il / elle résout"], ["résolu", "past participle"]]);
 })();
