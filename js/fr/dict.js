@@ -53,5 +53,8 @@ window.DICT_TARGET = {
   "signer": "to sign", "poche": "pocket", "couverture": "cover; blanket", "roman": "novel", "policier": "police officer; detective (story)", "soleil": "sun", "cent": "a hundred", "quatre cent": "four hundred",
   "devoir": "must, to have to; homework", "pleuvoir": "to rain", "neiger": "to snow", "dommage": "what a shame", "volontiers": "gladly, with pleasure", "peut-être": "maybe, perhaps",
   "autre": "other, another", "fois": "time (once, twice…)", "frais": "cool, fresh", "degrés": "degrees", "libre": "free, available", "tard": "late",
+  "dire": "to say, to tell", "écrire": "to write", "mettre": "to put; to put on", "ouvrir": "to open", "comprendre": "to understand", "reprendre": "to take again, to take back",
+  "goûter": "to taste; afternoon snack", "fêter": "to celebrate", "chercher": "to look for", "rester": "to stay", "gagner": "to win; to earn", "chance": "luck", "spécial": "special",
+  "réunion": "meeting", "magnifique": "magnificent, gorgeous", "repas": "meal", "reposant": "restful, relaxing", "au coin du feu": "by the fire",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

@@ -27,6 +27,15 @@
   add("devoir", [["dois", "je / tu dois"], ["doit", "il / elle doit"], ["devons", "nous devons"], ["devez", "vous devez"], ["doivent", "ils / elles doivent"], ["dû", "past participle"]]);
   add("pleuvoir", [["pleut", "il pleut"], ["plu", "past participle"]]);
   add("neiger", [["neige", "il neige"]]);
+  add("voir", [["vu", "past participle"], ["vois", "je / tu vois"], ["voit", "il / elle voit"], ["voyons", "nous voyons"], ["voyez", "vous voyez"], ["voient", "ils voient"]]);
+  add("lire", [["lu", "past participle"]]);
+  add("dire", [["dit", "il dit; past participle"], ["dis", "je / tu dis"], ["disons", "nous disons"], ["dites", "vous dites"], ["disent", "ils disent"]]);
+  add("écrire", [["écrit", "il écrit; past participle"], ["écris", "j'écris, tu écris"], ["écrivons", "nous écrivons"], ["écrivez", "vous écrivez"], ["écrivent", "ils écrivent"]]);
+  add("mettre", [["mis", "past participle"], ["mets", "je / tu mets"], ["met", "il / elle met"], ["mettons", "nous mettons"], ["mettez", "vous mettez"], ["mettent", "ils mettent"]]);
+  add("ouvrir", [["ouvert", "past participle"], ["ouvre", "j'ouvre, il ouvre"], ["ouvres", "tu ouvres"], ["ouvrent", "ils ouvrent"]]);
+  add("comprendre", [["compris", "past participle"], ["comprends", "je / tu comprends"], ["comprend", "il comprend"]]);
+  add("apprendre", [["appris", "past participle"], ["apprends", "j'apprends, tu apprends"], ["apprend", "il apprend"]]);
+  add("reprendre", [["repris", "past participle"]]);
   /* Common words whose form hides the dictionary entry. */
   add("il y a", [["y", "il y a = there is / there are"]]);
 })();
