@@ -190,4 +190,5 @@
   add("nuire", [["nuisent", "ils / elles nuisent"]]); subj("produire", "produise produisent"); subj("suffire", "suffise suffisent");
   add("contenir", [["contient", "il / elle contient"], ["contiennent", "ils / elles contiennent"]]); add("rejoindre", [["rejoignent", "ils / elles rejoignent"], ["rejoint", "il / elle rejoint; past participle"]]);
   add("réunir", [["réunissent", "ils / elles réunissent"], ["réunit", "il / elle réunit"]]); add("prescrire", [["prescrit", "il / elle prescrit; past participle"]]); subj("refaire", "refasse refassions refassent");
+  fut("rejeter", "rejetter"); add("réunir", [["réuni", "past participle"], ["réunie", "past participle (f)"], ["réunis", "past participle (pl)"], ["réunies", "past participle (f pl)"]]);
 })();
