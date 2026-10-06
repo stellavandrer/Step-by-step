@@ -184,4 +184,6 @@
   add("apprendre", [["apprenons", "nous apprenons; let's learn (command)"], ["apprenez", "vous apprenez"], ["apprennent", "ils / elles apprennent"], ["appris", "past participle"]]);
   add("comprendre", [["comprenons", "nous comprenons"], ["comprenez", "vous comprenez"], ["compris", "past participle"]]);
   add("décrire", [["décris", "je / tu décris"], ["décrit", "il / elle décrit; past participle"], ["décrivent", "ils / elles décrivent"]]);
+  add("jeter", [["jette", "je / il / elle jette"], ["jettes", "tu jettes"], ["jettent", "ils / elles jettent"]]);
+  add("produire", [["produisons", "nous produisons"]]); add("réduire", [["réduisons", "nous réduisons"]]);
 })();

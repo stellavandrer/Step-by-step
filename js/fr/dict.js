@@ -268,5 +268,14 @@ window.DICT_TARGET = {
   "moquer": "se moquer de: to make fun of", "nécessité": "necessity (de première nécessité: essential)", "obéir": "to obey", "offenser": "to offend", "passager": "passenger", "plombier": "plumber",
   "présentation": "presentation, showing", "règlement": "regulation; payment", "habituer": "s'habituer à: to get used to", "saluer": "to greet, to say hello", "satisfaire": "to satisfy", "tardif": "late",
   "renseignement": "piece of information", "complémentaire": "additional", "saisir": "to seize; to refer a matter to (saisir le médiateur)",
+  "accès": "access", "annuler": "to cancel", "aussitôt": "aussitôt que: as soon as", "boucler": "to buckle; to finish (boucler son budget: to make ends meet)", "bricoleur": "handy person, DIY enthusiast", "capture": "capture (une capture d'écran: a screenshot)",
+  "chronique": "column, regular feature", "conformité": "conformity", "conso": "consumption (informal)", "contacter": "to contact", "croître": "to grow", "demeure": "residence (une mise en demeure: a formal notice)",
+  "discours": "speech, discourse", "durable": "sustainable; lasting (a false friend)", "fur": "au fur et à mesure: as you go", "garantir": "to guarantee", "gratuitement": "for free", "immédiatement": "immediately",
+  "indice": "score, index; clue", "injuste": "unfair", "insuffisant": "insufficient", "jeter": "to throw (away)", "légal": "legal", "loisir": "leisure, hobby",
+  "modeste": "modest, low-income", "moyen": "means; average", "multiplier": "to multiply", "nettement": "clearly, markedly", "paiement": "payment", "peser": "to weigh",
+  "politique": "political; policy, politics", "privilège": "privilege", "probablement": "probably", "procéder": "to proceed (procéder à: to carry out)", "prétexte": "pretext", "ralentir": "to slow down",
+  "ressource": "resource", "réparateur": "repairer", "rétractation": "withdrawal (le droit de rétractation)", "sobriété": "restraint, sufficiency", "écologique": "ecological, green", "économique": "economic",
+  "étoile": "star", "dépasser": "to exceed, to pass",
+  "jusque": "as far as, up to (jusque dans: even in)", "aspirateur": "vacuum cleaner",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
