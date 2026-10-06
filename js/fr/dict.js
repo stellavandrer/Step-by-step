@@ -56,5 +56,8 @@ window.DICT_TARGET = {
   "dire": "to say, to tell", "écrire": "to write", "mettre": "to put; to put on", "ouvrir": "to open", "comprendre": "to understand", "reprendre": "to take again, to take back",
   "goûter": "to taste; afternoon snack", "fêter": "to celebrate", "chercher": "to look for", "rester": "to stay", "gagner": "to win; to earn", "chance": "luck", "spécial": "special",
   "réunion": "meeting", "magnifique": "magnificent, gorgeous", "repas": "meal", "reposant": "restful, relaxing", "au coin du feu": "by the fire",
+  "valable": "valid", "affiché": "displayed, shown", "affichée": "displayed, shown", "avant": "before", "départ": "departure", "arrivée": "arrival", "fond": "bottom, far end",
+  "s'arrêter": "to stop", "arrête": "stops", "changer": "to change", "utiliser": "to use", "nouveau billet": "new ticket", "gaufre": "waffle", "gaufres": "waffles", "découvrir": "to discover", "découvert": "discovered",
+  "bisous": "kisses (love from…)", "gros bisous": "lots of love", "depuis": "since, for", "seulement": "only",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
