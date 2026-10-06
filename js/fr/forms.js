@@ -195,4 +195,5 @@
   const sImp = (base, forms) => add(base, forms.split(" ").map((x) => [x, "imperfect subjunctive (literary)"]));
   sImp("être", "fût fussent"); sImp("avoir", "eût eussent"); sImp("faire", "fît"); sImp("finir", "finît"); sImp("partir", "partît"); sImp("prendre", "prît"); sImp("venir", "vînt"); sImp("chanter", "chantât"); sImp("pouvoir", "pût"); sImp("lire", "lût");
   ps("apparaître", "apparut apparurent"); add("se souvenir", [["souviennent", "ils / elles se souviennent"], ["souvient", "il / elle se souvient"]]); add("rappeler", [["rappellerai", "je rappellerai"]]);
+  add("apparaître", [["apparaît", "il / elle apparaît"], ["apparaissent", "ils / elles apparaissent"]]); add("joindre", [["joignant", "present participle"], ["joint", "past participle"]]); add("punir", [["puni", "past participle"], ["punie", "past participle (f)"], ["punis", "past participle (pl)"], ["punies", "past participle (f pl)"]]);
 })();
