@@ -230,7 +230,7 @@
 
   W.PROMPTS.push({ id: "fr-a2-3", level: "A2", q: "Raconte un souvenir d'enfance : où tu habitais, ce que tu faisais, et un moment précis.", fr: "Tell me a childhood memory: where you lived, what you used to do, and one particular moment.", time: 120,
     phrases: ["Quand j'étais enfant, j'habitais…", "Tous les étés / Le dimanche, je…", "Il y avait…", "Un jour, …", "Je n'ai jamais oublié…"],
-    model: "Quand j'étais enfant, j'habitais dans une grande ville, au cinquième étage d'un immeuble. Le dimanche, mon père nous emmenait au parc, et nous faisions du vélo pendant des heures. Il y avait un vieux monsieur qui vendait des glaces. Un jour, je suis tombé de mon vélo et je me suis cassé le bras. Le vieux monsieur m'a offert une glace gratuite ! Je n'ai jamais oublié sa gentillesse." });
+    model: "Quand j'étais enfant, j'habitais dans une grande ville, au cinquième étage d'un immeuble. Le dimanche, mon père nous emmenait au parc, et nous faisions du vélo pendant des heures. Il y avait un vieux monsieur qui vendait des glaces. Un jour, j'ai fait une chute de vélo et je me suis cassé le bras. Le vieux monsieur m'a offert une glace gratuite ! Je n'ai jamais oublié sa gentillesse." });
 
   W.WRITING_GUIDE["a2-3"] = { genre: "A childhood memory", genre_fr: "Un souvenir d'enfance",
     plan: [["When and where: set the scene.", "Quand et où : plante le décor."], ["Your habits back then (imparfait).", "Tes habitudes à l'époque (imparfait)."], ["A description: a person, a place.", "Une description : une personne, un lieu."], ["One day, something happened (passé composé).", "Un jour, il s'est passé quelque chose (passé composé)."], ["Why you still remember it.", "Pourquoi tu t'en souviens encore."]],

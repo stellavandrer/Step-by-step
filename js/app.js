@@ -1604,7 +1604,7 @@ function viewUnit(id) {
     </details>` : ""}
     <div class="row" style="margin-top:20px">
       <span class="spacer"></span>
-      ${next ? (next.level !== u.level ? `<a class="btn btn-dark" href="#/examen/${u.level}">${T("{l} exam", { l: u.level })} ${ic("arrow-right")}</a>` : `<a class="btn btn-dark" href="#/unite/${next.id}">${T("Unit")} ${unitNum(next)} ${ic("arrow-right")}</a>`) : `<a class="btn btn-dark" href="#/examen/C1">${T("{l} exam", { l: "C1" })} ${ic("arrow-right")}</a>`}
+      ${next && next.level === u.level ? `<a class="btn btn-dark" href="#/unite/${next.id}">${T("Unit")} ${unitNum(next)} ${ic("arrow-right")}</a>` : `<a class="btn btn-dark" href="#/examen/${u.level}">${T("{l} exam", { l: u.level })} ${ic("arrow-right")}</a>`}
     </div>`;
 }
 function viewWriting(id) {

@@ -186,4 +186,6 @@
   add("décrire", [["décris", "je / tu décris"], ["décrit", "il / elle décrit; past participle"], ["décrivent", "ils / elles décrivent"]]);
   add("jeter", [["jette", "je / il / elle jette"], ["jettes", "tu jettes"], ["jettent", "ils / elles jettent"]]);
   add("produire", [["produisons", "nous produisons"]]); add("réduire", [["réduisons", "nous réduisons"]]);
+  add("couvrir", [["couvre", "je / il / elle couvre"], ["couvrent", "ils / elles couvrent"], ["couvert", "past participle"]]); add("craindre", [["craignez", "vous craignez"]]);
+  add("nuire", [["nuisent", "ils / elles nuisent"]]); subj("produire", "produise produisent"); subj("suffire", "suffise suffisent");
 })();

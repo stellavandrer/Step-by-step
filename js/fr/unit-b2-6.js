@@ -181,7 +181,7 @@
     91: {
       gap: [["Familier : une bagnole. Courant : une ___.", "voiture"], ["Courant : un livre. Soutenu : un ___.", "ouvrage"], ["Familier : J'sais pas. Courant : Je ne ___ pas.", "sais"], ["Verlan : relou = ___. (annoying)", "lourd"]],
       fix: [["Madame, je bosse dans votre entreprise depuis deux ans.", "Madame, je travaille dans votre entreprise depuis deux ans.", "In a formal context, standard French: travailler."], ["T'as reçu mon message, Monsieur le Directeur ?", "Avez-vous reçu mon message, Monsieur le Directeur ?", "With a director: vous and inversion."]],
-      task: ["Rewrite this familiar message in standard French: Salut ! J'ai pas pu bosser hier, j'étais crevé. T'as le bouquin ? On se voit demain ?", "Réécris ce message familier en français courant : Salut ! J'ai pas pu bosser hier, j'étais crevé. T'as le bouquin ? On se voit demain ?", "Bonjour ! Je n'ai pas pu travailler hier, j'étais très fatigué. Est-ce que tu as le livre ? Est-ce qu'on se voit demain ?"]
+      task: ["Rewrite Théo's familiar message in standard French: Salut ! J'ai pas pu bosser hier, j'étais crevé. T'as le bouquin ? On se voit demain ?", "Réécris ce message familier de Théo en français courant : Salut ! J'ai pas pu bosser hier, j'étais crevé. T'as le bouquin ? On se voit demain ?", "Bonjour ! Je n'ai pas pu travailler hier, j'étais très fatigué. Est-ce que tu as le livre ? Est-ce qu'on se voit demain ?"]
     },
     92: {
       gap: [["Il s'___ d'un tableau peint en 1872. (it's about)", "agit"], ["Au premier ___, une femme regarde un bébé. (foreground)", "plan"], ["Cela ___ la fragilité de l'enfance. (evokes)", "évoque"], ["Ce qui ___, c'est le contraste. (is striking)", "frappe"]],
