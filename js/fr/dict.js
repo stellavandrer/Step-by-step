@@ -155,5 +155,13 @@ window.DICT_TARGET = {
   "exister": "to exist", "façon": "way, manner", "franchement": "frankly, honestly", "grâce": "grace (grâce à: thanks to)", "mesurer": "to measure", "modération": "moderation",
   "qualité": "quality", "regretter": "to regret, to be sorry", "revanche": "revenge (en revanche: on the other hand)", "stresser": "to stress (out)",   "entente": "understanding, agreement (un terrain d'entente: common ground)", "tort": "wrong (avoir tort: to be wrong)", "tranquillement": "quietly, peacefully", "utile": "useful", "élève": "pupil, student", "évaluer": "to assess, to evaluate",
   "notamment": "in particular", "cependant": "however", "pourtant": "and yet, however",
+  "affaires": "things, belongings; business", "affiche": "poster", "asseoir": "to sit (s'asseoir: to sit down)", "avancer": "to move forward", "banc": "bench", "boîte": "box; tin (la boîte aux lettres: the letterbox)",
+  "béton": "concrete", "ceux": "those, the ones", "collecte": "collection", "composteur": "compost bin", "conséquent": "par conséquent: consequently", "dizaine": "about ten",
+  "déborder": "to overflow", "décider": "to decide", "envie": "desire (avoir envie de: to feel like)", "habitude": "habit", "attente": "wait (dans l'attente de: looking forward to)", "entretenir": "to look after, to maintain",
+  "lors": "lors de: during, at the time of", "manque": "lack", "nettoyage": "cleaning", "panneau": "panel; sign", "pelouse": "lawn", "plastique": "plastic",
+  "produire": "to produce", "produit": "product; produced", "rappel": "reminder", "remplacer": "to replace", "respectueux": "respectful", "réduire": "to reduce",
+  "résumer": "to sum up", "solaire": "solar", "sujet": "subject (au sujet de: about)", "tasse": "cup", "terre": "earth, soil, ground", "vrac": "en vrac: loose, in bulk",
+  "arroser": "to water", "économiser": "to save (money, energy)", "réparer": "to repair",
+  "fontaine": "fountain",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

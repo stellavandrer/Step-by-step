@@ -123,4 +123,14 @@
   subj("partir", "parte partes partions partiez partent"); subj("sortir", "sorte sortes sortions sortiez sortent"); subj("connaître", "connaisse connaisses");
   subj("recevoir", "reçoive reçoives reçoivent"); subj("comprendre", "comprenne comprennes comprennent"); subj("apprendre", "apprenne apprennes apprennent");
   subj("vivre", "vive vives vivions viviez"); subj("dormir", "dorme dormes dormions"); subj("croire", "croie croies croyions"); subj("pleuvoir", "pleuve");
+  /* Present participles of irregular verbs (en faisant, en prenant…). */
+  const part = (base, f) => add(base, [[f, "present participle (en " + f + ")"]]);
+  part("être", "étant"); part("avoir", "ayant"); part("savoir", "sachant"); part("faire", "faisant"); part("mettre", "mettant");
+  part("apprendre", "apprenant"); part("comprendre", "comprenant"); part("conduire", "conduisant"); part("éteindre", "éteignant");
+  part("lire", "lisant"); part("dire", "disant"); part("écrire", "écrivant"); part("boire", "buvant"); part("voir", "voyant");
+  part("pouvoir", "pouvant"); part("vouloir", "voulant"); part("venir", "venant"); part("aller", "allant"); part("devoir", "devant");
+  add("éteindre", [["éteignait", "imperfect"], ["éteins", "je / tu éteins; switch off (command)"]]);
+  add("entretenir", [["entretient", "il / elle entretient"], ["entretiens", "j' / tu entretiens"]]);
+  add("produire", [["produit", "il / elle produit; past participle"], ["produisent", "ils / elles produisent"]]);
+  add("réduire", [["réduit", "il / elle réduit; past participle"], ["réduisent", "ils / elles réduisent"]]);
 })();
