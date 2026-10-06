@@ -47,4 +47,4 @@ irregular forms from js/fr/forms.js), the learner's language (English, the defau
 immersion) and texts that differ. Interface texts written for the English course swap the two language names
 automatically. Tools without French content yet are hidden. Answers are compared without accents (ça = ca), and a
 noun typed without its article is accepted with its article shown. Characters have French first names.
-Each unit is one file, js/fr/unit-<id>.js, like the English thematic units. Done: levels A1 and A2 complete (14 units, 44 lessons, 609 words, 14 texts, 14 listening labs, 15 role-plays, the A1 and A2 exams). The interface is neutral for every learner (no gendered agreement, the first name is asked on the first visit).
+Each unit is one file, js/fr/unit-<id>.js, like the English thematic units. Done: levels A1, A2 and B1 complete (24 units, 74 lessons, 969 words, 24 texts, 24 listening labs, 25 role-plays, the A1, A2 and B1 exams). B1 writing tasks follow the DELF B1 format (160 to 180 words). The interface is neutral for every learner (no gendered agreement, the first name is asked on the first visit).

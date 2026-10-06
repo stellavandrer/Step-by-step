@@ -186,5 +186,11 @@ window.DICT_TARGET = {
   "rythme": "rhythm, pace", "récemment": "recently", "régulièrement": "regularly", "résidence": "residence (une résidence universitaire: halls of residence)", "td": "seminar (travaux dirigés)", "texte": "text",
   "universitaire": "university (adjective)", "vitale": "la carte Vitale: the health insurance card", "vocabulaire": "vocabulary", "voix": "voice", "également": "also, as well", "évident": "obvious",
   "limite": "limit (la date limite: the deadline)",
+  "blanquette": "veal stew in a white sauce", "centaine": "about a hundred (des centaines: hundreds)", "chauffer": "to heat", "château": "castle", "chéri": "darling", "chérie": "darling (f)",
+  "condoléances": "condolences", "crème": "cream", "agneau": "lamb", "artifice": "le feu d'artifice: fireworks", "galette": "flat cake; buckwheat pancake", "gramme": "gram",
+  "origine": "origin", "entraîner": "to train (s'entraîner: to practise)", "mamie": "grandma", "importe": "n'importe qui / quoi / où: anyone / anything / anywhere at all", "nord": "north", "sud": "south",
+  "noël": "Christmas", "papier": "paper", "peindre": "to paint", "pincée": "pinch", "ragoût": "stew", "retomber": "to fall back, to land",
+  "rétablissement": "recovery (bon rétablissement: get well soon)", "symbole": "symbol", "sauter": "to jump (faire sauter: to toss)", "silencieux": "silent", "tenter": "to tempt; to try (ça te tente ?: do you fancy it?)", "traditionnel": "traditional",
+  "trèfle": "clover, shamrock", "veau": "calf; veal", "inoubliable": "unforgettable", "joyeux": "merry, happy", "félicitations": "congratulations", "fièvre": "fever, temperature",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

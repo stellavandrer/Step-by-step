@@ -437,7 +437,7 @@ function lookupFr(w) {
     if (/ennes?$/.test(x)) push(x.replace(/ennes?$/, "en"));
     if (/onnes?$/.test(x)) push(x.replace(/onnes?$/, "on"));
     if (/elles?$/.test(x)) push(x.replace(/elles?$/, "el"));
-    const er = x.match(/^(.+?)(erai|eras|era|erons|erez|eront|erais|erait|eraient|aient|ais|ait|ions|iez|ant|ons|ez|ent|ées|és|ée|é|es|e)$/);
+    const er = x.match(/^(.+?)(erai|eras|era|erons|erez|eront|erais|erait|eraient|aient|ais|ait|ions|iez|ant|ons|ez|ent|ées|és|ée|é|es|e|èrent|a)$/);
     /* mangeons → manger, commençons → commencer */
     if (er) { push(er[1] + "er"); push(er[1].replace(/ge$/, "g").replace(/ç$/, "c").replace(/ll$/, "l") + "er"); }
     /* the shortest ending too: vérifiez → vérifier (not vérif- + -iez) */
@@ -446,12 +446,12 @@ function lookupFr(w) {
     /* future and conditional built on the infinitive: finirai → finir, prendrai → prendre */
     const fut = x.match(/^(.+r)(ai|as|a|ons|ez|ont|ais|ait|ions|iez|aient)$/);
     if (fut) { push(fut[1]); push(fut[1] + "e"); }
-    const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|issions|issiez|isses|isse|is|it|ie|ies|i|ons|ez|ent|ais|ait|aient|ions|iez|ant)$/);
+    const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|issions|issiez|isses|isse|is|it|ie|ies|i|ons|ez|ent|ais|ait|aient|ions|iez|ant|irent)$/);
     if (ir) push(ir[1] + "ir");
     const re = x.match(/^(.+?)(ons|ez|ent|us|ues|ue|u|s|ant)$/);
     if (re) push(re[1] + "re");
     /* attends, répond → attendre, répondre */
-    const dre = x.match(/^(.+d)(s|ons|ez|ent|ais|ait|ions|iez|aient|ant|u|ue|us|ues|e|es)?$/);
+    const dre = x.match(/^(.+d)(s|ons|ez|ent|ais|ait|ions|iez|aient|ant|u|ue|us|ues|e|es|it|irent)?$/);
     if (dre) push(dre[1] + "re");
   });
   for (const c of cands) if (DICT.has(c)) return { base: c, fr: DICT.get(c) };

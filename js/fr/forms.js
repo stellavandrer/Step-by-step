@@ -139,4 +139,15 @@
   add("relire", [["relis", "je / tu relis; reread (command)"], ["relit", "il / elle relit"], ["relu", "past participle"]]);
   add("retenir", [["retiens", "je / tu retiens"], ["retient", "il / elle retient"], ["retenu", "past participle"]]);
   add("promener", [["promène", "je / il / elle promène (se promener)"], ["promènes", "tu promènes"], ["promènent", "ils / elles promènent"]]);
+  /* Passé simple of irregular verbs, to recognise them in written stories (regular -er, -ir, -re are found by their endings). */
+  const ps = (base, forms) => add(base, forms.split(" ").map((f) => [f, "passé simple"]));
+  ps("être", "fut furent fus"); ps("avoir", "eut eurent eus"); ps("faire", "fit firent fis"); ps("prendre", "prit prirent pris");
+  ps("venir", "vint vinrent vins"); ps("voir", "vit virent vis"); ps("naître", "naquit naquirent"); ps("pouvoir", "put purent");
+  ps("vouloir", "voulut voulurent"); ps("lire", "lut lurent"); ps("mettre", "mit mirent"); ps("savoir", "sut surent");
+  ps("devoir", "dut durent"); ps("mourir", "mourut moururent"); ps("vivre", "vécut vécurent"); ps("dire", "dirent");
+  ps("écrire", "écrivit écrivirent"); ps("connaître", "connut connurent"); ps("croire", "crut crurent"); ps("tenir", "tint tinrent");
+  ps("aller", "alla allèrent"); ps("comprendre", "comprit comprirent"); ps("apprendre", "apprit apprirent"); ps("ouvrir", "ouvrit ouvrirent");
+  add("vivre", [["vivait", "imperfect"], ["vivaient", "imperfect"]]);
+  add("sortir", [["sort", "il / elle sort"], ["sors", "je / tu sors"]]);
+  add("peindre", [["peint", "il / elle peint; past participle"], ["peignent", "ils / elles peignent"]]);
 })();
