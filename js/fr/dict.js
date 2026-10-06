@@ -262,5 +262,11 @@ window.DICT_TARGET = {
   "régulation": "regulation", "rôle": "role", "signaler": "to report, to flag", "soumettre": "to submit, to subject", "supposer": "to suppose (à supposer que: supposing that)", "supposé": "supposed",
   "transparence": "transparency", "usine": "factory", "vanter": "to praise, to promote", "viser": "to aim at", "électronique": "electronic", "étonnant": "surprising",
   "appliquer": "to apply",
+  "administratif": "administrative", "aimable": "kind", "bagage": "luggage, bag", "chaleureux": "warm", "choc": "shock", "comptoir": "counter, desk",
+  "conformément": "in accordance with", "connaissance": "acquaintance; knowledge", "correspondre": "to correspond, to match", "culturel": "cultural", "annulation": "cancellation", "déclaration": "statement, declaration",
+  "décrire": "to describe", "dépayser": "to give a change of scene", "explication": "explanation", "hébergement": "accommodation", "impoli": "rude", "lyonnais": "from Lyon",
+  "moquer": "se moquer de: to make fun of", "nécessité": "necessity (de première nécessité: essential)", "obéir": "to obey", "offenser": "to offend", "passager": "passenger", "plombier": "plumber",
+  "présentation": "presentation, showing", "règlement": "regulation; payment", "habituer": "s'habituer à: to get used to", "saluer": "to greet, to say hello", "satisfaire": "to satisfy", "tardif": "late",
+  "renseignement": "piece of information", "complémentaire": "additional", "saisir": "to seize; to refer a matter to (saisir le médiateur)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
