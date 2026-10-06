@@ -45,5 +45,8 @@ window.DICT_TARGET = {
   "puis": "then", "ensuite": "then, next", "d'abord": "first", "jusqu'au": "as far as the, until the", "jusqu'à": "as far as, until", "au bout de": "at the end of", "bout": "end",
   "chercher": "to look for", "trouver": "to find", "marcher": "to walk", "descendre": "to go down; to get off (a bus)", "monter": "to go up; to get on", "sortie": "exit, way out", "entrée": "entrance",
   "ouvert": "open", "fermé": "closed", "fermée": "closed", "facile": "easy", "difficile": "difficult", "visite": "visit", "je vous en prie": "you're welcome (formal)",
+  "boire": "to drink", "manger": "to eat", "acheter": "to buy", "sentir": "to feel; to smell", "vendre": "to sell", "commander": "to order",
+  "servir": "to serve", "sers": "(I / you) serve", "ceci": "this", "tout": "all, everything", "c'est tout": "that's all", "délicieux": "delicious", "délicieuse": "delicious",
+  "chaud": "hot, warm", "chaude": "hot, warm", "froid": "cold", "froide": "cold", "rouge": "red", "blanc": "white", "blanche": "white", "il faut": "you need, we need, it's necessary",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

@@ -16,6 +16,14 @@
   add("prendre", [["prends", "je / tu prends"], ["prend", "il / elle prend"], ["prenons", "nous prenons"], ["prenez", "vous prenez"], ["prennent", "ils / elles prennent"], ["pris", "past participle"]]);
   add("parler", [["parle", "je / il / elle parle"], ["parles", "tu parles"], ["parlons", "nous parlons"], ["parlez", "vous parlez"], ["parlent", "ils / elles parlent"]]);
   add("habiter", [["habite", "j'habite, il / elle habite"], ["habites", "tu habites"], ["habitons", "nous habitons"], ["habitez", "vous habitez"], ["habitent", "ils / elles habitent"]]);
+  add("boire", [["bois", "je / tu bois"], ["boit", "il / elle boit"], ["buvons", "nous buvons"], ["buvez", "vous buvez"], ["boivent", "ils / elles boivent"], ["bu", "past participle"]]);
+  add("acheter", [["achète", "j'achète, il achète"], ["achètes", "tu achètes"], ["achètent", "ils achètent"]]);
+  add("sentir", [["sent", "il / elle sent"], ["sens", "je / tu sens"]]);
+  add("se lever", [["lève", "je me lève, il se lève"], ["lèves", "tu te lèves"], ["lèvent", "ils se lèvent"]]);
+  add("dormir", [["dors", "je / tu dors"], ["dort", "il / elle dort"], ["dorment", "ils dorment"]]);
+  add("partir", [["pars", "je / tu pars"], ["part", "il / elle part"], ["partent", "ils partent"]]);
+  add("lire", [["lis", "je / tu lis"], ["lit", "il / elle lit"], ["lisent", "ils lisent"]]);
+  add("finir", [["finis", "je / tu finis"], ["finit", "il / elle finit"], ["finissent", "ils finissent"]]);
   /* Common words whose form hides the dictionary entry. */
   add("il y a", [["y", "il y a = there is / there are"]]);
 })();
