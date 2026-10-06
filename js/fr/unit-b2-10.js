@@ -57,11 +57,11 @@
     body: `
 <h2>From certain to doubtful</h2>
 <table>
-<tr><th>Degree</th><th>French</th><th>+</th></tr>
-<tr><td>certain</td><td><s-fr>il est certain que</s-fr>, <s-fr>il est évident que</s-fr>, <s-fr>il est indéniable que</s-fr>, <s-fr>il ne fait aucun doute que</s-fr>, <s-fr>j'ai la conviction que</s-fr></td><td>indicative</td></tr>
-<tr><td>probable</td><td><s-fr>il est probable que</s-fr>, <s-fr>il me semble que</s-fr>, <s-fr>sans doute</s-fr></td><td>indicative</td></tr>
-<tr><td>possible</td><td><s-fr>il est possible que</s-fr>, <s-fr>il se peut que</s-fr>, <s-fr>il n'est pas exclu que</s-fr></td><td>subjunctive</td></tr>
-<tr><td>doubtful</td><td><s-fr>il est peu probable que</s-fr>, <s-fr>je doute que</s-fr>, <s-fr>rien ne prouve que</s-fr></td><td>subjunctive</td></tr>
+<tr><th>Degree</th><th>French</th></tr>
+<tr><td>certain<br>+ indicative</td><td><s-fr>il est certain que</s-fr>, <s-fr>il est évident que</s-fr>, <s-fr>il est indéniable que</s-fr>, <s-fr>il ne fait aucun doute que</s-fr>, <s-fr>j'ai la conviction que</s-fr></td></tr>
+<tr><td>probable<br>+ indicative</td><td><s-fr>il est probable que</s-fr>, <s-fr>il me semble que</s-fr>, <s-fr>sans doute</s-fr></td></tr>
+<tr><td>possible<br>+ subjunctive</td><td><s-fr>il est possible que</s-fr>, <s-fr>il se peut que</s-fr>, <s-fr>il n'est pas exclu que</s-fr></td></tr>
+<tr><td>doubtful<br>+ subjunctive</td><td><s-fr>il est peu probable que</s-fr>, <s-fr>je doute que</s-fr>, <s-fr>rien ne prouve que</s-fr></td></tr>
 </table>
 <p><s-fr>Il est indéniable que les transports polluent.</s-fr> · <s-fr>Il se peut que la mesure soit efficace.</s-fr> · <s-fr>Rien ne prouve que ce projet soit rentable.</s-fr></p>
 <h2>Verbs of opinion</h2>
