@@ -150,4 +150,9 @@
   add("vivre", [["vivait", "imperfect"], ["vivaient", "imperfect"]]);
   add("sortir", [["sort", "il / elle sort"], ["sors", "je / tu sors"]]);
   add("peindre", [["peint", "il / elle peint; past participle"], ["peignent", "ils / elles peignent"]]);
+  fut("obtenir", "obtiendr"); add("obtenir", [["obtiens", "j' / tu obtiens"], ["obtient", "il / elle obtient"], ["obtenu", "past participle"], ["obtenue", "past participle"]]);
+  add("atteindre", [["atteint", "il / elle atteint; past participle"], ["atteins", "j' / tu atteins"]]);
+  add("craindre", [["crains", "je / tu crains"], ["craint", "il / elle craint"], ["craignent", "ils / elles craignent"]]);
+  add("maintenir", [["maintiens", "je / tu maintiens"], ["maintient", "il / elle maintient"]]);
+  subj("disparaître", "disparaisse disparaissent"); add("disparaître", [["disparu", "past participle"], ["disparaissent", "ils / elles disparaissent"]]);
 })();

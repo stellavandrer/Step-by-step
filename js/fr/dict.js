@@ -192,5 +192,15 @@ window.DICT_TARGET = {
   "noël": "Christmas", "papier": "paper", "peindre": "to paint", "pincée": "pinch", "ragoût": "stew", "retomber": "to fall back, to land",
   "rétablissement": "recovery (bon rétablissement: get well soon)", "symbole": "symbol", "sauter": "to jump (faire sauter: to toss)", "silencieux": "silent", "tenter": "to tempt; to try (ça te tente ?: do you fancy it?)", "traditionnel": "traditional",
   "trèfle": "clover, shamrock", "veau": "calf; veal", "inoubliable": "unforgettable", "joyeux": "merry, happy", "félicitations": "congratulations", "fièvre": "fever, temperature",
+  "aborder": "to raise, to tackle (a subject)", "accord": "agreement (d'accord: OK)", "annuel": "annual", "artificiel": "artificial", "atteindre": "to reach, to achieve", "automatiser": "to automate",
+  "auquel": "to which", "auxquels": "to which, in which (pl)", "boulanger": "baker", "cas": "case (en cas de: in case of)", "chiffre": "figure, number", "communiquer": "to communicate",
+  "confirmer": "to confirm", "cpf": "personal training account (compte personnel de formation)", "craindre": "to fear", "adresse": "address", "domaine": "field, area", "finaliser": "to finalise",
+  "financement": "funding", "financièrement": "financially", "humain": "human", "inquiéter": "to worry (s'inquiéter)", "obtenir": "to get, to obtain", "joignable": "reachable",
+  "éducation": "education", "lequel": "which (one)", "logiciel": "software", "maintenir": "to maintain, to stand by", "malheureux": "unhappy", "manuel": "manual",
+  "manœuvre": "manoeuvre (la marge de manœuvre: room for manoeuvre)", "marge": "margin", "médical": "medical", "mériter": "to deserve", "personnel": "personal; staff", "plupart": "la plupart: most",
+  "positif": "positive", "profiter": "to make the most of, to take advantage of", "reconnu": "recognised", "reparler": "to talk about it again", "répétitif": "repetitive", "sembler": "to seem",
+  "solliciter": "to request, to apply for", "spectaculaire": "spectacular", "spécialiste": "specialist", "supplémentaire": "extra, additional", "tester": "to test", "traduction": "translation",
+  "traiter": "to deal with, to process", "travailleur": "worker", "vitesse": "speed",
+  "prétendre": "to claim (prétendre à: to aim for, to be entitled to)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
