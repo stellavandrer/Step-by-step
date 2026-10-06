@@ -448,7 +448,7 @@ function lookupFr(w) {
     /* future and conditional built on the infinitive: finirai → finir, prendrai → prendre */
     const fut = x.match(/^(.+r)(ai|as|a|ons|ez|ont|ais|ait|ions|iez|aient)$/);
     if (fut) { push(fut[1]); push(fut[1] + "e"); }
-    const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|issions|issiez|isses|isse|is|it|ie|ies|i|ons|ez|ent|ais|ait|aient|ions|iez|ant|irent)$/);
+    const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|issions|issiez|isses|isse|is|it|ie|ies|i|ons|ez|ent|ais|ait|aient|ions|iez|ant|irent|e|es)$/);
     if (ir) push(ir[1] + "ir");
     const re = x.match(/^(.+?)(ons|ez|ent|us|ues|ue|u|s|ant)$/);
     if (re) push(re[1] + "re");

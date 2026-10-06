@@ -170,4 +170,9 @@
   subj("convenir", "convienne conviennent"); subj("devenir", "devienne deviennes deviennent"); subj("éteindre", "éteigne éteignes éteignent");
   add("suffire", [["suffit", "il / elle suffit (il suffit de: all you need is)"], ["suffisent", "ils / elles suffisent"], ["suffi", "past participle"]]);
   subj("vouloir", "veuillent"); subj("prendre", "prennent");
+  part("convaincre", "convainquant"); part("négliger", "négligeant"); part("provoquer", "provoquant"); part("précéder", "précédant"); part("posséder", "possédant");
+  add("appartenir", [["appartient", "il / elle appartient"], ["appartiennent", "ils / elles appartiennent"], ["appartenu", "past participle"]]);
+  add("poursuivre", [["poursuis", "je / tu poursuis; continue (command)"], ["poursuit", "il / elle poursuit"], ["poursuivi", "past participle"]]);
+  add("ressortir", [["ressors", "je / tu ressors"], ["ressort", "il / elle ressort"]]);
+  add("émouvoir", [["ému", "past participle; moved"], ["émue", "past participle; moved"], ["émeut", "il / elle émeut"]]);
 })();
