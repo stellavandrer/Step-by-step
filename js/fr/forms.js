@@ -196,4 +196,6 @@
   sImp("être", "fût fussent"); sImp("avoir", "eût eussent"); sImp("faire", "fît"); sImp("finir", "finît"); sImp("partir", "partît"); sImp("prendre", "prît"); sImp("venir", "vînt"); sImp("chanter", "chantât"); sImp("pouvoir", "pût"); sImp("lire", "lût");
   ps("apparaître", "apparut apparurent"); add("se souvenir", [["souviennent", "ils / elles se souviennent"], ["souvient", "il / elle se souvient"]]); add("rappeler", [["rappellerai", "je rappellerai"]]);
   add("apparaître", [["apparaît", "il / elle apparaît"], ["apparaissent", "ils / elles apparaissent"]]); add("joindre", [["joignant", "present participle"], ["joint", "past participle"]]); add("punir", [["puni", "past participle"], ["punie", "past participle (f)"], ["punis", "past participle (pl)"], ["punies", "past participle (f pl)"]]);
+  add("recueillir", [["recueilli", "past participle"], ["recueillis", "past participle (pl)"], ["recueille", "je / il / elle recueille"]]); add("suspendre", [["suspendu", "past participle"], ["suspendue", "past participle (f)"]]);
+  fut("convenir", "conviendr"); add("maintenir", [["maintenu", "past participle"], ["maintenue", "past participle (f)"], ["maintient", "il / elle maintient"], ["maintiens", "je / tu maintiens"]]);
 })();
