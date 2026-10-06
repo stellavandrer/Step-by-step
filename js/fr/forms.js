@@ -175,4 +175,12 @@
   add("poursuivre", [["poursuis", "je / tu poursuis; continue (command)"], ["poursuit", "il / elle poursuit"], ["poursuivi", "past participle"]]);
   add("ressortir", [["ressors", "je / tu ressors"], ["ressort", "il / elle ressort"]]);
   add("émouvoir", [["ému", "past participle; moved"], ["émue", "past participle; moved"], ["émeut", "il / elle émeut"]]);
+  part("admettre", "admettant"); subj("contredire", "contredise contredises contredisent"); subj("paraître", "paraisse");
+  add("relayer", [["relaie", "je / il / elle relaie (relayer)"], ["relaient", "ils / elles relaient"]]);
+  add("revenir", [["reviennent", "ils / elles reviennent"], ["revenons", "nous revenons; let's get back (command)"]]);
+  add("interrompre", [["interromps", "j' / tu interromps"], ["interrompt", "il / elle interrompt"], ["interrompu", "past participle"]]);
+  add("soumettre", [["soumis", "past participle; subject to"], ["soumise", "past participle"]]);
+  add("vouloir", [["veuillez", "please (formal command)"]]);
+  add("apprendre", [["apprenons", "nous apprenons; let's learn (command)"], ["apprenez", "vous apprenez"], ["apprennent", "ils / elles apprennent"], ["appris", "past participle"]]);
+  add("comprendre", [["comprenons", "nous comprenons"], ["comprenez", "vous comprenez"], ["compris", "past participle"]]);
 })();

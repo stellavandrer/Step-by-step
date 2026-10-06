@@ -251,5 +251,16 @@ window.DICT_TARGET = {
   "tarif": "price, rate", "technique": "technique; technical", "tendresse": "tenderness", "tranquille": "calm, quiet", "visiteur": "visitor", "xixe": "19th (century)",
   "écharpe": "scarf", "élégant": "elegant", "émouvoir": "to move (emotionally)", "évoquer": "to evoke", "œuvrer": "to work (formal)", "coller": "to stick",
   "mur": "wall",
+  "admettre": "to admit, to accept (en admettant que: assuming that)", "adopter": "to adopt; to pass (a law)", "apparemment": "apparently", "bobard": "fib, tall story", "bulle": "bubble", "censurer": "to censor",
+  "chanteur": "singer", "chargeur": "charger", "confondre": "to confuse, to mix up", "contenu": "content", "contredire": "to contradict", "croiser": "to cross; to cross-check",
+  "créateur": "creator", "urgence": "emergency", "dangereux": "dangerous", "discutable": "debatable, questionable", "distinguer": "to distinguish", "déontologie": "professional ethics",
+  "enquêter": "to investigate", "exagérer": "to exaggerate", "exercer": "to exercise, to practise", "faux": "false, fake", "fausse": "false, fake (f)", "filtre": "filter",
+  "forcément": "necessarily", "goût": "taste", "grossier": "crude, coarse", "interroger": "to question, to interview", "interrompre": "to interrupt", "journalistique": "journalistic",
+  "attaque": "attack", "esprit": "mind, spirit (l'esprit critique: critical thinking)", "ouest": "west", "légitime": "legitimate", "marque": "brand; mark", "ministre": "minister",
+  "modifier": "to alter, to change", "objectif": "objective; goal", "partenariat": "partnership", "proche": "close, near", "précisément": "precisely", "présumé": "alleged",
+  "quotidien": "daily newspaper; everyday", "renoncer": "to give up", "rumeur": "rumour", "réagir": "to react", "réaliste": "realistic", "réclamer": "to demand, to call for",
+  "régulation": "regulation", "rôle": "role", "signaler": "to report, to flag", "soumettre": "to submit, to subject", "supposer": "to suppose (à supposer que: supposing that)", "supposé": "supposed",
+  "transparence": "transparency", "usine": "factory", "vanter": "to praise, to promote", "viser": "to aim at", "électronique": "electronic", "étonnant": "surprising",
+  "appliquer": "to apply",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
