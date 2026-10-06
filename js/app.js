@@ -1613,7 +1613,8 @@ function viewWriting(id) {
   const w = u.writing;
   const us = unitState(u.id);
   const g = (window.WRITING_GUIDE || {})[u.id];
-  const count = (t) => (t.trim() ? t.trim().split(/\s+/).length : 0);
+  // A word = signs between two spaces, as in the DELF/DALF and Cambridge rules; punctuation on its own (French « : ») doesn't count.
+  const count = (t) => t.split(/\s+/).filter((w) => /[A-Za-zÀ-ÿ0-9]/.test(w)).length;
   /* The model with its key phrases highlighted and numbered, and the legend underneath. */
   const annotated = () => {
     let html = esc(w.model);
