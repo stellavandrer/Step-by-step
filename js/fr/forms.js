@@ -188,4 +188,5 @@
   add("produire", [["produisons", "nous produisons"]]); add("réduire", [["réduisons", "nous réduisons"]]);
   add("couvrir", [["couvre", "je / il / elle couvre"], ["couvrent", "ils / elles couvrent"], ["couvert", "past participle"]]); add("craindre", [["craignez", "vous craignez"]]);
   add("nuire", [["nuisent", "ils / elles nuisent"]]); subj("produire", "produise produisent"); subj("suffire", "suffise suffisent");
+  add("contenir", [["contient", "il / elle contient"], ["contiennent", "ils / elles contiennent"]]); add("rejoindre", [["rejoignent", "ils / elles rejoignent"], ["rejoint", "il / elle rejoint; past participle"]]);
 })();
