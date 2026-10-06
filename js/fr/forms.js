@@ -199,4 +199,5 @@
   add("recueillir", [["recueilli", "past participle"], ["recueillis", "past participle (pl)"], ["recueille", "je / il / elle recueille"]]); add("suspendre", [["suspendu", "past participle"], ["suspendue", "past participle (f)"]]);
   fut("convenir", "conviendr"); add("maintenir", [["maintenu", "past participle"], ["maintenue", "past participle (f)"], ["maintient", "il / elle maintient"], ["maintiens", "je / tu maintiens"]]);
   add("croire", [["croyant", "present participle"]]); add("disparaître", [["disparaît", "il / elle disparaît"]]); add("renvoyer", [["renvoient", "ils / elles renvoient"], ["renvoie", "il / elle renvoie"]]); add("souffrir", [["souffre", "je / il / elle souffre"], ["souffrent", "ils / elles souffrent"]]); add("subir", [["subi", "past participle"], ["subie", "past participle (f)"]]); subj("valoir", "vaille vaillent");
+  fut("retenir", "retiendr"); add("contraindre", [["contraignent", "ils / elles contraignent"], ["contraint", "il / elle contraint; past participle"]]); add("paraître", [["paru", "past participle (of a book, an article: published)"], ["parue", "past participle (f)"]]);
 })();
