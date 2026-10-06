@@ -142,5 +142,13 @@ window.DICT_TARGET = {
   "romantique": "romantic", "saison": "season", "semblable": "similar", "société": "company; society", "solde": "balance (sans solde: unpaid)", "suite": "continuation (tout de suite: straight away)",
   "tenir": "to hold, to keep (tenir au courant: to keep informed)", "tenue": "keeping, running; outfit", "travaux": "building work, works", "valoir": "to be worth", "vivre": "to live", "économie": "economy (des économies: savings)",
   "épargne": "savings", "accepter": "to accept", "refuser": "to refuse", "jeu": "game",
+  "adulte": "adult", "ajouter": "to add", "atelier": "workshop", "autrice": "author (f)", "auteur": "author", "certain": "certain; some (certains, certaines)",
+  "circuler": "to circulate, to run (buses)", "colère": "anger (en colère: angry)", "confier": "to confide, to entrust", "construire": "to build", "continuer": "to continue", "couvert": "covered",
+  "cultiver": "to grow, to cultivate", "dépendre": "to depend (ça dépend: it depends)", "financer": "to fund, to finance", "garer": "to park (se garer)", "habitant": "inhabitant, resident", "inaugurer": "to open, to inaugurate",
+  "inauguration": "opening ceremony", "info": "piece of news, info", "jardiner": "to garden", "jt": "TV news (journal télévisé)", "étonner": "to surprise, to amaze", "maire": "mayor",
+  "méfier": "to be wary (se méfier de)", "organisateur": "organiser", "organisatrice": "organiser (f)", "paraître": "to seem (il paraît que: apparently)", "parcelle": "plot (of land)", "participer": "to take part",
+  "permettre": "to allow", "planter": "to plant", "plat": "dish; flat", "préciser": "to specify, to add", "rarement": "rarely", "recherche": "search; research",
+  "respecter": "to respect", "réaliser": "to make (a film); to achieve; to realise", "région": "region", "résultat": "result", "santé": "health", "selon": "according to",
+  "surprendre": "to surprise", "transformer": "to transform, to turn into", "télévisé": "televised (le journal télévisé: TV news)", "voleur": "thief", "voler": "to steal; to fly", "émotion": "emotion",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

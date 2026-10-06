@@ -440,6 +440,9 @@ function lookupFr(w) {
     const er = x.match(/^(.+?)(erai|eras|era|erons|erez|eront|erais|erait|eraient|aient|ais|ait|ions|iez|ant|ons|ez|ent|ées|és|ée|é|es|e)$/);
     /* mangeons → manger, commençons → commencer */
     if (er) { push(er[1] + "er"); push(er[1].replace(/ge$/, "g").replace(/ç$/, "c").replace(/ll$/, "l") + "er"); }
+    /* the shortest ending too: vérifiez → vérifier (not vérif- + -iez) */
+    const er2 = x.match(/^(.+)(ez|ons|ent|es|e|é|ée|és|ées|ais|ait|aient|ant)$/);
+    if (er2) push(er2[1] + "er");
     /* future and conditional built on the infinitive: finirai → finir, prendrai → prendre */
     const fut = x.match(/^(.+r)(ai|as|a|ons|ez|ont|ais|ait|ions|iez|aient)$/);
     if (fut) { push(fut[1]); push(fut[1] + "e"); }

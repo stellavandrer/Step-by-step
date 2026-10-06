@@ -104,4 +104,12 @@
   add("rire", [["ris", "je / tu ris"], ["rit", "il / elle rit"], ["rient", "ils / elles rient"], ["ri", "past participle"]]);
   add("prévoir", [["prévois", "je / tu prévois"], ["prévoit", "il / elle prévoit"], ["prévu", "past participle; planned"], ["prévue", "past participle; planned"]]);
   add("résoudre", [["résous", "je / tu résous"], ["résout", "il / elle résout"], ["résolu", "past participle"]]);
+  add("croire", [["croyais", "imperfect"], ["croyait", "imperfect"]]);
+  add("construire", [["construit", "il / elle construit; past participle"], ["construite", "past participle"], ["construisent", "ils / elles construisent"]]);
+  add("permettre", [["permet", "il / elle permet"], ["permets", "je / tu permets"], ["permis", "past participle"]]);
+  add("surprendre", [["surprend", "il / elle surprend"], ["surprennent", "ils / elles surprennent"], ["surpris", "past participle"]]);
+  add("servir", [["sert", "il / elle sert (à quoi ça sert ?: what's it for?)"]]);
+  add("prendre", [["prenant", "present participle"]]);
+  add("paraître", [["paraît", "il paraît que: apparently"]]);
+  add("lire", [["lisez", "vous lisez; read (command)"], ["lisons", "nous lisons"], ["lisent", "ils / elles lisent"], ["lisait", "imperfect"]]);
 })();
