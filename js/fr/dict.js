@@ -218,5 +218,16 @@ window.DICT_TARGET = {
   "tolérer": "to tolerate", "télévision": "television", "valoriser": "to value, to showcase", "véritable": "real, genuine", "égal": "equal", "épicerie": "grocery shop (une épicerie solidaire: a community grocery)",
   "établissement": "establishment; school", "simplement": "simply", "isoler": "to isolate", "vocation": "vocation, calling",
   "occasion": "opportunity; occasion (d'occasion: second-hand)",
+  "appuyer": "to press; to lean (s'appuyer sur: to rely on)", "auxquelles": "to which (f pl)", "baisser": "to lower, to go down", "bouton": "button", "bâtiment": "building", "cacher": "to hide",
+  "calculer": "to calculate", "caméra": "camera (video)", "chemin": "path, way", "colloque": "conference, symposium", "comparer": "to compare", "composer": "to compose (se composer de: to consist of)",
+  "consigne": "instruction", "conséquence": "consequence", "corriger": "to correct", "adolescent": "teenager", "envoi": "sending", "desquelles": "of which (f pl)",
+  "desquels": "of which (pl)", "duquel": "of which", "lesquels": "which (pl)", "lesquelles": "which (f pl)", "débrancher": "to unplug", "démonstration": "demonstration",
+  "dépendance": "dependence", "développement": "development", "développer": "to develop", "européen": "European", "exceptionnel": "exceptional", "fiabilité": "reliability",
+  "fortement": "strongly, sharply", "grandeur": "greatness; size", "génie": "genius", "idiomatique": "idiomatic", "instantané": "instant", "apprentissage": "learning",
+  "intérieur": "inside, interior", "ouverture": "opening", "lancer": "to throw; to launch", "lancement": "launch", "largement": "widely; easily (largement suffisant: more than enough)", "magique": "magic",
+  "montage": "editing (of a video)", "naturel": "natural", "nettoyer": "to clean", "nombre": "number", "opérationnel": "operational", "photographier": "to photograph",
+  "plaindre": "to pity (se plaindre: to complain)", "précision": "precision, accuracy", "quantité": "quantity", "rapidité": "speed", "recyclage": "recycling", "refus": "refusal",
+  "richesse": "wealth", "adresser": "to address (s'adresser à: to speak to)", "signaux": "signals", "suffisant": "sufficient, enough", "tablette": "tablet", "taper": "to type; to hit",
+  "traduire": "to translate", "utilisateur": "user", "utilisation": "use", "vidéo": "video", "voyageur": "traveller", "voyant": "warning light",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

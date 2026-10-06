@@ -164,4 +164,7 @@
   add("interdire", [["interdit", "il / elle interdit; past participle; forbidden"], ["interdisent", "ils / elles interdisent"]]);
   add("naître", [["naissent", "ils / elles naissent"], ["naît", "il / elle naît"]]);
   add("rappeler", [["rappellent", "ils / elles rappellent"]]);
+  add("plaindre", [["plains", "je / tu plains"], ["plaint", "il / elle plaint"], ["plaignent", "ils / elles plaignent"]]);
+  add("traduire", [["traduit", "il / elle traduit; past participle"], ["traduits", "past participle"], ["traduisent", "ils / elles traduisent"]]);
+  add("essayer", [["essaierez", "future"], ["essaierai", "future"], ["essaiera", "future"]]);
 })();
