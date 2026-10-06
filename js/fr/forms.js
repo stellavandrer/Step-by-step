@@ -192,4 +192,7 @@
   add("réunir", [["réunissent", "ils / elles réunissent"], ["réunit", "il / elle réunit"]]); add("prescrire", [["prescrit", "il / elle prescrit; past participle"]]); subj("refaire", "refasse refassions refassent");
   fut("rejeter", "rejetter"); add("réunir", [["réuni", "past participle"], ["réunie", "past participle (f)"], ["réunis", "past participle (pl)"], ["réunies", "past participle (f pl)"]]);
   add("parvenir", [["parvenu", "past participle"], ["parvenue", "past participle (f)"], ["parviens", "je / tu parviens"], ["parvient", "il / elle parvient"], ["parviennent", "ils / elles parviennent"]]); add("conclure", [["conclu", "past participle"], ["conclut", "il / elle conclut"]]);
+  const sImp = (base, forms) => add(base, forms.split(" ").map((x) => [x, "imperfect subjunctive (literary)"]));
+  sImp("être", "fût fussent"); sImp("avoir", "eût eussent"); sImp("faire", "fît"); sImp("finir", "finît"); sImp("partir", "partît"); sImp("prendre", "prît"); sImp("venir", "vînt"); sImp("chanter", "chantât"); sImp("pouvoir", "pût"); sImp("lire", "lût");
+  ps("apparaître", "apparut apparurent"); add("se souvenir", [["souviennent", "ils / elles se souviennent"], ["souvient", "il / elle se souvient"]]); add("rappeler", [["rappellerai", "je rappellerai"]]);
 })();
