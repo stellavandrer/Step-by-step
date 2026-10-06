@@ -117,5 +117,15 @@ window.DICT_TARGET = {
   "laisser": "to leave; to let", "passionnant": "fascinating, exciting", "promettre": "to promise", "promis": "promised (promis !: I promise!)", "quitter": "to leave (ne quittez pas: hold the line)", "transmettre": "to pass on",
   "télétravail": "working from home", "vie": "life", "appareil": "device, appliance (à l'appareil: speaking)", "mme": "Mrs, Ms (madame)", "m": "Mr (monsieur)", "lecteur": "reader",
   "posé": "asked (poser une question)", "poser": "to put; to ask (a question)",
+  "accueillir": "to welcome", "accueil": "reception, welcome", "actuellement": "at the moment, currently", "allemand": "German", "animation": "activity, entertainment", "auberge": "inn (une auberge de jeunesse: a youth hostel)",
+  "aucun": "no, not a single, none", "candidat": "candidate, applicant", "chargé": "busy, full; loaded", "comme": "like, as; since", "agréer": "to accept (formal letters)", "essai": "try, trial (la période d'essai: the trial period)",
+  "intérêt": "interest", "difficulté": "difficulty", "direction": "management; direction", "disponible": "available", "disposition": "disposal (à votre disposition: at your disposal)", "distingué": "distinguished (salutations distinguées: yours faithfully)",
+  "début": "beginning, start", "emploi": "job, employment", "entretien": "interview; maintenance", "exactement": "exactly", "exemple": "example", "faible": "weak",
+  "finalement": "in the end", "fort": "strong; loud", "gestion": "management", "groupe": "group", "humeur": "mood (de mauvaise humeur: in a bad mood)", "inviter": "to invite",
+  "encadrer": "to supervise, to lead (a group)", "jeunesse": "youth", "joint": "attached, joined (en pièce jointe: attached)", "maladie": "illness", "ni": "nor (ne… ni… ni: neither… nor)", "point": "point (le point fort: the strength)",
+  "possibilité": "possibility", "proposer": "to offer, to suggest", "prétention": "claim (prétentions salariales: salary expectations)", "prévenir": "to warn, to let know", "publier": "to publish", "puisque": "since, as",
+  "période": "period", "rapport": "report; relationship", "réception": "reception (desk)", "réceptionniste": "receptionist", "réponse": "answer, reply", "salarial": "salary (adjective)",
+  "salutation": "greeting (salutations: regards)", "sauf": "except", "souhaiter": "to wish", "stressé": "stressed", "terminer": "to finish", "tourisme": "tourism",
+  "type": "type (une journée type: a typical day)", "vente": "sale, sales",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

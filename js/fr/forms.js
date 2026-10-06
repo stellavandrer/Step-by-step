@@ -91,4 +91,6 @@
   add("répéter", [["répète", "je / il / elle répète; repeat (command)"], ["répètes", "tu répètes"], ["répètent", "ils / elles répètent"]]);
   add("transmettre", [["transmets", "je / tu transmets"], ["transmet", "il / elle transmet"], ["transmis", "past participle"]]);
   add("promettre", [["promets", "je / tu promets"], ["promet", "il / elle promet"]]);
+  add("accueillir", [["accueille", "j' / il / elle accueille"], ["accueillent", "ils / elles accueillent"], ["accueillons", "nous accueillons"], ["accueilli", "past participle"]]);
+  add("prévenir", [["préviens", "je / tu préviens"], ["prévient", "il / elle prévient"], ["prévenu", "past participle"]]);
 })();
