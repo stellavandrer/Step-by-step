@@ -439,7 +439,10 @@ function lookupFr(w) {
     if (/elles?$/.test(x)) push(x.replace(/elles?$/, "el"));
     const er = x.match(/^(.+?)(erai|eras|era|erons|erez|eront|erais|erait|eraient|aient|ais|ait|ions|iez|ant|ons|ez|ent|ées|és|ée|é|es|e)$/);
     /* mangeons → manger, commençons → commencer */
-    if (er) { push(er[1] + "er"); push(er[1].replace(/ge$/, "g").replace(/ç$/, "c") + "er"); }
+    if (er) { push(er[1] + "er"); push(er[1].replace(/ge$/, "g").replace(/ç$/, "c").replace(/ll$/, "l") + "er"); }
+    /* future and conditional built on the infinitive: finirai → finir, prendrai → prendre */
+    const fut = x.match(/^(.+r)(ai|as|a|ons|ez|ont|ais|ait|ions|iez|aient)$/);
+    if (fut) { push(fut[1]); push(fut[1] + "e"); }
     const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|is|it|ie|ies|i)$/);
     if (ir) push(ir[1] + "ir");
     const re = x.match(/^(.+?)(ons|ez|ent|us|ues|ue|u|s)$/);

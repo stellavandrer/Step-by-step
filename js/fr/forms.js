@@ -81,4 +81,14 @@
   add("être", [["étions", "imperfect"], ["étiez", "imperfect"]]);
   add("avoir", [["avions", "imperfect"], ["aviez", "imperfect"], ["avaient", "imperfect"]]);
   add("falloir", [["faut", "il faut: you have to, it's necessary"], ["fallait", "imperfect"], ["fallu", "past participle"]]);
+  /* Irregular future stems (the endings are always -ai, -as, -a, -ons, -ez, -ont). */
+  const fut = (base, stem) => add(base, ["ai", "as", "a", "ons", "ez", "ont"].map((e) => [stem + e, "future"]));
+  fut("être", "ser"); fut("avoir", "aur"); fut("aller", "ir"); fut("faire", "fer"); fut("pouvoir", "pourr"); fut("vouloir", "voudr");
+  fut("venir", "viendr"); fut("revenir", "reviendr"); fut("devenir", "deviendr"); fut("voir", "verr"); fut("devoir", "devr");
+  fut("savoir", "saur"); fut("envoyer", "enverr"); fut("recevoir", "recevr"); fut("acheter", "achèter"); fut("appeler", "appeller");
+  add("falloir", [["faudra", "future"]]); add("pleuvoir", [["pleuvra", "future"]]);
+  add("convenir", [["convient", "il / elle convient"], ["conviennent", "ils / elles conviennent"], ["convenu", "past participle"]]);
+  add("répéter", [["répète", "je / il / elle répète; repeat (command)"], ["répètes", "tu répètes"], ["répètent", "ils / elles répètent"]]);
+  add("transmettre", [["transmets", "je / tu transmets"], ["transmet", "il / elle transmet"], ["transmis", "past participle"]]);
+  add("promettre", [["promets", "je / tu promets"], ["promet", "il / elle promet"]]);
 })();

@@ -113,5 +113,9 @@ window.DICT_TARGET = {
   "cordialement": "kind regards", "cc": "charges comprises: service charges included", "hc": "hors charges: service charges not included", "partira": "will leave (future of partir)",
   "y": "there; to it, about it (j'y vais: I'm going there)",
   "tgv": "high-speed train (train à grande vitesse)",
+  "apporter": "to bring", "convenir": "to suit", "couramment": "fluently", "homme": "man", "informatique": "computing, IT", "étranger": "foreign; foreigner (à l'étranger: abroad)",
+  "laisser": "to leave; to let", "passionnant": "fascinating, exciting", "promettre": "to promise", "promis": "promised (promis !: I promise!)", "quitter": "to leave (ne quittez pas: hold the line)", "transmettre": "to pass on",
+  "télétravail": "working from home", "vie": "life", "appareil": "device, appliance (à l'appareil: speaking)", "mme": "Mrs, Ms (madame)", "m": "Mr (monsieur)", "lecteur": "reader",
+  "posé": "asked (poser une question)", "poser": "to put; to ask (a question)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

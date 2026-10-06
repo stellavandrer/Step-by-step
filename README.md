@@ -47,4 +47,4 @@ irregular forms from js/fr/forms.js), the learner's language (English, the defau
 immersion) and texts that differ. Interface texts written for the English course swap the two language names
 automatically. Tools without French content yet are hidden. Answers are compared without accents (ça = ca), and a
 noun typed without its article is accepted with its article shown. Characters have French first names.
-Each unit is one file, js/fr/unit-<id>.js, like the English thematic units. Done: level A1 complete (7 units, 23 lessons, 366 words, 7 texts, 7 listening labs, 8 role-plays, the A1 exam). The interface is neutral for every learner (no gendered agreement, the first name is asked on the first visit).
+Each unit is one file, js/fr/unit-<id>.js, like the English thematic units. Done: levels A1 and A2 complete (14 units, 44 lessons, 609 words, 14 texts, 14 listening labs, 15 role-plays, the A1 and A2 exams). The interface is neutral for every learner (no gendered agreement, the first name is asked on the first visit).
