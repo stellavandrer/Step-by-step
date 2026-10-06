@@ -167,4 +167,7 @@
   add("plaindre", [["plains", "je / tu plains"], ["plaint", "il / elle plaint"], ["plaignent", "ils / elles plaignent"]]);
   add("traduire", [["traduit", "il / elle traduit; past participle"], ["traduits", "past participle"], ["traduisent", "ils / elles traduisent"]]);
   add("essayer", [["essaierez", "future"], ["essaierai", "future"], ["essaiera", "future"]]);
+  subj("convenir", "convienne conviennent"); subj("devenir", "devienne deviennes deviennent"); subj("éteindre", "éteigne éteignes éteignent");
+  add("suffire", [["suffit", "il / elle suffit (il suffit de: all you need is)"], ["suffisent", "ils / elles suffisent"], ["suffi", "past participle"]]);
+  subj("vouloir", "veuillent"); subj("prendre", "prennent");
 })();

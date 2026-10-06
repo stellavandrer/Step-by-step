@@ -229,5 +229,13 @@ window.DICT_TARGET = {
   "plaindre": "to pity (se plaindre: to complain)", "précision": "precision, accuracy", "quantité": "quantity", "rapidité": "speed", "recyclage": "recycling", "refus": "refusal",
   "richesse": "wealth", "adresser": "to address (s'adresser à: to speak to)", "signaux": "signals", "suffisant": "sufficient, enough", "tablette": "tablet", "taper": "to type; to hit",
   "traduire": "to translate", "utilisateur": "user", "utilisation": "use", "vidéo": "video", "voyageur": "traveller", "voyant": "warning light",
+  "alarme": "alarm", "comité": "committee", "contrôler": "to control, to check", "créneau": "slot, time slot", "aménager": "to fit out, to arrange", "dentaire": "dental",
+  "directrice": "director, head (f)", "facultatif": "optional", "fatiguer": "to tire", "fraîche": "cool, fresh (f)", "fréquent": "frequent", "hauteur": "height (à hauteur des yeux: at eye level)",
+  "hygiène": "hygiene (l'hygiène de vie: healthy habits)", "kinésithérapie": "physiotherapy", "ambiance": "atmosphere", "limiter": "to limit", "limité": "limited", "litre": "litre",
+  "méthode": "method", "nécessaire": "necessary", "pire": "worse", "pourvu": "pourvu que: provided that; let's hope", "prescrire": "to prescribe", "privé": "private",
+  "programmer": "to schedule", "préoccupant": "worrying", "préserver": "to preserve, to protect", "recommander": "to recommend", "représenter": "to represent", "régler": "to adjust, to settle",
+  "régulier": "regular", "accumuler": "to accumulate", "aggraver": "to make worse (s'aggraver: to get worse)", "sain": "healthy", "secteur": "sector", "sol": "floor, ground",
+  "succès": "success", "suffire": "to be enough", "vingtaine": "about twenty", "épuisé": "exhausted", "équilibre": "balance", "déconnecter": "to disconnect, to switch off",
+  "intervenant": "speaker, outside expert", "extérieur": "outside, external", "animer": "to lead, to run (a session)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

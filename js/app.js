@@ -443,6 +443,8 @@ function lookupFr(w) {
     /* the shortest ending too: vérifiez → vérifier (not vérif- + -iez) */
     const er2 = x.match(/^(.+)(ez|ons|ent|es|e|é|ée|és|ées|ais|ait|aient|ant)$/);
     if (er2) push(er2[1] + "er");
+    /* récupère → récupérer, mène → mener */
+    if (er2 && /è[^aeiouyéèê]+$/.test(er2[1])) { push(er2[1].replace(/è(?=[^aeiouyéèê]+$)/, "é") + "er"); push(er2[1].replace(/è(?=[^aeiouyéèê]+$)/, "e") + "er"); }
     /* future and conditional built on the infinitive: finirai → finir, prendrai → prendre */
     const fut = x.match(/^(.+r)(ai|as|a|ons|ez|ont|ais|ait|ions|iez|aient)$/);
     if (fut) { push(fut[1]); push(fut[1] + "e"); }
