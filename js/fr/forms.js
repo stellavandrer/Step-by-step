@@ -24,6 +24,9 @@
   add("partir", [["pars", "je / tu pars"], ["part", "il / elle part"], ["partent", "ils partent"]]);
   add("lire", [["lis", "je / tu lis"], ["lit", "il / elle lit"], ["lisent", "ils lisent"]]);
   add("finir", [["finis", "je / tu finis"], ["finit", "il / elle finit"], ["finissent", "ils finissent"]]);
+  add("devoir", [["dois", "je / tu dois"], ["doit", "il / elle doit"], ["devons", "nous devons"], ["devez", "vous devez"], ["doivent", "ils / elles doivent"], ["dû", "past participle"]]);
+  add("pleuvoir", [["pleut", "il pleut"], ["plu", "past participle"]]);
+  add("neiger", [["neige", "il neige"]]);
   /* Common words whose form hides the dictionary entry. */
   add("il y a", [["y", "il y a = there is / there are"]]);
 })();

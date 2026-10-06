@@ -51,5 +51,7 @@ window.DICT_TARGET = {
   "lumineux": "bright, full of light", "porte": "wears; door", "fumer": "to smoke", "désolé": "sorry", "désolés": "sorry", "intéresser": "to interest", "têtu": "stubborn", "têtue": "stubborn",
   "raconter": "to tell (a story)", "histoire": "story; history", "incroyable": "incredible, amazing", "incroyables": "incredible, amazing", "perdre": "to lose", "perdu": "lost", "trouvé": "found", "attendre": "to wait", "attendez": "wait (formal)",
   "signer": "to sign", "poche": "pocket", "couverture": "cover; blanket", "roman": "novel", "policier": "police officer; detective (story)", "soleil": "sun", "cent": "a hundred", "quatre cent": "four hundred",
+  "devoir": "must, to have to; homework", "pleuvoir": "to rain", "neiger": "to snow", "dommage": "what a shame", "volontiers": "gladly, with pleasure", "peut-être": "maybe, perhaps",
+  "autre": "other, another", "fois": "time (once, twice…)", "frais": "cool, fresh", "degrés": "degrees", "libre": "free, available", "tard": "late",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };
