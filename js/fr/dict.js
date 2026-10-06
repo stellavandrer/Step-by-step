@@ -150,5 +150,10 @@ window.DICT_TARGET = {
   "permettre": "to allow", "planter": "to plant", "plat": "dish; flat", "préciser": "to specify, to add", "rarement": "rarely", "recherche": "search; research",
   "respecter": "to respect", "réaliser": "to make (a film); to achieve; to realise", "région": "region", "résultat": "result", "santé": "health", "selon": "according to",
   "surprendre": "to surprise", "transformer": "to transform, to turn into", "télévisé": "televised (le journal télévisé: TV news)", "voleur": "thief", "voler": "to steal; to fly", "émotion": "emotion",
+  "absolument": "absolutely", "accompagner": "to go with, to accompany", "activité": "activity", "commentaire": "comment", "commerçant": "shopkeeper",
+  "complètement": "completely", "contraire": "opposite (au contraire: on the contrary)", "diviser": "to divide", "décourager": "to discourage", "effet": "effect (en effet: indeed)", "encourager": "to encourage",
+  "exister": "to exist", "façon": "way, manner", "franchement": "frankly, honestly", "grâce": "grace (grâce à: thanks to)", "mesurer": "to measure", "modération": "moderation",
+  "qualité": "quality", "regretter": "to regret, to be sorry", "revanche": "revenge (en revanche: on the other hand)", "stresser": "to stress (out)",   "entente": "understanding, agreement (un terrain d'entente: common ground)", "tort": "wrong (avoir tort: to be wrong)", "tranquillement": "quietly, peacefully", "utile": "useful", "élève": "pupil, student", "évaluer": "to assess, to evaluate",
+  "notamment": "in particular", "cependant": "however", "pourtant": "and yet, however",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

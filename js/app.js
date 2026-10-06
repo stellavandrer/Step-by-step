@@ -446,12 +446,12 @@ function lookupFr(w) {
     /* future and conditional built on the infinitive: finirai → finir, prendrai → prendre */
     const fut = x.match(/^(.+r)(ai|as|a|ons|ez|ont|ais|ait|ions|iez|aient)$/);
     if (fut) { push(fut[1]); push(fut[1] + "e"); }
-    const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|is|it|ie|ies|i)$/);
+    const ir = x.match(/^(.+?)(issons|issez|issent|issais|issait|issant|issions|issiez|isses|isse|is|it|ie|ies|i)$/);
     if (ir) push(ir[1] + "ir");
     const re = x.match(/^(.+?)(ons|ez|ent|us|ues|ue|u|s)$/);
     if (re) push(re[1] + "re");
     /* attends, répond → attendre, répondre */
-    const dre = x.match(/^(.+d)(s|ons|ez|ent|ais|ait|ions|iez|aient|ant|u|ue|us|ues)?$/);
+    const dre = x.match(/^(.+d)(s|ons|ez|ent|ais|ait|ions|iez|aient|ant|u|ue|us|ues|e|es)?$/);
     if (dre) push(dre[1] + "re");
   });
   for (const c of cands) if (DICT.has(c)) return { base: c, fr: DICT.get(c) };
@@ -486,6 +486,21 @@ function lookup(raw, gloss) {
   if (w.includes("-")) { const bits = w.split("-").map((b) => lookup(b)).filter(Boolean); if (bits.length) return { base: w, fr: bits.map((b) => b.fr).join(" + ") }; }
   return null;
 }
+/* French course, English interface: a passage whose small words are English (the, and, is…) is an explanation, not
+   French, so "long", "point" or "type" in it stay plain text even though they are French words too. */
+const EN_MARK = new Set(("the and is are of to you your with this that it it's for in what when which from be have has was were they he she we would will can not don't at by if " +
+  "my there there's i'm i'll i've i'd you're he's she's we're they're isn't doesn't can't won't didn't do does did very also only just " +
+  "some any more most how why who where here about after before because than then these those their them our us his him its no one two use say says like").split(" "));
+const FR_MARK = new Set("le la les des du est et une un je tu il elle nous vous ils elles que qui pas ne de à en dans pour avec sur au aux ce mon ma mes ton ta sa ses on se c'est".split(" "));
+function englishPassage(text) {
+  if (!FRENCH_COURSE || immersion()) return false;
+  let en = 0, fr = 0;
+  (text.toLowerCase().replace(/’/g, "'").match(/[a-zà-ÿœ']+/g) || []).forEach((w) => {
+    if (EN_MARK.has(w)) en++;
+    else if (FR_MARK.has(w) || /^(l|d|j|qu|c|n|s|m|t)'/.test(w)) fr++;
+  });
+  return en > fr;
+}
 /* Wrap every English word of the page in a clickable span. */
 const SKIP = "button, a, input, textarea, select, option, script, style, svg, .fr-text, .fr, .no-tx, .popover, .w, .kbd, .tag, .pill, .seg, label, .speaker, .fr-ui, .lv-scale, .report-big, .report-lv, .result-big";
 /* Not real words: single letters (except a and I, and the French y), suffixes and prefixes quoted alone (-tion, thir-), endings after a digit (2nd). */
@@ -504,6 +519,9 @@ function wordify(root) {
   nodes.forEach((n) => {
     const parts = n.nodeValue.split(WORD_RE);
     if (parts.length < 2) return;
+    /* In a lesson, the French is rendered in <span class="en"> (from <s-fr>): the plain text around it is the English explanation. */
+    const pe = n.parentElement;
+    const enText = englishPassage(n.nodeValue) || (FRENCH_COURSE && !immersion() && !pe.closest(".en") && !!pe.querySelector(":scope > span.en"));
     const frag = document.createDocumentFragment();
     /* Text left unwrapped stays in one node with its context (so "-tion" is still a suffix on the next pass),
        and a node where nothing is clickable isn't touched (no endless repaint). */
@@ -511,7 +529,7 @@ function wordify(root) {
     parts.forEach((part, k) => {
       if (!part) return;
       /* Interface in the learner's own language: only the words of the language learnt that we can translate are clickable. */
-      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (lookup(part) && !(FRENCH_COURSE && EN_STOP.has(part.toLowerCase()))))) {
+      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (!enText && lookup(part) && !(FRENCH_COURSE && EN_STOP.has(part.toLowerCase()))))) {
         if (buf) { frag.appendChild(document.createTextNode(buf)); buf = ""; }
         const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); wrapped++;
       } else buf += part;

@@ -112,4 +112,15 @@
   add("prendre", [["prenant", "present participle"]]);
   add("paraître", [["paraît", "il paraît que: apparently"]]);
   add("lire", [["lisez", "vous lisez; read (command)"], ["lisons", "nous lisons"], ["lisent", "ils / elles lisent"], ["lisait", "imperfect"]]);
+  /* Present subjunctive of irregular verbs (regular ones are found by their endings). */
+  const subj = (base, forms) => add(base, forms.split(" ").map((f) => [f, "subjunctive"]));
+  subj("être", "sois soit soyons soyez soient"); subj("avoir", "aies ait ayons ayez aient"); subj("aller", "aille ailles aillent");
+  subj("faire", "fasse fasses fassions fassiez fassent"); subj("pouvoir", "puisse puisses puissions puissiez puissent");
+  subj("savoir", "sache saches sachions sachiez sachent"); subj("vouloir", "veuille veuilles veuillent"); subj("falloir", "faille");
+  subj("venir", "vienne viennes venions veniez"); subj("prendre", "prenne prennes prenions preniez"); subj("boire", "boive boives buvions");
+  subj("devoir", "doive doives devions deviez doivent"); subj("voir", "voie voies voyions voyiez"); subj("dire", "dise dises disions disiez disent");
+  subj("écrire", "écrive écrives écrivions écriviez écrivent"); subj("lire", "lise lises lisions lisiez"); subj("mettre", "mette mettes mettions mettiez mettent");
+  subj("partir", "parte partes partions partiez partent"); subj("sortir", "sorte sortes sortions sortiez sortent"); subj("connaître", "connaisse connaisses");
+  subj("recevoir", "reçoive reçoives reçoivent"); subj("comprendre", "comprenne comprennes comprennent"); subj("apprendre", "apprenne apprennes apprennent");
+  subj("vivre", "vive vives vivions viviez"); subj("dormir", "dorme dormes dormions"); subj("croire", "croie croies croyions"); subj("pleuvoir", "pleuve");
 })();
