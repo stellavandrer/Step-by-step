@@ -177,5 +177,14 @@ window.DICT_TARGET = {
   "éponge": "sponge (passer l'éponge: to let bygones be bygones)", "laver": "to wash", "longtemps": "a long time", "noter": "to write down, to note", "primaire": "primary", "rattraper": "to make up for; to catch up",
   "recharger": "to recharge", "ressentir": "to feel", "sourire": "to smile; smile", "sérieusement": "seriously", "embrasser": "to kiss (je t'embrasse: love, at the end of a letter)", "égoïste": "selfish",
   "étudier": "to study", "manquer": "to miss; to be missing",
+  "absolu": "absolute", "afin": "afin de: in order to; afin que: so that", "ainsi": "thus, so (ainsi que: as well as)", "autonomie": "independence (en autonomie: on your own)", "bac": "baccalauréat, the school-leaving exam", "brièvement": "briefly",
+  "clair": "clear", "clairement": "clearly", "constamment": "constantly", "contemporain": "contemporary", "copie": "exam paper; copy", "dater": "to date (dater de: to be from)",
+  "delf": "Diplôme d'études en langue française (French language diploma)", "doux": "soft, gentle", "douce": "soft, gentle (f)", "doucement": "gently, quietly", "francophone": "French speaker; French-speaking", "futur": "future",
+  "gentiment": "kindly", "haut": "high (à voix haute: aloud)", "haute": "high (f) (à voix haute: aloud)", "heureux": "happy", "intensif": "intensive", "évaluation": "assessment",
+  "indiquer": "to indicate, to tell", "magistral": "un cours magistral: a lecture", "niveau": "level", "objet": "object; subject line (of an email)", "occuper": "to occupy (s'occuper de: to deal with)", "poli": "polite",
+  "poliment": "politely", "promener": "to walk (se promener: to go for a walk)", "prudemment": "carefully", "rapidement": "quickly", "relire": "to reread", "retenir": "to remember, to retain",
+  "rythme": "rhythm, pace", "récemment": "recently", "régulièrement": "regularly", "résidence": "residence (une résidence universitaire: halls of residence)", "td": "seminar (travaux dirigés)", "texte": "text",
+  "universitaire": "university (adjective)", "vitale": "la carte Vitale: the health insurance card", "vocabulaire": "vocabulary", "voix": "voice", "également": "also, as well", "évident": "obvious",
+  "limite": "limit (la date limite: the deadline)",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

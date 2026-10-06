@@ -136,4 +136,7 @@
   add("suivre", [["suis", "je suis (suivre) / je suis (être)"], ["suit", "il / elle suit"], ["suivons", "nous suivons"], ["suivez", "vous suivez; follow (command)"], ["suivent", "ils / elles suivent"], ["suivi", "past participle"]]);
   add("ressentir", [["ressens", "je / tu ressens"], ["ressent", "il / elle ressent"], ["ressentez", "vous ressentez"]]);
   add("sourire", [["souris", "je / tu souris"], ["sourit", "il / elle sourit"], ["souri", "past participle"]]);
+  add("relire", [["relis", "je / tu relis; reread (command)"], ["relit", "il / elle relit"], ["relu", "past participle"]]);
+  add("retenir", [["retiens", "je / tu retiens"], ["retient", "il / elle retient"], ["retenu", "past participle"]]);
+  add("promener", [["promène", "je / il / elle promène (se promener)"], ["promènes", "tu promènes"], ["promènent", "ils / elles promènent"]]);
 })();
