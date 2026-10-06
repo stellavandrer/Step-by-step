@@ -524,6 +524,8 @@ function wordify(root) {
     /* In a lesson, the French is rendered in <span class="en"> (from <s-fr>): the plain text around it is the English explanation. */
     const pe = n.parentElement;
     const enText = englishPassage(n.nodeValue) || (FRENCH_COURSE && !immersion() && !pe.closest(".en") && !!pe.querySelector(":scope > span.en"));
+    /* Inside the French itself (.en in the French course), on, pour, son or or are French words: EN_STOP doesn't apply. */
+    const frText = FRENCH_COURSE && !!pe.closest(".en");
     const frag = document.createDocumentFragment();
     /* Text left unwrapped stays in one node with its context (so "-tion" is still a suffix on the next pass),
        and a node where nothing is clickable isn't touched (no endless repaint). */
@@ -531,7 +533,7 @@ function wordify(root) {
     parts.forEach((part, k) => {
       if (!part) return;
       /* Interface in the learner's own language: only the words of the language learnt that we can translate are clickable. */
-      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (!enText && lookup(part) && !(FRENCH_COURSE && EN_STOP.has(part.toLowerCase()))))) {
+      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (!enText && lookup(part) && !(FRENCH_COURSE && !frText && EN_STOP.has(part.toLowerCase()))))) {
         if (buf) { frag.appendChild(document.createTextNode(buf)); buf = ""; }
         const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); wrapped++;
       } else buf += part;
