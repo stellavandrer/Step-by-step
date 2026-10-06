@@ -173,5 +173,9 @@ window.DICT_TARGET = {
   "priorité": "priority", "renard": "fox", "récent": "recent", "rêver": "to dream", "scène": "scene; stage", "suivre": "to follow",
   "sûrement": "surely, probably", "synchronisé": "synchronised", "théâtre": "theatre", "traite": "d'une traite: in one go", "travers": "à travers: across, through", "vf": "dubbed into French (version française)",
   "vo": "original version (version originale)", "vostfr": "original version with French subtitles", "vivement": "strongly, warmly",
+  "calmement": "calmly", "compter": "to count (compter sur: to rely on)", "directement": "directly", "exprès": "on purpose", "accuser": "to accuse", "essentiel": "essential (l'essentiel: the main thing)",
+  "éponge": "sponge (passer l'éponge: to let bygones be bygones)", "laver": "to wash", "longtemps": "a long time", "noter": "to write down, to note", "primaire": "primary", "rattraper": "to make up for; to catch up",
+  "recharger": "to recharge", "ressentir": "to feel", "sourire": "to smile; smile", "sérieusement": "seriously", "embrasser": "to kiss (je t'embrasse: love, at the end of a letter)", "égoïste": "selfish",
+  "étudier": "to study", "manquer": "to miss; to be missing",
   "fini": "finished, over", "parfait": "perfect", "bien sûr": "of course", "alors": "so, then", "bon": "good; well, right"
 };

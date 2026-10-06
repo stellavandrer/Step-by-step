@@ -134,4 +134,6 @@
   add("produire", [["produit", "il / elle produit; past participle"], ["produisent", "ils / elles produisent"]]);
   add("réduire", [["réduit", "il / elle réduit; past participle"], ["réduisent", "ils / elles réduisent"]]);
   add("suivre", [["suis", "je suis (suivre) / je suis (être)"], ["suit", "il / elle suit"], ["suivons", "nous suivons"], ["suivez", "vous suivez; follow (command)"], ["suivent", "ils / elles suivent"], ["suivi", "past participle"]]);
+  add("ressentir", [["ressens", "je / tu ressens"], ["ressent", "il / elle ressent"], ["ressentez", "vous ressentez"]]);
+  add("sourire", [["souris", "je / tu souris"], ["sourit", "il / elle sourit"], ["souri", "past participle"]]);
 })();
