@@ -48,6 +48,14 @@
   pres("sollen", "soll sollst soll sollen sollt sollen");
   add("sein:v", [["wäre", "would be", "serait"], ["wären", "would be", "serions, seraient"]]);
   add("werden", [["würde", "would", "-rais (conditionnel)"], ["würdest", "would (du)", "-rais (conditionnel, du)"]]);
+  /* prétérit des verbes de modalité et de wissen */
+  prat("können", "konnte konntest konnte konnten konntet konnten");
+  prat("müssen", "musste musstest musste mussten musstet mussten");
+  prat("dürfen", "durfte durftest durfte durften durftet durften");
+  prat("wollen", "wollte wolltest wollte wollten wolltet wollten");
+  prat("sollen", "sollte solltest sollte sollten solltet sollten");
+  prat("wissen", "wusste wusstest wusste wussten wusstet wussten");
+  pp("müssen", "gemusst"); pp("können", "gekonnt"); pp("wollen", "gewollt");
   /* impératifs irréguliers (du) */
   add("nehmen", [["nimm", "imperative (du)", "impératif (du)"]]);
   add("sprechen", [["sprich", "imperative (du)", "impératif (du)"]]);
