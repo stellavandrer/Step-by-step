@@ -57,6 +57,9 @@
   prat("wissen", "wusste wusstest wusste wussten wusstet wussten");
   pp("müssen", "gemusst"); pp("können", "gekonnt"); pp("wollen", "gewollt");
   pres("fallen", "falle fällst fällt fallen fallt fallen");
+  pres("helfen", "helfe hilfst hilft helfen helft helfen");
+  pres("laufen", "laufe läufst läuft laufen lauft laufen");
+  pp("brechen", "gebrochen"); pp("schneiden", "geschnitten"); pp("krankschreiben", "krankgeschrieben");
   pres("vergessen", "vergesse vergisst vergisst vergessen vergesst vergessen");
   add("vergessen", [["vergiss", "imperative (du)", "impératif (du)"]]);
   /* impératifs irréguliers (du) */
