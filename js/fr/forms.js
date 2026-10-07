@@ -201,4 +201,5 @@
   add("croire", [["croyant", "present participle"]]); add("disparaître", [["disparaît", "il / elle disparaît"]]); add("renvoyer", [["renvoient", "ils / elles renvoient"], ["renvoie", "il / elle renvoie"]]); add("souffrir", [["souffre", "je / il / elle souffre"], ["souffrent", "ils / elles souffrent"]]); add("subir", [["subi", "past participle"], ["subie", "past participle (f)"]]); subj("valoir", "vaille vaillent");
   fut("retenir", "retiendr"); add("contraindre", [["contraignent", "ils / elles contraignent"], ["contraint", "il / elle contraint; past participle"]]); add("paraître", [["paru", "past participle (of a book, an article: published)"], ["parue", "past participle (f)"]]);
   add("haïr", [["hais", "je / tu hais"], ["hait", "il / elle hait"]]); add("mourir", [["meurs", "je / tu meurs"], ["meurt", "il / elle meurt"]]); add("recevoir", [["recevons", "nous recevons"]]); add("rire", [["riais", "je / tu riais"], ["riait", "il / elle riait"], ["ri", "past participle"]]);
+  add("retenir", [["retiennent", "ils / elles retiennent"], ["retient", "il / elle retient"]]); add("trahir", [["trahit", "il / elle trahit"]]);
 })();
