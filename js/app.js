@@ -568,6 +568,8 @@ function lookupDe(w) {
      adjectives (kleinen, größeren, schönste), verbs (macht, machst, machte, arbeitet) */
   const strip = (sufs, fn) => sufs.forEach((suf) => { if (w.endsWith(suf) && w.length > suf.length + 1) fn(w.slice(0, -suf.length)); });
   push(w.replace(/innen$/, "in")); push(w.replace(/nisse[ns]?$/, "nis"));
+  /* comparatives of adjectives in -e: leiser, müder, leiseren → leise, müde */
+  push(w.replace(/er(e[mnrs]?)?$/, "e"));
   strip(["innen", "nen", "ern", "en", "er", "es", "in", "e", "n", "s"], (m) => { push(m); push(unUml(m)); });
   /* adjectives, comparatives and superlatives: kleinen, wärmer, wärmeren, größte, ältesten */
   strip(["esten", "ester", "estes", "este", "sten", "ster", "stes", "ste", "eren", "erer", "eres", "ere", "em", "en", "er", "es", "ten", "te", "e"], (m) => { push(m); push(unUml(m)); });

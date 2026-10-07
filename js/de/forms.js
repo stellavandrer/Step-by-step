@@ -138,4 +138,8 @@
   pres("raten", "rate rätst rät raten ratet raten");
   pres("verlassen", "verlasse verlässt verlässt verlassen verlasst verlassen");
   prat("steigen", "stieg stiegst stieg stiegen stiegt stiegen");
+  /* B1-3 : le passif */
+  add("werden", [["worden", "participle in the passive (ist … worden)", "participe du passif (ist … worden)"]]);
+  pp("stehlen", "gestohlen"); pp("werfen", "geworfen");
+  pres("stehlen", "stehle stiehlst stiehlt stehlen stehlt stehlen");
 })();
