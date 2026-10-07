@@ -235,7 +235,7 @@
       task: ["Give the dates of four important days for you (birthdays, holidays…).", "Donne les dates de quatre jours importants pour toi (anniversaires, fêtes…).", "Mein Geburtstag ist am zwölften März. Meine Mutter hat am ersten Juli Geburtstag. Am dritten Oktober ist in Deutschland ein Feiertag. Im Dezember feiern wir Weihnachten."]
     },
     21: {
-      gap: [["Hast du ___, ins Kino zu gehen?", "Lust", "do you feel like", "envie"], ["___ kann ich nicht, ich muss arbeiten.", "Leider", "unfortunately", "malheureusement"], ["Du kannst nicht kommen? ___!", "Schade", "what a pity", "dommage"], ["Soll ich einen Salat ___? (to bring)", "mitbringen"]],
+      gap: [["Hast du ___, ins Kino zu gehen?", "Lust", "do you feel like", "envie"], ["___ kann ich nicht, ich muss arbeiten.", "Leider", "unfortunately", "malheureusement"], ["Du kannst nicht kommen? ___!", "Schade", "what a pity", "dommage"], ["Soll ich einen Salat ___?", "mitbringen", "to bring", "apporter"]],
       fix: [["Hast du Lust ins Kino gehen?", "Hast du Lust, ins Kino zu gehen?", "After Lust: zu + infinitive at the end.", "Après Lust : zu + infinitif à la fin."], ["Ich freue mich über deine Party morgen.", "Ich freue mich auf deine Party morgen.", "Something in the future: sich freuen auf.", "Quelque chose à venir : sich freuen auf."]],
       task: ["Invite a friend to do something on Saturday: suggest an activity, a time and a place (four sentences).", "Invite un ami à faire quelque chose samedi : propose une activité, une heure et un lieu (quatre phrases).", "Hallo Jonas! Hast du Lust, am Samstag wandern zu gehen? Wir können um zehn Uhr am Bahnhof losfahren. Ich bringe Brötchen mit. Sag mir bis Freitag Bescheid!"]
     }

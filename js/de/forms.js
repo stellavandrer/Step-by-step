@@ -53,7 +53,6 @@
   prat("müssen", "musste musstest musste mussten musstet mussten");
   prat("dürfen", "durfte durftest durfte durften durftet durften");
   prat("wollen", "wollte wolltest wollte wollten wolltet wollten");
-  prat("sollen", "sollte solltest sollte sollten solltet sollten");
   prat("wissen", "wusste wusstest wusste wussten wusstet wussten");
   pp("müssen", "gemusst"); pp("können", "gekonnt"); pp("wollen", "gewollt");
   pres("fallen", "falle fällst fällt fallen fallt fallen");
@@ -94,4 +93,23 @@
   pres("lassen", "lasse lässt lässt lassen lasst lassen");
   pres("stoßen", "stoße stößt stößt stoßen stoßt stoßen");
   add("dunkel", [["dunkle", "dark (dunkel + -e)", "sombre (dunkel + -e)"], ["dunklen", "dark (dunkel + -en)", "sombre (dunkel + -en)"], ["dunkler", "dark (dunkel + -er); darker", "sombre (dunkel + -er) ; plus sombre"], ["dunkles", "dark (dunkel + -es)", "sombre (dunkel + -es)"], ["dunklem", "dark (dunkel + -em)", "sombre (dunkel + -em)"]]);
+  /* Konjunktiv II (politesse, souhaits, conseils) */
+  const k2 = (base, forms) => forms.split(" ").forEach((f, i) => put(f, [base, `${P[i]} ${f} (polite / would)`, `${P[i]} ${f} (conditionnel)`]));
+  k2("haben", "hätte hättest hätte hätten hättet hätten");
+  k2("sein:v", "wäre wärst wäre wären wärt wären");
+  k2("werden", "würde würdest würde würden würdet würden");
+  k2("können", "könnte könntest könnte könnten könntet könnten");
+  k2("mögen", "möchte möchtest möchte möchten möchtet möchten");
+  prat("bekommen", "bekam bekamst bekam bekamen bekamt bekamen");
+  prat("verstehen", "verstand verstandest verstand verstanden verstandet verstanden");
+  prat("sterben", "starb starbst starb starben starbt starben");
+  prat("singen", "sang sangst sang sangen sangt sangen");
+  prat("nennen", "nannte nanntest nannte nannten nanntet nannten");
+  pp("versprechen", "versprochen"); pp("bekommen", "bekommen"); pp("verbinden", "verbunden"); pp("hinterlassen", "hinterlassen");
+  pp("wegwerfen", "weggeworfen"); pp("nennen", "genannt");
+  pres("versprechen", "verspreche versprichst verspricht versprechen versprecht versprechen");
+  add("wegwerfen", [["wirf", "imperative (du)", "impératif (du)"]]);
+  add("werfen", [["wirf", "imperative (du)", "impératif (du)"]]);
+  /* sollte : le conseil (Konjunktiv II), qui a la même forme que le prétérit */
+  "sollte solltest sollte sollten solltet sollten".split(" ").forEach((f, i) => put(f, ["sollen", `${P[i]} ${f} (should; also the simple past)`, `${P[i]} ${f} (devrait ; aussi le prétérit)`]));
 })();

@@ -227,7 +227,7 @@
       task: ["Write a shopping list with six items and their quantities.", "Écris une liste de courses de six produits avec leurs quantités.", "ein Kilo Kartoffeln, zwei Liter Milch, eine Flasche Apfelsaft, hundert Gramm Käse, sechs Eier, eine Packung Nudeln"]
     },
     15: {
-      gap: [["Die ___, bitte! (the bill)", "Rechnung"], ["Zusammen oder ___?", "getrennt", "separately", "séparément"], ["Guten Appetit! — Danke, ___!", "gleichfalls", "you too", "vous aussi"], ["Was können Sie ___? (to recommend)", "empfehlen"]],
+      gap: [["Die ___, bitte!", "Rechnung", "the bill", "l'addition"], ["Zusammen oder ___?", "getrennt", "separately", "séparément"], ["Guten Appetit! — Danke, ___!", "gleichfalls", "you too", "vous aussi"], ["Was können Sie ___?", "empfehlen", "to recommend", "recommander"]],
       fix: [["Ein Wasser ohne Gas, bitte.", "Ein Wasser ohne Kohlensäure, bitte.", "Still water: ohne Kohlensäure.", "Eau plate : ohne Kohlensäure."], ["Ich bekomme einen Salat.", "Ich hätte gern einen Salat.|Ich nehme einen Salat.|Ich möchte einen Salat.", "To order: Ich hätte gern / Ich nehme / Ich möchte. (bekommen means to get, to receive.)", "Pour commander : Ich hätte gern / Ich nehme / Ich möchte. (bekommen veut dire recevoir.)"]],
       task: ["You're at a restaurant with a friend: write what you both order and how you pay (four sentences).", "Tu es au restaurant avec une amie : écris ce que vous commandez et comment vous payez (quatre phrases).", "Ich hätte gern die Tomatensuppe und danach den Fisch. Meine Freundin nimmt einen Salat. Zu trinken nehmen wir zwei Mineralwasser. Wir zahlen getrennt, und ich gebe zwei Euro Trinkgeld."]
     }

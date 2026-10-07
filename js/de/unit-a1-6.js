@@ -237,12 +237,12 @@
       task: ["Describe your room or living room in four sentences: where are the furniture and the things?", "Décris ta chambre ou ton salon en quatre phrases : où sont les meubles et les objets ?", "Mein Bett steht neben dem Fenster. Über dem Bett hängt ein Bild. Der Schrank steht an der Wand, und meine Bücher liegen im Regal. Unter dem Tisch schläft meine Katze."]
     },
     17: {
-      gap: [["Ich ___ heute arbeiten. (müssen)", "muss"], ["___ du mir helfen? (können)", "Kannst"], ["Hier ___ man nicht rauchen. (dürfen)", "darf"], ["Wir wollen eine Wohnung ___. (to rent)", "mieten"]],
+      gap: [["Ich ___ heute arbeiten. (müssen)", "muss"], ["___ du mir helfen? (können)", "Kannst"], ["Hier ___ man nicht rauchen. (dürfen)", "darf"], ["Wir wollen eine Wohnung ___.", "mieten", "to rent", "louer"]],
       fix: [["Ich kann spielen Klavier.", "Ich kann Klavier spielen.", "The modal second, the infinitive at the end.", "Le verbe de modalité en deuxième position, l'infinitif à la fin."], ["Du musst hier nicht rauchen, das ist verboten.", "Du darfst hier nicht rauchen, das ist verboten.", "Forbidden: nicht dürfen. Nicht müssen means there's no need.", "Interdit : nicht dürfen. Nicht müssen veut dire que ce n'est pas nécessaire."]],
       task: ["Write the rules of a flat share: four sentences with dürfen, müssen and können.", "Écris le règlement d'une colocation : quatre phrases avec dürfen, müssen et können.", "In unserer WG darf man nicht rauchen. Jeder muss einmal pro Woche putzen. Man kann Freunde einladen, aber nach zehn Uhr muss es ruhig sein. Die Katze darf auf dem Sofa schlafen!"]
     },
     18: {
-      gap: [["Ist die Wohnung noch ___?", "frei", "available", "libre"], ["Wie hoch ist die ___? (the rent)", "Miete"], ["Wann kann ich die Wohnung ___? (to view)", "besichtigen"], ["Kaltmiete + Nebenkosten = ___", "Warmmiete"]],
+      gap: [["Ist die Wohnung noch ___?", "frei", "available", "libre"], ["Wie hoch ist die ___?", "Miete", "the rent", "le loyer"], ["Wann kann ich die Wohnung ___?", "besichtigen", "to view", "visiter (un logement)"], ["Kaltmiete + Nebenkosten = ___", "Warmmiete"]],
       fix: [["Wann ich kann die Wohnung besichtigen?", "Wann kann ich die Wohnung besichtigen?", "After the question word: the modal, the subject, and the infinitive at the end.", "Après le mot interrogatif : le verbe de modalité, le sujet, et l'infinitif à la fin."], ["Darf man Haustiere zu haben?", "Darf man Haustiere haben?", "After a modal verb: the infinitive without zu.", "Après un verbe de modalité : l'infinitif sans zu."]],
       task: ["Write four questions you'd ask a landlord on the phone.", "Écris quatre questions que tu poserais à un propriétaire au téléphone.", "Ist die Wohnung noch frei? Wie hoch ist die Warmmiete? Ab wann ist die Wohnung frei? Wann kann ich sie besichtigen?"]
     }

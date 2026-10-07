@@ -16,9 +16,10 @@
    - dictionnaire : DICT_DE { mot: [en, fr] } (chaîne vide = mot identique dans cette langue, pas d'entrée) */
 (function () {
   const W = window, A = W.APP;
-  let L = A.defaultLang || "en";
-  try { L = JSON.parse(localStorage.getItem(A.key) || "{}").lang || L; } catch (e) { /* stockage indisponible */ }
-  const FR = L === "fr";
+  let L = A.defaultLang || "en", H = "";
+  try { const st = JSON.parse(localStorage.getItem(A.key) || "{}"); L = st.lang || L; H = st.helpLang || ""; } catch (e) { /* stockage indisponible */ }
+  /* Interface en allemand = immersion : les traductions restent dans la langue choisie avant (helpLang). */
+  const FR = L === "fr" || (L === "de" && (H || A.defaultLang) === "fr");
   A.helper = FR ? "fr" : "en";
   A.helperCode = FR ? "FR" : "EN";
   const t = (en, fr) => (FR && fr != null && fr !== "" ? fr : en);

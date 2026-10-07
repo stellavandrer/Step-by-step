@@ -42,7 +42,14 @@ const SWAP_FR = FRENCH_COURSE ? [
   [/\banglaise(s?)\b/g, "française$1"], [/\bfrançaise(s?)\b/g, "anglaise$1"], [/\banglais\b/g, "français"], [/\bfrançais\b/g, "anglais"],
   [/\bAnglais\b/g, "Français"], [/\bFrançais\b/g, "Anglais"], [/\banglophone(s?)\b/g, "francophone$1"], [/\bfrancophone(s?)\b/g, "anglophone$1"]
 ] : [];
-const swapList = () => (GERMAN_COURSE ? (isFr() ? SWAP_DE_FR : SWAP_DE_EN) : SWAP_FR);
+/* Course content (English or French) and the German interface: two different swaps. The German interface names the
+   English course's languages ("Englisch", "Französisch"); in the French course they swap, in the German course
+   English becomes German and French (the English course's helper) becomes the learner's own language. */
+const contentSwap = () => (GERMAN_COURSE ? (isFr() ? SWAP_DE_FR : SWAP_DE_EN) : SWAP_FR);
+const SWAP_UI_DE = FRENCH_COURSE ? [[/Englisch/g, "Französisch"], [/englisch/g, "französisch"], [/Französisch/g, "Englisch"], [/französisch/g, "englisch"]]
+  : GERMAN_COURSE ? [[/Englisch/g, "Deutsch"], [/englisch/g, "deutsch"]] : [];
+const SWAP_UI_DE_HELP_EN = [[/Französisch/g, "Englisch"], [/französisch/g, "englisch"]];
+const swapList = () => (lang() !== "de" ? contentSwap() : GERMAN_COURSE && !isFr() ? SWAP_UI_DE.concat(SWAP_UI_DE_HELP_EN) : SWAP_UI_DE);
 function swapNames(t, list) {
   const SWAP = list || swapList();
   if (!SWAP.length || !t) return t;
@@ -57,24 +64,37 @@ function swapNames(t, list) {
    T("English text", {vars}) gives the text in the chosen language (English if no translation).
    loc(obj, "title") gives obj.title_fr in French when it exists.
    instr(en, fr): an instruction in English with its FR button, or directly in French. */
-const LANGS = [["en", "English"], ["fr", "Français"]];
+const LANGS = [["en", "English"], ["fr", "Français"], ["de", "Deutsch"]];
 const lang = () => (typeof S !== "undefined" && S.lang) || APP.defaultLang || "en";
+/* Language of explanations and translations: the interface language, except with the German interface, where they
+   stay in English (the course content exists in English and French only). In the German course, German is
+   immersion: translations stay in the learner's language, the one chosen before switching (S.helpLang). */
+const helpLang = () => { const l = lang(); if (l !== "de") return l; return GERMAN_COURSE ? ((typeof S !== "undefined" && S.helpLang) || APP.defaultLang || "en") : "en"; };
+/* Interface texts written out in the code, in the three interface languages. */
+const ui3 = (en, f, de) => (lang() === "de" ? de : lang() === "fr" ? f : en);
 /* Immersion: the interface is in the language being learnt. */
 const immersion = () => lang() === APP.target;
-const isFr = () => lang() === "fr";
+/* Everything on the page is in the language taught (the French course in French). In the German course, the German
+   interface still has explanations in English or French: only the German is clickable there. */
+const fullImmersion = () => immersion() && !GERMAN_COURSE;
+const isFr = () => helpLang() === "fr";
 function T(s, vars) {
   const d = (window.UI_TEXT || {})[lang()];
   const own = ((APP.ui || {})[lang()] || {})[s];
-  let out = own || swapNames((d && d[s]) || s);
+  /* No German version yet: the English text, with the English swap of the language names. */
+  const tr = d && d[s];
+  let out = own || (tr || lang() !== "de" ? swapNames(tr || s) : swapNames(s, GERMAN_COURSE ? SWAP_DE_EN : SWAP_FR));
   if (vars) out = out.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? vars[k] : ""));
   return out;
 }
 const Tn = (n, one, many, vars) => T(n > 1 ? many : one, Object.assign({ n }, vars || {}));
-const loc = (o, k) => (o && lang() !== "en" && o[k + "_" + lang()]) || (o && o[k]);
+const loc = (o, k) => (o && lang() === "de" && o[k + "_de"]) || (o && helpLang() !== "en" && o[k + "_" + helpLang()]) || (o && o[k]);
 /* French quoted in an English instruction (« … ») isn't clickable: it isn't English. */
 const noTxQuotes = (h) => h.replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`);
 /* In the German course, the English interface is for English speakers: no French version under each instruction. */
 const instr = (en, f) => (isFr() && f ? `<span class="fr-ui">${esc(f)}</span>` : GERMAN_COURSE ? noTxQuotes(esc(en)) : `${noTxQuotes(esc(en))}${fr(f)}`);
+/* The button that switches an explanation between English and French. */
+const toggleLabel = (showFr) => (lang() === "de" ? (showFr ? "Auf Englisch" : "Auf Französisch") : showFr ? (isFr() ? "En anglais" : "In English") : "En français");
 const tg = (g) => { const k = "genre:" + g, v = T(k); return v === k ? g : v; };
 const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.replace(/ \d+$/, "")) + (p.match(/ \d+$/) || [""])[0] : p.replace(/^lesson (\d+)$/, (_, n) => T("lesson") + " " + n))).join(" · ");
 
@@ -127,7 +147,7 @@ const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.
   });
   RESOURCES.forEach((r, i) => { const e = (window.RESOURCES_EN || [])[i]; if (e) { r.title_fr = r.title; r.desc_fr = r.desc; r.title = e.title; r.desc = e.desc; } });
   /* The can-do grids are shared by both courses: in the French course, they speak of French. */
-  if (FOREIGN) CANDO.forEach((c) => Object.values(c.levels).forEach((arr) => arr.forEach((pair) => { pair[0] = swapNames(pair[0], GERMAN_COURSE ? SWAP_DE_EN : null); pair[1] = swapNames(pair[1], GERMAN_COURSE ? SWAP_DE_FR : null); })));
+  if (FOREIGN) CANDO.forEach((c) => Object.values(c.levels).forEach((arr) => arr.forEach((pair) => { pair[0] = swapNames(pair[0], GERMAN_COURSE ? SWAP_DE_EN : SWAP_FR); pair[1] = swapNames(pair[1], GERMAN_COURSE ? SWAP_DE_FR : SWAP_FR); })));
 })();
 const lnum = (l) => LESSONS.indexOf(l) + 1;
 const lessonById = (id) => LESSONS.find((l) => l.id === +id);
@@ -196,7 +216,7 @@ setInterval(() => {
 /* ================= Levels ================= */
 const LV = LEVELS.map((l) => l.id);
 const lvName = (L) => loc(LEVELS.find((x) => x.id === L), "name");
-const locale = () => (isFr() ? "fr-FR" : "en-GB");
+const locale = () => (lang() === "de" ? "de-DE" : isFr() ? "fr-FR" : "en-GB");
 const levelTag = (l) => `<span class="tag tag-${l}">${l}</span>`;
 function unitDone(u) { const s = S.units[u.id]; return !!(s && s.test >= 70); }
 function levelStats(L) {
@@ -387,7 +407,7 @@ const looksFrench = (t) => /[àâçéèêëîïôûùœ]|\b(le|la|les|des|est|et
 const fr = (french) => {
   if (!french) return "";
   const toFr = FRENCH_COURSE && looksFrench(french);
-  const code = FRENCH_COURSE ? (toFr ? "FR" : "EN") : GERMAN_COURSE ? lang().toUpperCase() : APP.helperCode;
+  const code = FRENCH_COURSE ? (toFr ? "FR" : "EN") : APP.helperCode;
   return ` <button class="fr-btn" data-fr="${esc(french)}" aria-label="${code === "FR" ? "Traduction en français" : "English translation"}" title="${code === "FR" ? "Traduction" : "Translation"}">${code}</button>`;
 };
 const WORD_RE = /([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'’-]*[A-Za-zÀ-ÖØ-öø-ÿ]|[A-Za-zÀ-ÖØ-öø-ÿ])/;
@@ -533,6 +553,9 @@ function lookupDe(w) {
   if (nv != null) return { base: w, fr: String(nv) };
   const ord = deOrdinal(w);
   if (ord) return { base: w, fr: ord };
+  /* the infinitive with zu of a separable verb: anzurufen → anrufen, mitzukommen → mitkommen */
+  const zu = w.match(/^(.{2,}?)zu(.{2,}e?n)$/);
+  if (zu) push(zu[1] + zu[2]);
   /* plurals with an umlaut only: Brüder, Mütter, Väter; the du imperative is the bare stem: komm, erzähl, stell */
   push(unUml(w)); push(w + "en"); push(w + "n");
   /* every possible ending, longest first: nouns (Kinder, Häuser, Minuten, Autos, Ärztin, Lehrerinnen),
@@ -545,6 +568,9 @@ function lookupDe(w) {
   strip(["teten", "test", "tet", "ten", "te", "est", "et", "st", "t", "e", "en", "n"], (m) => { push(m + "en"); push(m + "n"); push(unUml(m) + "en"); });
   const pp = w.match(/^(.*?)ge(.+?)(e?t)$/);
   if (pp) { push(pp[1] + pp[2] + "en"); push(pp[1] + pp[2] + "n"); }
+  /* a participle used as an adjective: die gebuchte Führung, das gekaufte Buch */
+  const ppa = w.match(/^(.*?)ge(.+?)t(e|en|er|es|em)$/);
+  if (ppa) push(ppa[1] + ppa[2] + "en");
   const ppi = w.match(/^(.*?)ge(.+en)$/);
   if (ppi) push(ppi[1] + ppi[2]);
   for (const c of cands) if (DICT.has(c)) return { base: c, fr: DICT.get(c) };
@@ -555,7 +581,7 @@ function lookupDe(w) {
 const EN_STOP = new Set("a an the on in is it as at to of for by or and but if me he she we you they us our your his her its my no not so do up be are was were has have had will can may all one two six an son pour".split(" "));
 /* German course: interface words that are also German words stay plain text outside the German itself. */
 const DE_STOP_EN = new Set("a an in so was will also man hat die bin bald war rot fast gift kind rat see hold bad arm hand last mist list art boot tag hut rock wink wand des best stand fall wind warm".split(" "));
-const DE_STOP_FR = new Set("des du es an en mit die la le sein man rose mode station film pause tour plus mais total sage elf".split(" "));
+const DE_STOP_FR = new Set("des du es an en mit die la le les sein man rose mode station film pause tour plus mais total sage elf".split(" "));
 buildDict();
 function lookup(raw, gloss) {
   const w = String(raw).toLowerCase().replace(/’/g, "'");
@@ -590,16 +616,26 @@ const EN_MARK = new Set(("the and is are of to you your with this that it it's f
   "some any more most how why who where here about after before because than then these those their them our us his him its no one two use say says like").split(" "));
 const FR_MARK = new Set("le la les des du est et une un je tu il elle nous vous ils elles que qui pas ne de à en dans pour avec sur au aux ce mon ma mes ton ta sa ses on se c'est".split(" "));
 const DE_MARK = new Set("der die das den dem des ein eine einen einem einer und ist sind nicht ich du er sie wir ihr es zu mit auf für von im am bei nach aus wie was wer wo auch noch schon sehr mein dein sein kein haben habe hast hat bin bist".split(" "));
+let DE_EN_MARK = null;
 function englishPassage(text) {
-  if (!FOREIGN || immersion()) return false;
-  /* The interface language (English, or French in the German course) against the language taught. */
-  const ui = GERMAN_COURSE && isFr() ? FR_MARK : EN_MARK, tl = GERMAN_COURSE ? DE_MARK : FR_MARK;
+  const deUi = lang() === "de";
+  if (fullImmersion() || (!FOREIGN && !deUi)) return false;
+  /* The language of the explanations (English, or French in the German course, whatever the menus) against the
+     language taught. With the German interface, German passages are interface too in the English and French courses,
+     and so are the English explanations of the French course. */
+  if (deUi && FRENCH_COURSE && !DE_EN_MARK) DE_EN_MARK = new Set([...DE_MARK, ...EN_MARK]);
+  const ui = GERMAN_COURSE ? (isFr() ? FR_MARK : EN_MARK) : deUi ? (FRENCH_COURSE ? DE_EN_MARK : DE_MARK) : EN_MARK;
+  const tl = GERMAN_COURSE ? DE_MARK : FRENCH_COURSE ? FR_MARK : EN_MARK;
   let en = 0, fr = 0;
   (text.toLowerCase().replace(/’/g, "'").match(/[a-zà-ÿœß']+/g) || []).forEach((w) => {
+    /* A small word of both languages (was, du) says nothing about the passage. */
+    if (deUi && ui.has(w) && tl.has(w)) return;
     if (ui.has(w) || (ui === FR_MARK && /^(l|d|j|qu|c|n|s|m|t)'/.test(w))) en++;
     else if (tl.has(w) || (tl === FR_MARK && /^(l|d|j|qu|c|n|s|m|t)'/.test(w))) fr++;
   });
-  return en > fr;
+  /* English course, German interface: English texts almost never contain der, und or ist, so a tie
+     ("Die Wörter lernen: The essentials") is interface. */
+  return deUi && !FOREIGN ? en > 0 && en >= fr : en > fr;
 }
 /* Wrap every English word of the page in a clickable span. */
 const SKIP = "button, a, input, textarea, select, option, script, style, svg, .fr-text, .fr, .no-tx, .popover, .w, .kbd, .tag, .pill, .seg, label, .speaker, .fr-ui, .lv-scale, .report-big, .report-lv, .result-big";
@@ -624,7 +660,7 @@ function wordify(root) {
     /* Inside the French itself (.en in the French course), on, pour, son or or are French words: EN_STOP doesn't apply. */
     const frText = FOREIGN && !!pe.closest(".en");
     /* German marked as German is never an interface passage, even when short ("In Wien." looks English). */
-    const enText = !(GERMAN_COURSE && frText) && (englishPassage(n.nodeValue) || (FOREIGN && !immersion() && !pe.closest(".en") && !!pe.querySelector(":scope > span.en")));
+    const enText = !(GERMAN_COURSE && frText) && (englishPassage(n.nodeValue) || (FOREIGN && !fullImmersion() && !pe.closest(".en") && !!pe.querySelector(":scope > span.en")));
     const stop = GERMAN_COURSE ? (isFr() ? DE_STOP_FR : DE_STOP_EN) : EN_STOP;
     const frag = document.createDocumentFragment();
     /* Text left unwrapped stays in one node with its context (so "-tion" is still a suffix on the next pass),
@@ -633,7 +669,7 @@ function wordify(root) {
     parts.forEach((part, k) => {
       if (!part) return;
       /* Interface in the learner's own language: only the words of the language learnt that we can translate are clickable. */
-      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (!enText && lookup(part) && !(FOREIGN && !frText && stop.has(part.toLowerCase()))))) {
+      if (k % 2 === 1 && !fragmentAt(parts, k) && (fullImmersion() || (!enText && lookup(part) && !(FOREIGN && !frText && stop.has(part.toLowerCase()))))) {
         if (buf) { frag.appendChild(document.createTextNode(buf)); buf = ""; }
         const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); wrapped++;
       } else buf += part;
@@ -671,7 +707,7 @@ function showPop(w) {
       <button class="btn btn-sm" data-say="${esc(word)}" aria-label="${T("Listen")}">${ic("volume-2")}</button>
       <button class="btn btn-sm" id="addW" title="Ajouter à mes mots">${ic("plus")} ${T("My words")}</button>
       ${sentenceEl ? `<button class="btn btn-sm" id="popSent" title="Traduire la phrase">${ic("languages")} ${T("Sentence")}</button>` : ""}
-      <a class="btn btn-sm" href="https://www.wordreference.com/${FRENCH_COURSE ? "fren" : GERMAN_COURSE ? (isFr() ? "defr" : "deen") : "enfr"}/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>
+      <a class="btn btn-sm" href="https://www.wordreference.com/${FRENCH_COURSE ? "fren" : GERMAN_COURSE ? (isFr() ? "defr" : "deen") : lang() === "de" ? "ende" : "enfr"}/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>
     </div>`;
   document.body.appendChild(pop);
   const rect = w.getBoundingClientRect();
@@ -1110,7 +1146,7 @@ function typedFromQuiz(q) {
   const ans = q.o[q.a];
   if (!ans || /[\/…]/.test(ans) || ans.split(/\s+/).length > 14) return null;
   const m = q.q.match(/^Translate:?\s*«\s*([\s\S]+?)\s*»/);
-  if (m) return { type: "type", q: swapNames("Write it in English:"), q_fr: swapNames("Écris-le en anglais :"), big: m[1], answer: ans, ex: q.ex, ex_fr: q.ex_fr };
+  if (m) return { type: "type", q: swapNames("Write it in English:", contentSwap()), q_fr: swapNames("Écris-le en anglais :", contentSwap()), big: m[1], answer: ans, ex: q.ex, ex_fr: q.ex_fr };
   if (/_{2,}/.test(q.q)) return { type: "type", q: q.q.replace(/^(Complete|Choose):?\s*/, "Write the missing word: "), q_fr: q.q_fr, answer: ans, ex: q.ex, ex_fr: q.ex_fr };
   return null;
 }
@@ -1327,7 +1363,7 @@ function viewHome() {
       <p class="small" style="margin:0 0 6px;opacity:.8">${new Date().toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" })}</p>
       <h1>${esc(greet)} ${sayBtn(FOREIGN ? greet : hello + (name ? ", " + name : "") + "!")}</h1>
       <p>${first
-        ? APP.welcome ? APP.welcome[lang()] || APP.welcome.en : (isFr() ? "Bienvenue dans ton cours d'anglais. L'interface est en français ; tout ce que tu apprends est en anglais : <b>clique sur un mot anglais</b> pour voir sa traduction, ou sur <b>FR</b> pour traduire une phrase entière. Tu peux passer l'interface en anglais en haut de la page." : `Welcome to your English course. Everything here is in English: <b>click on any word</b> to see its translation, or on <b>FR</b> to translate a whole sentence. Prefer the menus in French? Click <b>EN</b> at the top of the page.${fr("Bienvenue dans ton cours d'anglais. Tout est en anglais : clique sur n'importe quel mot pour voir sa traduction, ou sur FR pour traduire une phrase entière. Tu préfères les menus en français ? Clique sur EN en haut de la page.")}`)
+        ? APP.welcome ? APP.welcome[lang()] || APP.welcome.en : lang() === "de" ? "Willkommen in deinem Englischkurs. Die Menüs sind auf Deutsch, alles, was du lernst, ist auf Englisch: <b>Klick auf ein englisches Wort</b>, um seine Übersetzung zu sehen, oder auf <b>FR</b>, um einen ganzen Satz zu übersetzen. Die Erklärungen sind auf Englisch und die Übersetzungen dieses Kurses auf Französisch. Die Sprache der Menüs kannst du oben auf der Seite ändern." : (isFr() ? "Bienvenue dans ton cours d'anglais. L'interface est en français ; tout ce que tu apprends est en anglais : <b>clique sur un mot anglais</b> pour voir sa traduction, ou sur <b>FR</b> pour traduire une phrase entière. Tu peux passer l'interface en anglais en haut de la page." : `Welcome to your English course. Everything here is in English: <b>click on any word</b> to see its translation, or on <b>FR</b> to translate a whole sentence. Prefer the menus in French? Click <b>EN</b> at the top of the page.${fr("Bienvenue dans ton cours d'anglais. Tout est en anglais : clique sur n'importe quel mot pour voir sa traduction, ou sur FR pour traduire une phrase entière. Tu préfères les menus en français ? Clique sur EN en haut de la page.")}`)
         : allDone ? T("Today's programme is done. Well done! Anything extra is a bonus.")
         : T("You've done {a} of {b} activities today ({m} min of English). Shall we continue?", { a: doneCount, b: tasks.length, m: todayMin })}</p>
       ${up && !first ? `<p class="hero-next">${ic(up.icon)}<span>${T(allDone ? "If you'd like to go on:" : "Next:")} <b>${esc(up.label)}</b></span></p>` : ""}
@@ -1472,11 +1508,11 @@ function viewMore(part) {
       ["#/methode", "lightbulb", "B1", "The method", "The learning techniques best supported by research, why they work, and where you'll find them in the app."]
     ]]
   ];
-  /* Written out in both interface languages, not through T(): the French course swaps the language names. */
+  /* Written out in the three interface languages, not through T(): the French course swaps the language names. */
   const courses = [
-    ["index.html", "en", isFr() ? "Cours d'anglais" : "English course", isFr() ? "Du A1 au C2, pour les francophones" : "From A1 to C2, for French speakers", "graduation-cap", "B1"],
-    ["francais.html", "fr", isFr() ? "Cours de français" : "French course", isFr() ? "Du A1 au C2, pour les anglophones" : "From A1 to C2, for English speakers", "languages", "A2"],
-    ["allemand.html", "de", isFr() ? "Cours d'allemand" : "German course", isFr() ? "Pour les francophones et les anglophones" : "For French and English speakers", "languages", "B2"]
+    ["index.html", "en", ui3("English course", "Cours d'anglais", "Englischkurs"), ui3("From A1 to C2, for French speakers", "Du A1 au C2, pour les francophones", "Von A1 bis C2, für Französischsprachige"), "graduation-cap", "B1"],
+    ["francais.html", "fr", ui3("French course", "Cours de français", "Französischkurs"), ui3("From A1 to C2, for English speakers", "Du A1 au C2, pour les anglophones", "Von A1 bis C2, für Englischsprachige"), "languages", "A2"],
+    ["allemand.html", "de", ui3("German course", "Cours d'allemand", "Deutschkurs"), ui3("For French and English speakers", "Pour les francophones et les anglophones", "Für Französisch- und Englischsprachige"), "languages", "B2"]
   ];
   app.innerHTML = `
     <h1>${T("More")}</h1>
@@ -1806,7 +1842,7 @@ function vocabMCQ(themes, n) {
     const others = shuffle(words.filter((x) => x.en !== w.en)).slice(0, 3).map((x) => x.en);
     const o = shuffle([w.en, ...others]);
     /* The language names are swapped before the word goes in: a translation such as "English" stays as it is. */
-    return { type: "mcq", q: swapNames("How do you say « {w} » in English?").replace("{w}", w.fr), q_fr: swapNames("Comment dit-on « {w} » en anglais ?").replace("{w}", w.fr), o, a: o.indexOf(w.en), ex: `« ${w.fr} » = ${w.en}`, from: "Vocabulary" };
+    return { type: "mcq", q: swapNames("How do you say « {w} » in English?", contentSwap()).replace("{w}", w.fr), q_fr: swapNames("Comment dit-on « {w} » en anglais ?", contentSwap()).replace("{w}", w.fr), o, a: o.indexOf(w.en), ex: `« ${w.fr} » = ${w.en}`, from: "Vocabulary" };
   });
 }
 function grammarItems(lessons, n, written = 0) {
@@ -1909,7 +1945,7 @@ function viewCertificate(L) {
     ${back("#/cours", "Course")}
     <section class="cert">
       <div class="cert-badge">${L}</div>
-      <p class="small muted" style="margin:0">${FRENCH_COURSE ? "Pas à pas · French course" : GERMAN_COURSE ? (isFr() ? "Schritt für Schritt · cours d'allemand" : "Schritt für Schritt · German course") : T("Step by Step · English course")}</p>
+      <p class="small muted" style="margin:0">${FRENCH_COURSE ? `Pas à pas · ${ui3("French course", "French course", "Französischkurs")}` : GERMAN_COURSE ? `Schritt für Schritt · ${ui3("German course", "cours d'allemand", "Deutschkurs")}` : T("Step by Step · English course")}</p>
       <h1 style="margin:8px 0">${T("Level {l} completed", { l: L })}</h1>
       <p class="en" style="font-size:20px">${GERMAN_COURSE ? `${esc(learnerName() || "Ich")} ${learnerName() ? "hat" : "habe"} das Niveau ${L} abgeschlossen und die Niveauprüfung mit <b>${p} %</b> bestanden.` : FRENCH_COURSE ? `${esc(learnerName() || "J'ai")}${learnerName() ? " a" : ""} terminé le niveau ${L} (${esc(lv.name)}) et réussi l'examen de niveau avec <b>${p} %</b>.` : `${esc(learnerName() || "I")} ${learnerName() ? "has" : "have"} completed level ${L} (${esc(lv.name)}) and passed the level exam with <b>${p}%</b>.`}</p>
       <ul class="checklist" style="text-align:left;max-width:520px;margin:16px auto">${loc(lv, "can").map((c) => `<li>${ic("check")}<span>${esc(c)}</span></li>`).join("")}</ul>
@@ -2128,10 +2164,10 @@ function viewLesson(id) {
   app.innerHTML = `
     ${back(u ? `#/unite/${u.id}` : "#/lecons", u ? `Unit ${unitNum(u)} · ${loc(u, "title")}` : "All lessons")}
     <article class="card lesson-body">
-      <div class="row" style="margin-bottom:8px">${levelTag(l.level)}<span class="muted small">${u ? (() => { const ul = u.lessons.map(lessonById).filter(Boolean).sort((x, y) => LESSONS.indexOf(x) - LESSONS.indexOf(y)); return `${T("Unit")} ${unitNum(u)} · ${T("Lesson {a} of {b}", { a: ul.indexOf(l) + 1, b: ul.length })}`; })() : `${T("Lesson")} ${lnum(l)}`}</span><span class="spacer"></span>${l.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${showFr ? (isFr() ? "En anglais" : "In English") : "En français"}</button>` : ""}</div>
+      <div class="row" style="margin-bottom:8px">${levelTag(l.level)}<span class="muted small">${u ? (() => { const ul = u.lessons.map(lessonById).filter(Boolean).sort((x, y) => LESSONS.indexOf(x) - LESSONS.indexOf(y)); return `${T("Unit")} ${unitNum(u)} · ${T("Lesson {a} of {b}", { a: ul.indexOf(l) + 1, b: ul.length })}`; })() : `${T("Lesson")} ${lnum(l)}`}</span><span class="spacer"></span>${l.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${toggleLabel(showFr)}</button>` : ""}</div>
       <div class="row" style="flex-wrap:nowrap;align-items:center">${tile(l.icon, l.level)}<h1 style="margin:0">${esc(loc(l, "title"))}</h1></div>
       <p class="muted" style="margin-top:10px">${esc(loc(l, "subtitle"))}</p>
-      <div id="lbody" class="${showFr ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? l.body_fr : l.body)}</div>
+      <div id="lbody" class="${showFr && !FOREIGN ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? l.body_fr : l.body)}</div>
     </article>
     <section class="card">
       <h2>${ic("volume-2")} ${T("Listen and repeat")}</h2>
@@ -2173,9 +2209,9 @@ function viewLesson(id) {
   if ($("#frToggle")) $("#frToggle").onclick = () => {
     showFr = !showFr;
     $("#lbody").innerHTML = renderBody(showFr ? l.body_fr : l.body);
-    $("#lbody").classList.toggle("fr", showFr);
+    $("#lbody").classList.toggle("fr", showFr && !FOREIGN);
     if (showFr) $("#lbody").setAttribute("lang", "fr"); else $("#lbody").removeAttribute("lang");
-    $("#frToggle").innerHTML = showFr ? `${ic("languages")} ${isFr() ? "En anglais" : "In English"}` : `${ic("languages")} En français`;
+    $("#frToggle").innerHTML = `${ic("languages")} ${toggleLabel(showFr)}`;
   };
   let tm;
   const countWords = () => { const n = ($("#myNotes").value.match(/[A-Za-zÀ-ÿ'’-]+/g) || []).length; $("#wordCount").textContent = n ? Tn(n, "{n} word", "{n} words") + " · " : ""; };
@@ -3313,10 +3349,10 @@ function viewPronChapter(id) {
   app.innerHTML = `
     ${back("#/prononciation", "Pronunciation course")}
     <article class="card lesson-body">
-      <div class="row" style="margin-bottom:8px">${levelTag(c.level)}<span class="muted small">${T("Chapter {a} of {b}", { a: i + 1, b: all.length })}</span><span class="spacer"></span>${c.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${showFr ? (isFr() ? "En anglais" : "In English") : "En français"}</button>` : ""}</div>
+      <div class="row" style="margin-bottom:8px">${levelTag(c.level)}<span class="muted small">${T("Chapter {a} of {b}", { a: i + 1, b: all.length })}</span><span class="spacer"></span>${c.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${toggleLabel(showFr)}</button>` : ""}</div>
       <div class="row" style="flex-wrap:nowrap;align-items:center">${tile(c.icon, c.level)}<h1 style="margin:0">${esc(loc(c, "title"))}</h1></div>
       <p class="muted" style="margin-top:10px">${esc(loc(c, "subtitle"))}${c.ipa ? ` <span class="ipa no-tx">${esc(c.ipa)}</span>` : ""}</p>
-      <div id="lbody" class="${showFr ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? c.body_fr : c.body)}</div>
+      <div id="lbody" class="${showFr && !FOREIGN ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? c.body_fr : c.body)}</div>
     </article>
     ${(c.words || []).length ? `<section class="card">
       <h2>${ic("volume-2")} ${T("Key words")}</h2>
@@ -3348,9 +3384,9 @@ function viewPronChapter(id) {
   if ($("#frToggle")) $("#frToggle").onclick = () => {
     showFr = !showFr;
     $("#lbody").innerHTML = renderBody(showFr ? c.body_fr : c.body);
-    $("#lbody").classList.toggle("fr", showFr);
+    $("#lbody").classList.toggle("fr", showFr && !FOREIGN);
     if (showFr) $("#lbody").setAttribute("lang", "fr"); else $("#lbody").removeAttribute("lang");
-    $("#frToggle").innerHTML = showFr ? `${ic("languages")} ${isFr() ? "En anglais" : "In English"}` : `${ic("languages")} En français`;
+    $("#frToggle").innerHTML = `${ic("languages")} ${toggleLabel(showFr)}`;
   };
   $("#startQuiz").onclick = () => {
     const box = $("#quizBox");
@@ -3488,14 +3524,14 @@ function viewAcadChapter(id) {
   app.innerHTML = `
     ${back("#/competences", "Academic skills")}
     <article class="card lesson-body">
-      <div class="row" style="margin-bottom:8px">${levelTag(c.level)}${kindTag(c)}<span class="muted small">${T("Chapter {a} of {b}", { a: i + 1, b: all.length })}</span><span class="spacer"></span>${c.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${showFr ? (isFr() ? "En anglais" : "In English") : "En français"}</button>` : ""}</div>
+      <div class="row" style="margin-bottom:8px">${levelTag(c.level)}${kindTag(c)}<span class="muted small">${T("Chapter {a} of {b}", { a: i + 1, b: all.length })}</span><span class="spacer"></span>${c.body_fr ? `<button class="btn btn-sm" id="frToggle">${ic("languages")} ${toggleLabel(showFr)}</button>` : ""}</div>
       <div class="row" style="flex-wrap:nowrap;align-items:center">${tile(c.icon, c.level)}<h1 style="margin:0">${esc(loc(c, "title"))}</h1></div>
       <p class="muted" style="margin-top:10px">${esc(loc(c, "subtitle"))}</p>
       <section class="teacher-goals">
         <h3 style="margin:8px 0 6px">${T("By the end of this chapter, you'll be able to…")}</h3>
         <ul class="checklist">${c.can.map((x, k) => `<li>${ic("target")}<span>${instr(x, c.can_fr && c.can_fr[k])}</span></li>`).join("")}</ul>
       </section>
-      <div id="lbody" class="${showFr ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? c.body_fr : c.body)}</div>
+      <div id="lbody" class="${showFr && !FOREIGN ? "fr" : ""}" ${showFr ? 'lang="fr"' : ""}>${renderBody(showFr ? c.body_fr : c.body)}</div>
     </article>
     ${c.lecture ? `<section class="card">
       <h2>${ic("headphones")} ${esc(loc(c.lecture, "title"))}</h2>
@@ -3557,9 +3593,9 @@ function viewAcadChapter(id) {
   if ($("#frToggle")) $("#frToggle").onclick = () => {
     showFr = !showFr;
     $("#lbody").innerHTML = renderBody(showFr ? c.body_fr : c.body);
-    $("#lbody").classList.toggle("fr", showFr);
+    $("#lbody").classList.toggle("fr", showFr && !FOREIGN);
     if (showFr) $("#lbody").setAttribute("lang", "fr"); else $("#lbody").removeAttribute("lang");
-    $("#frToggle").innerHTML = showFr ? `${ic("languages")} ${isFr() ? "En anglais" : "In English"}` : `${ic("languages")} En français`;
+    $("#frToggle").innerHTML = `${ic("languages")} ${toggleLabel(showFr)}`;
   };
   if (c.lecture) {
     const lines = c.lecture.paras.map((p) => ["Lecturer", p]);
@@ -5282,6 +5318,8 @@ function applyStatic() {
 }
 function setLang(l) {
   if (!LANGS.some(([k]) => k === l)) return;
+  /* German course: German is immersion, and the translations stay in the language used until now. */
+  if (GERMAN_COURSE && l === "de" && lang() !== "de") S.helpLang = lang();
   S.lang = l; save();
   if (APP.reloadOnLang) { location.reload(); return; }
   route();

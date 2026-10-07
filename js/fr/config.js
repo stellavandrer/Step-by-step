@@ -8,7 +8,8 @@ window.APP = {
   learner: "",
   welcome: {
     en: "Welcome to your French course. Explanations are in English; everything you learn is in French: <b>click on any French word</b> to see its translation, or on <b>EN</b> to translate a whole sentence. When you feel ready, switch the menus to French (FR at the top of the page): that's total immersion.",
-    fr: "Bienvenue dans ton cours de français. Tout est en français : <b>clique sur un mot</b> pour voir sa traduction en anglais, ou sur <b>EN</b> pour traduire une phrase entière. Tu peux remettre les menus en anglais en haut de la page."
+    fr: "Bienvenue dans ton cours de français. Tout est en français : <b>clique sur un mot</b> pour voir sa traduction en anglais, ou sur <b>EN</b> pour traduire une phrase entière. Tu peux remettre les menus en anglais en haut de la page.",
+    de: "Willkommen in deinem Französischkurs. Die Menüs sind auf Deutsch, die Erklärungen auf Englisch, und alles, was du lernst, ist auf Französisch: <b>Klick auf ein französisches Wort</b>, um seine englische Übersetzung zu sehen, oder auf <b>EN</b>, um einen ganzen Satz zu übersetzen. Die Sprache der Menüs kannst du oben auf der Seite ändern."
   },
   /* Language workshop (B2 to C2): French word endings and a French example of a sentence transformation. */
   wfTable: [
@@ -38,6 +39,15 @@ window.APP = {
       "One workshop per unit, on the unit's theme: ten collocations, eight idioms and phrasal verbs, eight word-formation sentences and six sentence transformations, as in the Cambridge exams (B2 First, C1 Advanced, C2 Proficiency).": "Un atelier par unité, sur son thème : dix collocations, huit expressions idiomatiques, huit phrases de formation des mots et six reformulations, pour préparer le DELF B2 et le DALF C1 et C2.",
       "This is a personal record of your progress, not an official certificate. For an official result, take the TOEIC or a Cambridge exam.": "Ceci est un relevé personnel de ta progression, pas un certificat officiel. Pour un résultat officiel, passe le DELF ou le DALF, les diplômes de l'État français.",
       "The other tabs (vocabulary, reading, speaking, TOEIC…) are libraries for extra practice, whenever you like: the course doesn't depend on them.": "Les autres onglets (vocabulaire, lecture, oral…) sont des bibliothèques pour t'entraîner en plus, quand tu veux : le cours n'en dépend pas."
+    },
+    de: {
+      "Learn them as blocks, never word by word: we say “heavy rain”, not “strong rain”, and “meet a deadline”, not “respect a deadline”. Listen, then say each one out loud.": "Lerne sie als Block, nie Wort für Wort: Im Französischen sagt man „prendre une décision“, nicht „faire une décision“, und „poser une question“, nicht „demander une question“. Hör zu und sprich jede laut nach.",
+      "At this level, sounding natural depends less on knowing more words than on combining them well. Four tools, as in the Cambridge exams: collocations, idioms and phrasal verbs, word formation, and sentence transformations.": "Auf diesem Niveau hängt natürliches Sprechen weniger davon ab, mehr Wörter zu kennen, als davon, sie gut zu kombinieren. Vier Werkzeuge: Kollokationen, Redewendungen, Wortbildung und Satzumformungen, alle nützlich für das DELF B2 und das DALF C1 und C2.",
+      "Idioms and phrasal verbs": "Redewendungen",
+      "Method: find the grammar point (here, a regret: wish + past perfect), write the answer, then check the word count and that the meaning hasn't changed.": "Methode: Finde den Grammatikpunkt (hier ein Bedauern: j'aurais aimé + Infinitiv), schreib die Antwort und prüf dann die Wortzahl und ob die Bedeutung gleich geblieben ist.",
+      "One workshop per unit, on the unit's theme: ten collocations, eight idioms and phrasal verbs, eight word-formation sentences and six sentence transformations, as in the Cambridge exams (B2 First, C1 Advanced, C2 Proficiency).": "Eine Werkstatt pro Einheit, zum Thema der Einheit: zehn Kollokationen, acht Redewendungen, acht Sätze zur Wortbildung und sechs Satzumformungen, zur Vorbereitung auf das DELF B2 und das DALF C1 und C2.",
+      "This is a personal record of your progress, not an official certificate. For an official result, take the TOEIC or a Cambridge exam.": "Das ist eine persönliche Übersicht über deinen Fortschritt, kein offizielles Zertifikat. Für ein offizielles Ergebnis mach das DELF oder das DALF, die Diplome des französischen Staates.",
+      "The other tabs (vocabulary, reading, speaking, TOEIC…) are libraries for extra practice, whenever you like: the course doesn't depend on them.": "Die anderen Reiter (Wortschatz, Lesen, Sprechen…) sind Bibliotheken zum zusätzlichen Üben, wann immer du willst: Der Kurs hängt nicht von ihnen ab."
     }
   }
 };

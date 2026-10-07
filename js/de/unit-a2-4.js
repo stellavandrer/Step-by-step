@@ -222,7 +222,7 @@
       task: ["Compare two shops, two cities or two people you know, in four sentences.", "Compare deux magasins, deux villes ou deux personnes que tu connais, en quatre phrases.", "Berlin ist größer als München, aber München ist teurer. In Berlin gibt es mehr Museen. Die Luft ist in München vielleicht besser, weil die Berge näher sind. Am liebsten wohne ich aber in Hamburg!"]
     },
     33: {
-      gap: [["Welche ___ haben Sie? (size)", "Größe"], ["Kann ich die Hose ___? (to try on)", "anprobieren"], ["Die Farbe ___ dir gut. (suits)", "steht"], ["Ich möchte den Pullover ___. (to exchange)", "umtauschen"]],
+      gap: [["Welche ___ haben Sie?", "Größe", "size", "la taille"], ["Kann ich die Hose ___?", "anprobieren", "to try on", "essayer (un vêtement)"], ["Die Farbe ___ dir gut.", "steht", "suits", "va bien (à quelqu'un)"], ["Ich möchte den Pullover ___.", "umtauschen", "to exchange", "échanger"]],
       fix: [["Die Farbe passt dich gut.", "Die Farbe steht dir gut.", "To suit: stehen + dative.", "Aller bien : stehen + datif."], ["Ich möchte diesen Pullover tauschen um.", "Ich möchte diesen Pullover umtauschen.", "After möchte, the separable verb stays in one piece at the end.", "Après möchte, le verbe séparable reste en un seul morceau, à la fin."]],
       task: ["In a shop: ask for a size, try something on, say it's too small and ask for another size (four sentences).", "Dans un magasin : demande une taille, essaie un vêtement, dis qu'il est trop petit et demande une autre taille (quatre phrases).", "Guten Tag, ich suche eine Jacke in Größe M. Kann ich diese hier anprobieren? Hm, sie ist mir leider zu eng. Haben Sie die Jacke auch in Größe L?"]
     }

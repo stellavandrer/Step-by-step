@@ -219,17 +219,17 @@
 
   W.DRILLS = Object.assign(W.DRILLS || {}, {
     25: {
-      gap: [["Ich gehe in ___ Stadt. (Wohin?)", "die"], ["Ich bin in ___ Stadt. (Wo?)", "der"], ["Im Sommer fahren wir ___ Meer. (to the)", "ans"], ["Wir fahren ___ Italien.", "nach", "to", "en, à"]],
+      gap: [["Ich gehe in ___ Stadt. (Wohin?)", "die"], ["Ich bin in ___ Stadt. (Wo?)", "der"], ["Im Sommer fahren wir ___ Meer.", "ans", "to the", "à la (mer)"], ["Wir fahren ___ Italien.", "nach", "to", "en, à"]],
       fix: [["Ich lege das Buch auf dem Tisch.", "Ich lege das Buch auf den Tisch.", "legen = movement: accusative, den Tisch.", "legen = déplacement : accusatif, den Tisch."], ["Wir fahren nach die Schweiz.", "Wir fahren in die Schweiz.", "A country with an article: in die Schweiz.", "Un pays avec article : in die Schweiz."]],
       task: ["Plan four holidays: where you go (Wohin?) and what you do there (Wo?).", "Prévois quatre voyages : où tu vas (Wohin ?) et ce que tu fais sur place (Wo ?).", "Im Sommer fahre ich ans Meer. Am Meer liege ich am Strand. Im Winter fahre ich in die Berge. In den Bergen wandere ich jeden Tag."]
     },
     26: {
-      gap: [["Kannst du ___ helfen? (me)", "mir"], ["Das Hotel gefällt ___. (us)", "uns"], ["Wir fahren mit ___ Zug.", "dem", "the", "le"], ["Gehört der Koffer ___? (you, formal)", "Ihnen"]],
+      gap: [["Kannst du ___ helfen?", "mir", "me", "me, moi"], ["Das Hotel gefällt ___.", "uns", "us", "nous"], ["Wir fahren mit ___ Zug.", "dem", "the", "le"], ["Gehört der Koffer ___?", "Ihnen", "you, formal", "vous (forme de politesse)"]],
       fix: [["Kannst du mich helfen?", "Kannst du mir helfen?", "helfen takes the dative: mir.", "helfen prend le datif : mir."], ["Ich gefalle das Hotel.", "Das Hotel gefällt mir.", "The thing liked is the subject: das Hotel gefällt mir.", "Ce qui plaît est le sujet : das Hotel gefällt mir."]],
       task: ["Write four sentences about a trip, each with a dative (mir, dir, ihm, mit dem, bei…).", "Écris quatre phrases sur un voyage, chacune avec un datif (mir, dir, ihm, mit dem, bei…).", "Wir sind mit dem Zug nach Wien gefahren. Die Stadt hat mir sehr gefallen. Wir haben bei einer Freundin gewohnt, und ich habe ihr Blumen geschenkt. Sie hat uns viele Sehenswürdigkeiten gezeigt."]
     },
     27: {
-      gap: [["Einfach oder hin und ___?", "zurück", "back", "retour"], ["Von welchem ___ fährt der Zug?", "Gleis", "platform", "voie"], ["Der Zug hat zehn Minuten ___.", "Verspätung", "delay", "retard"], ["___ Sie bitte jemanden schicken? (could)", "Könnten"]],
+      gap: [["Einfach oder hin und ___?", "zurück", "back", "retour"], ["Von welchem ___ fährt der Zug?", "Gleis", "platform", "voie"], ["Der Zug hat zehn Minuten ___.", "Verspätung", "delay", "retard"], ["___ Sie bitte jemanden schicken?", "Könnten", "could", "pourriez (poli)"]],
       fix: [["Ich habe ein Zimmer auf dem Namen Laurent reserviert.", "Ich habe ein Zimmer auf den Namen Laurent reserviert.", "A fixed phrase: auf den Namen…", "Une formule figée : auf den Namen…"], ["Die Heizung ist nicht funktioniert.", "Die Heizung funktioniert nicht.", "funktionieren is a normal verb: es funktioniert nicht.", "funktionieren est un verbe normal : es funktioniert nicht."]],
       task: ["At the hotel reception: say you've booked a room, ask about breakfast and the Wi-Fi, and report a problem (four sentences).", "À la réception de l'hôtel : dis que tu as réservé une chambre, pose une question sur le petit-déjeuner et le wifi, et signale un problème (quatre phrases).", "Guten Abend, ich habe ein Einzelzimmer auf den Namen Laurent reserviert. Ist das Frühstück inklusive? Wie ist das WLAN-Passwort, bitte? Ach, und leider funktioniert die Dusche in meinem Zimmer nicht."]
     }

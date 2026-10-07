@@ -212,12 +212,12 @@
       task: ["Describe a day when you were ill, in four sentences with reflexive verbs.", "Décris un jour où tu étais malade, en quatre phrases avec des verbes pronominaux.", "Letzte Woche habe ich mich erkältet. Am Montag habe ich mich sehr schlecht gefühlt. Ich habe mich den ganzen Tag ausgeruht und viel Tee getrunken. Am Mittwoch habe ich mich schon besser gefühlt."]
     },
     29: {
-      gap: [["Wenn du Fieber ___, bleib im Bett. (haben)", "hast"], ["Du ___ zum Arzt gehen. (should)", "solltest"], ["Wenn es regnet, ___ wir zu Hause. (bleiben)", "bleiben"], ["An deiner ___ würde ich mich ausruhen.", "Stelle", "place", "place"]],
+      gap: [["Wenn du Fieber ___, bleib im Bett. (haben)", "hast"], ["Du ___ zum Arzt gehen.", "solltest", "should", "devrais (conseil)"], ["Wenn es regnet, ___ wir zu Hause. (bleiben)", "bleiben"], ["An deiner ___ würde ich mich ausruhen.", "Stelle", "place", "place"]],
       fix: [["Wenn du bist krank, bleib zu Hause.", "Wenn du krank bist, bleib zu Hause.", "wenn sends the verb to the end.", "wenn envoie le verbe à la fin."], ["Wenn es regnet, wir bleiben zu Hause.", "Wenn es regnet, bleiben wir zu Hause.", "After the wenn-clause: verb, then subject.", "Après la subordonnée en wenn : le verbe, puis le sujet."]],
       task: ["Your friend has a cold. Give four pieces of advice with sollte, wenn and doch.", "Ton ami a un rhume. Donne quatre conseils avec sollte, wenn et doch.", "Du solltest heute zu Hause bleiben. Trink doch viel Tee mit Honig! Wenn du Fieber hast, solltest du zum Arzt gehen. Und du solltest früh schlafen gehen."]
     },
     30: {
-      gap: [["Ich habe ___. (a headache)", "Kopfschmerzen"], ["Seit wann haben Sie das? — ___ drei Tagen.", "Seit", "for", "depuis"], ["Ich schreibe Ihnen ein ___. (a prescription)", "Rezept"], ["Gute ___! (get well soon)", "Besserung"]],
+      gap: [["Ich habe ___.", "Kopfschmerzen", "a headache", "mal à la tête"], ["Seit wann haben Sie das? — ___ drei Tagen.", "Seit", "for", "depuis"], ["Ich schreibe Ihnen ein ___.", "Rezept", "a prescription", "une ordonnance"], ["Gute ___!", "Besserung", "get well soon", "bon rétablissement"]],
       fix: [["Ich bin Fieber.", "Ich habe Fieber.", "A symptom with haben: ich habe Fieber.", "Un symptôme avec haben : ich habe Fieber."], ["Mich tut der Kopf weh.", "Mir tut der Kopf weh.", "wehtun takes the dative: mir.", "wehtun prend le datif : mir."]],
       task: ["You call a doctor's practice: ask for an appointment and describe your symptoms (four sentences).", "Tu appelles un cabinet médical : demande un rendez-vous et décris tes symptômes (quatre phrases).", "Guten Morgen, ich hätte gern einen Termin, so bald wie möglich. Ich habe seit gestern hohes Fieber und starke Halsschmerzen. Außerdem tut mir der Kopf weh. Kann ich heute noch kommen?"]
     }

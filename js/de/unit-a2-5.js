@@ -237,7 +237,7 @@
       task: ["Start your own fairy tale: four sentences in the Präteritum, beginning with Es war einmal.", "Commence ton propre conte : quatre phrases au prétérit, en commençant par Es war einmal.", "Es war einmal eine junge Bäckerin. Sie wohnte allein in einem kleinen Dorf am Wald. Eines Tages kam ein alter Mann in ihre Bäckerei. Er sagte: „Ich habe Hunger, aber kein Geld.“"]
     },
     36: {
-      gap: [["Frohe ___! (Christmas)", "Weihnachten"], ["Guten ___! (Happy New Year, before midnight)", "Rutsch"], ["Danke, ___! (you too)", "gleichfalls"], ["Alles ___ zum Geburtstag!", "Gute", "all the best", "tous mes vœux"]],
+      gap: [["Frohe ___!", "Weihnachten", "Christmas", "Noël"], ["Guten ___!", "Rutsch", "Happy New Year, before midnight", "bonne année, avant minuit"], ["Danke, ___!", "gleichfalls", "you too", "toi aussi"], ["Alles ___ zum Geburtstag!", "Gute", "all the best", "tous mes vœux"]],
       fix: [["Frohe Geburtstag!", "Alles Gute zum Geburtstag!|Herzlichen Glückwunsch zum Geburtstag!", "For birthdays: Alles Gute or Herzlichen Glückwunsch zum Geburtstag.", "Pour un anniversaire : Alles Gute ou Herzlichen Glückwunsch zum Geburtstag."], ["Guten Rutsch für das neue Jahr!", "Guten Rutsch ins neue Jahr!", "A fixed phrase: Guten Rutsch ins neue Jahr!", "Une formule figée : Guten Rutsch ins neue Jahr!"]],
       task: ["Write three short cards: a Christmas card, a New Year's message and a birthday card for German friends.", "Écris trois petits mots : une carte de Noël, un message pour le Nouvel An et une carte d'anniversaire pour des amis allemands.", "Liebe Familie Weber, frohe Weihnachten und schöne Feiertage! Lieber Malte, guten Rutsch ins neue Jahr! Liebe Paula, alles Gute zum Geburtstag und viel Glück im neuen Lebensjahr!"]
     }
