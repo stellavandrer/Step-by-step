@@ -202,4 +202,5 @@
   fut("retenir", "retiendr"); add("contraindre", [["contraignent", "ils / elles contraignent"], ["contraint", "il / elle contraint; past participle"]]); add("paraître", [["paru", "past participle (of a book, an article: published)"], ["parue", "past participle (f)"]]);
   add("haïr", [["hais", "je / tu hais"], ["hait", "il / elle hait"]]); add("mourir", [["meurs", "je / tu meurs"], ["meurt", "il / elle meurt"]]); add("recevoir", [["recevons", "nous recevons"]]); add("rire", [["riais", "je / tu riais"], ["riait", "il / elle riait"], ["ri", "past participle"]]);
   add("retenir", [["retiennent", "ils / elles retiennent"], ["retient", "il / elle retient"]]); add("trahir", [["trahit", "il / elle trahit"]]);
+  add("admettre", [["admets", "je / tu admets"], ["admet", "il / elle admet"]]); add("méconnaître", [["méconnais", "je / tu méconnais"]]); subj("reconnaître", "reconnaisse reconnaissent"); add("rejoindre", [["rejoins", "je / tu rejoins"]]); add("abstenir", [["abstiennent", "ils / elles s'abstiennent"], ["abstient", "il / elle s'abstient"]]);
 })();
