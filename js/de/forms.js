@@ -37,6 +37,8 @@
   pres("geben", "gebe gibst gibt geben gebt geben");
   pres("schlafen", "schlafe schläfst schläft schlafen schlaft schlafen");
   pres("tragen", "trage trägst trägt tragen tragt tragen");
+  add("haben", [["hätte", "would have (ich hätte gern: I'd like)", "aurais (ich hätte gern : je voudrais)"], ["hättest", "would have (du)", "aurais (du)"]]);
+  add("empfehlen", [["empfiehlt", "er / sie / es empfiehlt"], ["empfiehlst", "du empfiehlst"]]);
   /* impératifs irréguliers (du) */
   add("nehmen", [["nimm", "imperative (du)", "impératif (du)"]]);
   add("sprechen", [["sprich", "imperative (du)", "impératif (du)"]]);
