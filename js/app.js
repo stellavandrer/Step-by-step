@@ -477,6 +477,20 @@ function lookupFr(w) {
   if (w.includes("-")) { const bits = w.split("-").map((b) => lookupFr(b)).filter(Boolean); if (bits.length) return { base: w, fr: bits.map((b) => b.fr).join(" + ") }; }
   return null;
 }
+/* A German number written in one word, up to 999 (only compounds: zehn or hundert alone are in the dictionary). */
+function deNumValue(x) {
+  const unit = (u) => (u === "ein" ? 1 : DE_UNITS.indexOf(u));
+  let h = 0, r = x;
+  const hm = x.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)?hundert(.*)$/);
+  if (hm) { h = (hm[1] ? unit(hm[1]) : 1) * 100; r = hm[2]; if (!r) return hm[1] ? h : null; }
+  const m = r.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)und(zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig)$/);
+  if (m) return h + DE_TENS.indexOf(m[2]) * 10 + unit(m[1]);
+  if (!hm) return null;
+  if (r === "eins") return h + 1;
+  if (DE_UNITS.indexOf(r) > 0) return h + DE_UNITS.indexOf(r);
+  if (DE_TENS.indexOf(r) > 1) return h + DE_TENS.indexOf(r) * 10;
+  return null;
+}
 /* German: irregular forms (bin → sein, ging → gehen) from DE_FORMS, then plurals, adjective endings, verb endings,
    past participles (gemacht → machen) and the umlaut of plurals (Häuser → Haus). */
 function lookupDe(w) {
@@ -488,9 +502,9 @@ function lookupDe(w) {
   const cands = [];
   const push = (x) => { if (x && x.length > 1 && !cands.includes(x)) cands.push(x); };
   const unUml = (x) => x.replace(/ä(?=[^äöü]*$)/, "a").replace(/ö(?=[^äöü]*$)/, "o").replace(/ü(?=[^äöü]*$)/, "u").replace(/äu/, "au");
-  /* numbers in one word: vierunddreißig → 34 */
-  const nm = w.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)und(zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig)$/);
-  if (nm) return { base: w, fr: String(DE_TENS.indexOf(nm[2]) * 10 + (nm[1] === "ein" ? 1 : DE_UNITS.indexOf(nm[1]))) };
+  /* numbers in one word: vierunddreißig → 34, fünfhundertzwanzig → 520 */
+  const nv = deNumValue(w);
+  if (nv != null) return { base: w, fr: String(nv) };
   /* plurals with an umlaut only: Brüder, Mütter, Väter; the du imperative is the bare stem: komm, erzähl, stell */
   push(unUml(w)); push(w + "en"); push(w + "n");
   /* every possible ending, longest first: nouns (Kinder, Häuser, Minuten, Autos, Ärztin, Lehrerinnen),
