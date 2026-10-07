@@ -56,6 +56,9 @@
   prat("sollen", "sollte solltest sollte sollten solltet sollten");
   prat("wissen", "wusste wusstest wusste wussten wusstet wussten");
   pp("müssen", "gemusst"); pp("können", "gekonnt"); pp("wollen", "gewollt");
+  pres("fallen", "falle fällst fällt fallen fallt fallen");
+  pres("vergessen", "vergesse vergisst vergisst vergessen vergesst vergessen");
+  add("vergessen", [["vergiss", "imperative (du)", "impératif (du)"]]);
   /* impératifs irréguliers (du) */
   add("nehmen", [["nimm", "imperative (du)", "impératif (du)"]]);
   add("sprechen", [["sprich", "imperative (du)", "impératif (du)"]]);
