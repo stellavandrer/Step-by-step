@@ -29,7 +29,7 @@
     ["le parc éolien", "the wind farm", "Le projet de parc éolien divise le village."],
     ["l'accord de Paris", "the Paris Agreement", "L'accord de Paris a été adopté en 2015."]
   ] },
-  { id: "avenirFR", icon: "telescope", title: "The future and negotiation", title_fr: "L'avenir et la négociation", level: "C2", words: [
+  { id: "futurDurableFR", icon: "telescope", title: "The future and negotiation", title_fr: "L'avenir et la négociation", level: "C2", words: [
     ["la prospective", "futures studies, forecasting", "La prospective imagine plusieurs scénarios."],
     ["l'anticipation", "anticipation; (literature) science fiction", "Ce roman d'anticipation se déroule en 2100."],
     ["le scénario", "the scenario", "Le scénario le plus pessimiste n'est pas le plus probable."],
@@ -277,7 +277,7 @@
     intro_fr: "Dans cette unité, tu vas réfléchir au climat et à notre responsabilité envers l'avenir : les valeurs du conditionnel et du futur (il aura oublié, je vous demanderai, serait-ce… ?), les pronoms au plus haut niveau (le neutre, soi, autrui) et l'art de la médiation.",
     can: ["Use the conditional and the future for nuance, not only for time", "Handle the neutral le, soi, autrui and reciprocal pronouns", "Discuss climate, the future and intergenerational responsibility", "Mediate between two sides and propose a compromise", "Write a letter to the future"],
     can_fr: ["Employer le conditionnel et le futur pour nuancer, pas seulement pour situer dans le temps", "Manier le neutre le, soi, autrui et les pronoms réciproques", "Débattre du climat, de l'avenir et de la responsabilité entre générations", "Servir de médiateur entre deux camps et proposer un compromis", "Écrire une lettre à l'avenir"],
-    lessons: [153, 154, 155], vocab: ["climatFR", "avenirFR"], reading: "generations", prompt: "fr-c2-7",
+    lessons: [153, 154, 155], vocab: ["climatFR", "futurDurableFR"], reading: "generations", prompt: "fr-c2-7",
     writing: { task: "Write a letter (350-400 words) to someone who will be twenty in 2075. Admit, explain, ask, hope: use the future, the futur antérieur and the conditional for nuance.", task_fr: "Écris une lettre (350 à 400 mots) à une personne qui aura vingt ans en 2075. Avoue, explique, demande, espère : emploie le futur, le futur antérieur et le conditionnel pour nuancer.", words: "350-400",
       tips: ["À toi qui auras vingt ans en 2075,", "Je t'avouerai que…", "Serait-ce… ?", "Je ne te demanderai pas de…, mais…", "Si…, alors nous aurons…"],
       checklist: ["I addressed the reader directly", "I used the futur antérieur at least twice", "I used the future or the conditional to soften", "I used soi or autrui", "My ending opens on a hope", "I wrote between 350 and 400 words"],

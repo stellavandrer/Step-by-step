@@ -9,7 +9,7 @@
   const W = window;
 
   W.VOCAB.push(
-  { id: "litteratureFR", icon: "book-open-text", title: "Literary forms", title_fr: "Les formes littéraires", level: "C2", words: [
+  { id: "formesLittFR", icon: "book-open-text", title: "Literary forms", title_fr: "Les formes littéraires", level: "C2", words: [
     ["le recueil", "the collection (of poems, stories)", "Ce recueil réunit ses poèmes de jeunesse."],
     ["la focalisation", "the point of view (of the narration)", "La focalisation interne nous fait partager ses pensées."],
     ["le champ lexical", "the lexical field", "Le champ lexical de la mort domine le poème."],
@@ -271,7 +271,7 @@
     intro_fr: "Dans cette unité, tu vas lire et écrire en écrivain : le style indirect libre, les valeurs stylistiques des temps (l'imparfait narratif, l'imparfait de ce qui a failli arriver, le présent de vérité générale) et la méthode du commentaire de texte littéraire.",
     can: ["Recognise and write free indirect discourse", "Use the stylistic values of tenses on purpose", "Discuss literary forms, writing and creation", "Comment on a literary text, linking devices and meaning", "Write the opening of a short story"],
     can_fr: ["Reconnaître et écrire le style indirect libre", "Employer à dessein les valeurs stylistiques des temps", "Parler des formes littéraires, de l'écriture et de la création", "Commenter un texte littéraire, en reliant procédés et sens", "Écrire le début d'une nouvelle"],
-    lessons: [141, 142, 143], vocab: ["litteratureFR", "creationFR"], reading: "oulipo", prompt: "fr-c2-3",
+    lessons: [141, 142, 143], vocab: ["formesLittFR", "creationFR"], reading: "oulipo", prompt: "fr-c2-3",
     writing: { task: "Write the opening of a short story (350-400 words): an ordinary day that is about to change. Use free indirect discourse at least twice, a narrative imparfait and a present of general truth.", task_fr: "Écris le début d'une nouvelle (350 à 400 mots) : une journée ordinaire sur le point de basculer. Emploie au moins deux fois le style indirect libre, un imparfait narratif et un présent de vérité générale.", words: "350-400",
       tips: ["À quoi bon… ?", "Combien de… ?", "On ne… pas… (a general truth)", "Un quart d'heure plus tard, elle…", "… plus rien ne serait jamais pareil."],
       checklist: ["My opening sets an ordinary scene", "A trigger changes the situation", "I used free indirect discourse at least twice", "I used a narrative imparfait and a present of general truth", "My ending leaves the reader wanting more", "I wrote between 350 and 400 words"],

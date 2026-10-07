@@ -29,7 +29,7 @@
     ["la responsabilité sociale", "corporate social responsibility", "La responsabilité sociale de l'entreprise est au cœur du projet."],
     ["la levée de fonds", "fundraising", "La levée de fonds a duré six mois."]
   ] },
-  { id: "travailFR", icon: "users", title: "Working together", title_fr: "Travailler ensemble", level: "C1", words: [
+  { id: "equipeFR", icon: "users", title: "Working together", title_fr: "Travailler ensemble", level: "C1", words: [
     ["la hiérarchie", "the hierarchy, management", "Il faut en parler à la hiérarchie."],
     ["le salarié / la salariée", "the employee (m) / (f)", "Les salariés ont été consultés."],
     ["le syndicat", "the trade union", "Le syndicat a demandé une réunion."],
@@ -276,7 +276,7 @@
     intro_fr: "Dans cette unité, tu vas parler d'entreprise et de vie professionnelle : les verbes idiomatiques avec en et y (en vouloir à, s'en sortir, s'y prendre), les cas difficiles de l'accord du participe passé et les courriels délicats de la vie professionnelle.",
     can: ["Use common idiomatic verbs with en and y", "Get past participle agreement right in the hard cases", "Discuss business, work organisation and well-being", "Follow up, refuse and negotiate by email, firmly and courteously", "Write a recommendation memo"],
     can_fr: ["Employer les verbes idiomatiques courants avec en et y", "Réussir l'accord du participe passé dans les cas difficiles", "Débattre d'entreprise, d'organisation du travail et de bien-être", "Relancer, refuser et négocier par courriel, avec fermeté et courtoisie", "Rédiger une note de recommandation"],
-    lessons: [123, 124, 125], vocab: ["entrepriseFR", "travailFR"], reading: "quatrejours", prompt: "fr-c1-7",
+    lessons: [123, 124, 125], vocab: ["entrepriseFR", "equipeFR"], reading: "quatrejours", prompt: "fr-c1-7",
     writing: { task: "Your company is considering a four-day week. Management asks you for a memo (250-300 words) setting out the advantages, the risks and your recommendation.", task_fr: "Ton entreprise envisage la semaine de quatre jours. La direction te demande une note (250 à 300 mots) qui présente les avantages, les risques et ta recommandation.", words: "250-300",
       tips: ["Objet : …", "Les entreprises qui s'y sont essayées…", "Il serait toutefois imprudent de…", "Au vu de ces éléments, nous recommandons…", "Si le bilan s'avère positif, …"],
       checklist: ["My memo has a header with the subject", "The advantages and the risks are clearly separated", "My recommendation is precise and measurable", "My participles agree correctly", "My tone is professional and neutral", "I wrote between 250 and 300 words"],

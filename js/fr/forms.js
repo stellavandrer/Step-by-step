@@ -212,4 +212,5 @@
   fut("accueillir", "accueiller"); ps("alerter", "alerta"); ps("devenir", "devint"); ps("falloir", "fallut"); ps("prévenir", "prévint"); add("reproduire", [["reproduite", "past participle (f)"], ["reproduit", "past participle"]]); add("soutenir", [["soutenue", "past participle (f)"], ["soutenu", "past participle"]]); add("venger", [["venge", "(il / elle) venge; imperative"]]);
   add("savoir", [["savions", "nous savions"], ["saviez", "vous saviez"]]);
   add("enfuir", [["enfuis", "past participle (pl)"], ["enfui", "past participle"]]); add("exclure", [["exclut", "il / elle exclut"]]); ps("remporter", "remporta"); add("acquérir", [["acquièrent", "ils / elles acquièrent"], ["acquiert", "il / elle acquiert"], ["acquis", "past participle"]]); add("tendre", [["tend", "il / elle tend"], ["tendu", "past participle"]]);
+  add("renouveler", [["renouvelant", "present participle"]]); add("regagner", [["regagne", "il / elle regagne"]]); add("occasionner", [["occasionnée", "past participle (f)"]]); add("inverser", [["inverse", "il / elle inverse"]]);
 })();
