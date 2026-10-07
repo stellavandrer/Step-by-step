@@ -72,4 +72,26 @@
   add("sehen", [["sieh", "imperative (du)", "impératif (du)"]]);
   add("essen", [["iss", "imperative (du)", "impératif (du)"]]);
   add("sein:v", [["sei", "imperative (du)", "impératif (du)"], ["seien", "imperative (Sie)", "impératif (Sie)"]]);
+  /* prétérit des verbes irréguliers (récits, contes) */
+  prat("gehen", "ging gingst ging gingen gingt gingen");
+  prat("kommen", "kam kamst kam kamen kamt kamen");
+  prat("sehen", "sah sahst sah sahen saht sahen");
+  prat("finden", "fand fandest fand fanden fandet fanden");
+  prat("geben", "gab gabst gab gaben gabt gaben");
+  prat("nehmen", "nahm nahmst nahm nahmen nahmt nahmen");
+  prat("sprechen", "sprach sprachst sprach sprachen spracht sprachen");
+  prat("rufen", "rief riefst rief riefen rieft riefen");
+  prat("laufen", "lief liefst lief liefen lieft liefen");
+  prat("schlafen", "schlief schliefst schlief schliefen schlieft schliefen");
+  prat("essen", "aß aßest aß aßen aßt aßen");
+  prat("bleiben", "blieb bliebst blieb blieben bliebt blieben");
+  prat("reiten", "ritt rittst ritt ritten rittet ritten");
+  prat("vergessen", "vergaß vergaßest vergaß vergaßen vergaßt vergaßen");
+  prat("schreiben", "schrieb schriebst schrieb schrieben schriebt schrieben");
+  prat("beginnen", "begann begannst begann begannen begannt begannen");
+  prat("erscheinen", "erschien erschienst erschien erschienen erschient erschienen");
+  pp("sterben", "gestorben");
+  pres("lassen", "lasse lässt lässt lassen lasst lassen");
+  pres("stoßen", "stoße stößt stößt stoßen stoßt stoßen");
+  add("dunkel", [["dunkle", "dark (dunkel + -e)", "sombre (dunkel + -e)"], ["dunklen", "dark (dunkel + -en)", "sombre (dunkel + -en)"], ["dunkler", "dark (dunkel + -er); darker", "sombre (dunkel + -er) ; plus sombre"], ["dunkles", "dark (dunkel + -es)", "sombre (dunkel + -es)"], ["dunklem", "dark (dunkel + -em)", "sombre (dunkel + -em)"]]);
 })();
