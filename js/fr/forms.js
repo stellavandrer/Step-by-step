@@ -208,4 +208,5 @@
   add("suivre", [["suivait", "imperfect"], ["suivaient", "imperfect"]]);
   add("alléguer", [["allègue", "il / elle allègue"], ["allèguent", "ils / elles allèguent"]]);
   fut("appuyer", "appuier");
+  add("apparaître", [["apparue", "past participle (f)"], ["apparu", "past participle"]]); add("applaudir", [["applaudissent", "ils / elles applaudissent"]]); add("connaître", [["connaissons", "nous connaissons"]]); fut("tarder", "tarder");
 })();
