@@ -206,4 +206,6 @@
   ps("déchirer", "déchira"); ps("hausser", "haussa"); ps("reconnaître", "reconnut"); ps("relire", "relut"); ps("surprendre", "surprit"); ps("brûler", "brûla"); ps("avaler", "avala"); ps("reposer", "reposa"); ps("devoir", "dut");
   add("effrayer", [["effraie", "il / elle effraie"]]); add("faire", [["faisant", "present participle"]]); add("naître", [["naissait", "imperfect"]]); add("percevoir", [["percevant", "present participle"]]); add("recourir", [["recourt", "il / elle recourt"], ["recouru", "past participle"]]); subj("reprendre", "reprenne reprennent"); add("réunir", [["réunissaient", "imperfect"]]); subj("asseoir", "assoie asseye"); add("luire", [["luisaient", "imperfect"], ["luit", "il / elle luit"]]);
   add("suivre", [["suivait", "imperfect"], ["suivaient", "imperfect"]]);
+  add("alléguer", [["allègue", "il / elle allègue"], ["allèguent", "ils / elles allèguent"]]);
+  fut("appuyer", "appuier");
 })();
