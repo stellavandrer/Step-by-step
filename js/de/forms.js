@@ -133,4 +133,9 @@
   prat("finden", "fand fandest fand fanden fandet fanden");
   pp("ziehen", "gezogen"); pp("bestehen", "bestanden"); pp("erschrecken", "erschrocken"); pp("verbrennen", "verbrannt"); pp("geschehen", "geschehen"); pp("riechen", "gerochen");
   add("geben", [["gibt's", "es gibt (there is)", "es gibt (il y a)"]]);
+  /* B1-2 */
+  pp("steigen", "gestiegen"); pp("unterschreiben", "unterschrieben"); pp("überweisen", "überwiesen"); pp("wohlfühlen", "wohlgefühlt"); pp("verlassen", "verlassen");
+  pres("raten", "rate rätst rät raten ratet raten");
+  pres("verlassen", "verlasse verlässt verlässt verlassen verlasst verlassen");
+  prat("steigen", "stieg stiegst stieg stiegen stiegt stiegen");
 })();
