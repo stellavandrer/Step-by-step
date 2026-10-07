@@ -403,7 +403,7 @@ function buildDict() {
       const tr = parts.length === fparts.length ? fparts[i] : f;
       if (GERMAN_COURSE) {
         /* "der Hund, -e", "die Stadt, ¨-e", "sich freuen": the word alone too. */
-        const k = p.replace(/,\s*(¨-?\S*|-\S*)\s*$/, "").replace(/\((m|f|n|pl|sg)\)/gi, "").replace(/[?!.…]/g, "").trim();
+        const k = p.replace(/,\s*(¨-?\S*|-\S*|[A-ZÄÖÜ][a-zäöüß]+)\s*$/, "").replace(/\((m|f|n|pl|sg)\)/gi, "").replace(/[?!.…]/g, "").trim();
         add(k, tr); add(k.replace(/^(?:der|die|das|ein|eine|sich)\s+/i, ""), tr);
         return;
       }
@@ -2417,7 +2417,7 @@ const normAns = (s) => fold(s.toLowerCase()).replace(/[’`]/g, "'").replace(/\(
 function variants(en) {
   const out = new Set();
   /* German nouns are written with their plural (der Hund, -e; die Mutter, ¨; die Eltern (pl)): the answer is the noun alone. */
-  en.split(" / ").forEach((v) => { const n = normAns(GERMAN_COURSE ? v.replace(/,\s*(¨-?\S*|-\S*)\s*$/, "").replace(/\((pl|sg)\)/gi, "") : v); out.add(n); out.add(n.replace(/^to /, "")); });
+  en.split(" / ").forEach((v) => { const n = normAns(GERMAN_COURSE ? v.replace(/,\s*(¨-?\S*|-\S*|[A-ZÄÖÜ][a-zäöüß]+)\s*$/, "").replace(/\((pl|sg)\)/gi, "") : v); out.add(n); out.add(n.replace(/^to /, "")); });
   return out;
 }
 function lev(a, b) {

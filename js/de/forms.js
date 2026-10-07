@@ -37,4 +37,12 @@
   pres("geben", "gebe gibst gibt geben gebt geben");
   pres("schlafen", "schlafe schläfst schläft schlafen schlaft schlafen");
   pres("tragen", "trage trägst trägt tragen tragt tragen");
+  /* impératifs irréguliers (du) */
+  add("nehmen", [["nimm", "imperative (du)", "impératif (du)"]]);
+  add("sprechen", [["sprich", "imperative (du)", "impératif (du)"]]);
+  add("geben", [["gib", "imperative (du)", "impératif (du)"]]);
+  add("lesen", [["lies", "imperative (du)", "impératif (du)"]]);
+  add("sehen", [["sieh", "imperative (du)", "impératif (du)"]]);
+  add("essen", [["iss", "imperative (du)", "impératif (du)"]]);
+  add("sein:v", [["sei", "imperative (du)", "impératif (du)"], ["seien", "imperative (Sie)", "impératif (Sie)"]]);
 })();
