@@ -393,6 +393,7 @@ const fr = (french) => {
 const WORD_RE = /([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'’-]*[A-Za-zÀ-ÖØ-öø-ÿ]|[A-Za-zÀ-ÖØ-öø-ÿ])/;
 let DICT = new Map();
 const IRR_FORMS = {};
+const DE_CASE = new Map();
 function buildDict() {
   DICT = new Map();
   const add = (k, v) => { k = String(k).toLowerCase().replace(/’/g, "'").trim(); if (k && v && !DICT.has(k)) DICT.set(k, v); };
@@ -404,7 +405,10 @@ function buildDict() {
       if (GERMAN_COURSE) {
         /* "der Hund, -e", "die Stadt, ¨-e", "sich freuen": the word alone too. */
         const k = p.replace(/,\s*(¨-?\S*|-\S*|[A-ZÄÖÜ][a-zäöüß]+)\s*$/, "").replace(/\((m|f|n|pl|sg)\)/gi, "").replace(/[?!.…]/g, "").trim();
-        add(k, tr); add(k.replace(/^(?:der|die|das|ein|eine|sich)\s+/i, ""), tr);
+        const bare = k.replace(/^(?:der|die|das|ein|eine|sich)\s+/i, "");
+        add(k, tr); add(bare, tr);
+        /* Nouns keep their capital letter in the popover ("from Baum", not "from baum"). */
+        if (/^[A-ZÄÖÜ]/.test(bare) && !DE_CASE.has(bare.toLowerCase())) DE_CASE.set(bare.toLowerCase(), bare);
         return;
       }
       if (FRENCH_COURSE) {
@@ -477,19 +481,41 @@ function lookupFr(w) {
   if (w.includes("-")) { const bits = w.split("-").map((b) => lookupFr(b)).filter(Boolean); if (bits.length) return { base: w, fr: bits.map((b) => b.fr).join(" + ") }; }
   return null;
 }
-/* A German number written in one word, up to 999 (only compounds: zehn or hundert alone are in the dictionary). */
+/* A German number written in one word, up to 19 999 (vierunddreißig, fünfhundertzwanzig, neunzehnhundertachtundneunzig,
+   zweitausendfünfundzwanzig). Only compounds: zehn, zwanzig, hundert or tausend alone are in the dictionary. */
 function deNumValue(x) {
-  const unit = (u) => (u === "ein" ? 1 : DE_UNITS.indexOf(u));
-  let h = 0, r = x;
-  const hm = x.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)?hundert(.*)$/);
-  if (hm) { h = (hm[1] ? unit(hm[1]) : 1) * 100; r = hm[2]; if (!r) return hm[1] ? h : null; }
-  const m = r.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)und(zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig)$/);
-  if (m) return h + DE_TENS.indexOf(m[2]) * 10 + unit(m[1]);
-  if (!hm) return null;
-  if (r === "eins") return h + 1;
-  if (DE_UNITS.indexOf(r) > 0) return h + DE_UNITS.indexOf(r);
-  if (DE_TENS.indexOf(r) > 1) return h + DE_TENS.indexOf(r) * 10;
-  return null;
+  const small = (s) => (s === "ein" ? 1 : DE_UNITS.indexOf(s));
+  const upTo99 = (r) => {
+    if (!r) return 0;
+    if (r === "eins") return 1;
+    if (DE_UNITS.indexOf(r) > 0) return DE_UNITS.indexOf(r);
+    if (DE_TENS.indexOf(r) > 1) return DE_TENS.indexOf(r) * 10;
+    const m = r.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)und(zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig)$/);
+    return m ? DE_TENS.indexOf(m[2]) * 10 + small(m[1]) : null;
+  };
+  let total = 0, r = x, compound = false;
+  for (const [word, mult] of [["tausend", 1000], ["hundert", 100]]) {
+    const m = r.match(new RegExp("^(.*?)" + word + "(.*)$"));
+    if (!m) continue;
+    const k = m[1] ? small(m[1]) : 1;
+    if (k < 1) return null;
+    total += k * mult; r = m[2]; compound = true;
+  }
+  const rest = upTo99(r);
+  if (rest == null || x === "hundert" || x === "tausend" || (!compound && !x.includes("und"))) return null;
+  return total + rest;
+}
+/* An ordinal in one word (erste, dritten, zwölften, einunddreißigste) → 1st, 3rd, 12th, 31st (1er, 3e… in French). */
+function deOrdinal(w) {
+  const stem = w.replace(/(en|em|er|es|e)$/, "");
+  if (stem === w) return null;
+  let n = { erst: 1, dritt: 3, siebt: 7, acht: 8 }[stem];
+  if (n == null && /t$/.test(stem)) { const i = DE_UNITS.indexOf(stem.slice(0, -1)); if (i >= 2) n = i; }
+  if (n == null && /st$/.test(stem)) { const b = stem.slice(0, -2); n = deNumValue(b) ?? (DE_TENS.indexOf(b) > 1 ? DE_TENS.indexOf(b) * 10 : null); }
+  if (n == null) return null;
+  if (isFr()) return n === 1 ? "1er" : n + "e";
+  const t = n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th";
+  return n + t;
 }
 /* German: irregular forms (bin → sein, ging → gehen) from DE_FORMS, then plurals, adjective endings, verb endings,
    past participles (gemacht → machen) and the umlaut of plurals (Häuser → Haus). */
@@ -505,6 +531,8 @@ function lookupDe(w) {
   /* numbers in one word: vierunddreißig → 34, fünfhundertzwanzig → 520 */
   const nv = deNumValue(w);
   if (nv != null) return { base: w, fr: String(nv) };
+  const ord = deOrdinal(w);
+  if (ord) return { base: w, fr: ord };
   /* plurals with an umlaut only: Brüder, Mütter, Väter; the du imperative is the bare stem: komm, erzähl, stell */
   push(unUml(w)); push(w + "en"); push(w + "n");
   /* every possible ending, longest first: nouns (Kinder, Häuser, Minuten, Autos, Ärztin, Lehrerinnen),
@@ -636,7 +664,7 @@ function showPop(w) {
   speak(word);
   pop = document.createElement("div");
   pop.className = "popover";
-  pop.innerHTML = `<b>${esc(word)}</b>${res ? `<span>${esc(res.fr)}</span>${res.base !== word.toLowerCase() ? `<span class="small" style="opacity:.7;display:block">${T("from “{w}”", { w: esc(res.base) })}</span>` : ""}` : `<span style="opacity:.75">${T("No translation yet for this word.")}</span>`}
+  pop.innerHTML = `<b>${esc(word)}</b>${res ? `<span>${esc(res.fr)}</span>${res.base !== word.toLowerCase() ? `<span class="small" style="opacity:.7;display:block">${T("from “{w}”", { w: esc(DE_CASE.get(res.base) || res.base) })}</span>` : ""}` : `<span style="opacity:.75">${T("No translation yet for this word.")}</span>`}
     ${sentenceEl ? `<div class="pop-sentence" hidden>${esc(sentenceEl.dataset.fr)}</div>` : ""}
     <div class="row">
       <button class="btn btn-sm" data-say="${esc(word)}" aria-label="${T("Listen")}">${ic("volume-2")}</button>

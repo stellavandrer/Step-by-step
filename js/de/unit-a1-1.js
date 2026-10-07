@@ -148,7 +148,7 @@
 <tr><td>Et toi ? / Et vous ? (après « ça va ? »)</td><td><s-de>Und dir?</s-de></td><td><s-de>Und Ihnen?</s-de></td></tr>
 </table>
 <h2>Répondre et dire qui on est</h2>
-<p><s-de>Gut, danke.</s-de> · <s-de>Sehr gut!</s-de> · <s-de>Es geht.</s-de> (couci-couça) · <s-de>Nicht so gut.</s-de> · <s-de>Ich heiße Lena.</s-de> (je m'appelle Lena) · <s-de>Ich bin Lena.</s-de> (je suis Lena) · <s-de>Mein Name ist Lena Hoffmann.</s-de> · <s-de>Freut mich!</s-de> (enchanté, ça me fait plaisir)</p>
+<p><s-de>Gut, danke.</s-de> · <s-de>Sehr gut!</s-de> · <s-de>Es geht.</s-de> (couci-couça) · <s-de>Nicht so gut.</s-de> · <s-de>Ich heiße Lena.</s-de> (je m'appelle Lena) · <s-de>Ich bin Lena.</s-de> (je suis Lena) · <s-de>Mein Name ist Lena Hoffmann.</s-de> · <s-de>Freut mich!</s-de> (ça me fait plaisir de faire ta connaissance)</p>
 <div class="tip">En allemand, tous les noms prennent une majuscule : <s-de>der Tag</s-de>, <s-de>die Stadt</s-de>, <s-de>das Jahr</s-de>. C'est une aide précieuse à la lecture : tu repères les noms d'un coup d'œil.</div>
 `,
     examples: [

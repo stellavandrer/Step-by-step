@@ -39,6 +39,15 @@
   pres("tragen", "trage trägst trägt tragen tragt tragen");
   add("haben", [["hätte", "would have (ich hätte gern: I'd like)", "aurais (ich hätte gern : je voudrais)"], ["hättest", "would have (du)", "aurais (du)"]]);
   add("empfehlen", [["empfiehlt", "er / sie / es empfiehlt"], ["empfiehlst", "du empfiehlst"]]);
+  /* participes irréguliers */
+  [["essen", "gegessen"], ["trinken", "getrunken"], ["schreiben", "geschrieben"], ["treffen", "getroffen"], ["gehen", "gegangen"], ["bleiben", "geblieben"],
+   ["helfen", "geholfen"], ["schwimmen", "geschwommen"], ["fliegen", "geflogen"], ["verstehen", "verstanden"], ["gewinnen", "gewonnen"], ["finden", "gefunden"],
+   ["aufstehen", "aufgestanden"], ["ausgehen", "ausgegangen"], ["umziehen", "umgezogen"], ["stehen", "gestanden"], ["singen", "gesungen"], ["nehmen", "genommen"],
+   ["sprechen", "gesprochen"], ["bringen", "gebracht"], ["denken", "gedacht"], ["wissen", "gewusst"], ["kennen", "gekannt"], ["beginnen", "begonnen"],
+   ["anfangen", "angefangen"], ["anrufen", "angerufen"], ["einladen", "eingeladen"], ["mitbringen", "mitgebracht"], ["werden", "geworden"]].forEach(([b, f]) => pp(b, f));
+  pres("sollen", "soll sollst soll sollen sollt sollen");
+  add("sein:v", [["wäre", "would be", "serait"], ["wären", "would be", "serions, seraient"]]);
+  add("werden", [["würde", "would", "-rais (conditionnel)"], ["würdest", "would (du)", "-rais (conditionnel, du)"]]);
   /* impératifs irréguliers (du) */
   add("nehmen", [["nimm", "imperative (du)", "impératif (du)"]]);
   add("sprechen", [["sprich", "imperative (du)", "impératif (du)"]]);
