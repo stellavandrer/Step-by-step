@@ -540,7 +540,8 @@ function lookupDe(w) {
   const strip = (sufs, fn) => sufs.forEach((suf) => { if (w.endsWith(suf) && w.length > suf.length + 1) fn(w.slice(0, -suf.length)); });
   push(w.replace(/innen$/, "in"));
   strip(["innen", "nen", "ern", "en", "er", "es", "in", "e", "n", "s"], (m) => { push(m); push(unUml(m)); });
-  strip(["sten", "ster", "stes", "ste", "eren", "erer", "eres", "ere", "em", "en", "er", "es", "e"], (m) => { push(m); push(unUml(m)); });
+  /* adjectives, comparatives and superlatives: kleinen, wärmer, wärmeren, größte, ältesten */
+  strip(["esten", "ester", "estes", "este", "sten", "ster", "stes", "ste", "eren", "erer", "eres", "ere", "em", "en", "er", "es", "ten", "te", "e"], (m) => { push(m); push(unUml(m)); });
   strip(["teten", "test", "tet", "ten", "te", "est", "et", "st", "t", "e", "en", "n"], (m) => { push(m + "en"); push(m + "n"); push(unUml(m) + "en"); });
   const pp = w.match(/^(.*?)ge(.+?)(e?t)$/);
   if (pp) { push(pp[1] + pp[2] + "en"); push(pp[1] + pp[2] + "n"); }
@@ -553,7 +554,7 @@ function lookupDe(w) {
 /* English words that are also French forms: in the English interface of the French course, they stay plain text. */
 const EN_STOP = new Set("a an the on in is it as at to of for by or and but if me he she we you they us our your his her its my no not so do up be are was were has have had will can may all one two six an son pour".split(" "));
 /* German course: interface words that are also German words stay plain text outside the German itself. */
-const DE_STOP_EN = new Set("a an in so was will also man hat die bin bald war rot fast gift kind rat see hold bad arm hand last mist list art boot tag hut rock wink wand des best stand fall wind".split(" "));
+const DE_STOP_EN = new Set("a an in so was will also man hat die bin bald war rot fast gift kind rat see hold bad arm hand last mist list art boot tag hut rock wink wand des best stand fall wind warm".split(" "));
 const DE_STOP_FR = new Set("des du es an en mit die la le sein man rose mode station film pause tour plus mais total sage elf".split(" "));
 buildDict();
 function lookup(raw, gloss) {
