@@ -545,6 +545,12 @@ function lookupDe(w) {
   const f = forms[w];
   /* "sein:v" points to the verb sein (to be), not the possessive sein (his): the part after ":" only picks the entry. */
   if (f) { const base = f[0].split(":")[0]; return { base, fr: (DICT.get(f[0]) || DICT.get(base) || "") + (f[1] ? ` (${f[1]})` : "") }; }
+  /* a separable verb in a subordinate clause or in the participle: ankam → ankommen, aufgeschrieben → aufschreiben */
+  const sep = /^(zurück|zusammen|weiter|vorbei|heraus|herein|hinaus|ab|an|auf|aus|ein|mit|nach|vor|zu|weg|los|fest|her|hin|um)(.{3,})$/.exec(w);
+  if (sep && forms[sep[2]]) {
+    const g = forms[sep[2]], base = sep[1] + g[0].split(":")[0];
+    if (DICT.has(base)) return { base, fr: DICT.get(base) + (g[1] ? ` (${g[1]})` : "") };
+  }
   const cands = [];
   const push = (x) => { if (x && x.length > 1 && !cands.includes(x)) cands.push(x); };
   const unUml = (x) => x.replace(/ä(?=[^äöü]*$)/, "a").replace(/ö(?=[^äöü]*$)/, "o").replace(/ü(?=[^äöü]*$)/, "u").replace(/äu/, "au");

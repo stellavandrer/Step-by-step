@@ -11,7 +11,7 @@
   const W = window;
 
   W.VOCAB.push(
-  { id: "medienDE", icon: "messages-square", title: "Media and phones", title_fr: "Les médias et le portable", level: "A2", words: [
+  { id: "medienDE", icon: "smartphone", title: "Media and phones", title_fr: "Les médias et le portable", level: "A2", words: [
     ["das Ladegerät, -e", "the charger", "le chargeur", "Hast du ein Ladegerät für mein Handy?"],
     ["aufladen", "to charge (a battery)", "recharger", "Kann ich hier mein Handy aufladen?"],
     ["der Akku, -s", "the (rechargeable) battery", "la batterie", "Mein Akku ist fast leer."],
@@ -30,7 +30,7 @@
     ["die Werbung", "advertising, adverts", "la publicité", "Die Werbung im Fernsehen nervt mich."],
     ["benutzen", "to use", "utiliser", "Wie lange benutzt du dein Handy am Tag?"]
   ] },
-  { id: "telefonDE", icon: "message-circle", title: "On the phone", title_fr: "Au téléphone", level: "A2", words: [
+  { id: "telefonDE", icon: "phone-call", title: "On the phone", title_fr: "Au téléphone", level: "A2", words: [
     ["zurückrufen", "to call back", "rappeler", "Können Sie mich bitte zurückrufen?"],
     ["… am Apparat.", "… speaking (on the phone)", "… à l'appareil", "Lehmann am Apparat."],
     ["Wer spricht da, bitte?", "who's speaking, please?", "qui est à l'appareil, s'il vous plaît ?", "Hallo? Wer spricht da, bitte?"],
@@ -47,7 +47,7 @@
     ["die Durchwahl, -en", "the direct line, the extension", "la ligne directe, le poste", "Meine Durchwahl ist die 214."],
     ["Auf Wiederhören!", "goodbye (on the phone)", "au revoir (au téléphone)", "Vielen Dank, auf Wiederhören!"]
   ] },
-  { id: "hoeflichDE", icon: "message-circle", title: "Asking politely", title_fr: "Demander poliment", level: "A2", words: [
+  { id: "hoeflichDE", icon: "handshake", title: "Asking politely", title_fr: "Demander poliment", level: "A2", words: [
     ["Könnten Sie …?", "could you …?", "pourriez-vous … ?", "Könnten Sie mir bitte helfen?"],
     ["Würden Sie …?", "would you …?", "voudriez-vous … ?", "Würden Sie bitte das Fenster schließen?"],
     ["Hätten Sie …?", "would you have …?", "auriez-vous … ?", "Hätten Sie kurz Zeit?"],
@@ -167,7 +167,7 @@
     ]
   },
   {
-    id: 39, level: "A2", kind: "functional", icon: "messages-square",
+    id: 39, level: "A2", kind: "functional", icon: "phone-call",
     title: "Everyday German: on the phone and formal emails", title_fr: "L'allemand de tous les jours : au téléphone et par e-mail",
     subtitle: "Answer and make a call, leave a message, spell your name, and write a formal email.", subtitle_fr: "Répondre et appeler, laisser un message, épeler ton nom, et écrire un e-mail formel.",
     body: `
@@ -229,7 +229,7 @@
   });
 
   W.ROLEPLAYS.push(
-  { id: "internetservice", lesson: 39, level: "A2", icon: "message-circle", partner: "Herr Vogel", role: "an employee at your internet provider's customer service", role_fr: "un employé du service client de ton fournisseur d'accès",
+  { id: "internetservice", lesson: 39, level: "A2", icon: "phone-call", partner: "Herr Vogel", role: "an employee at your internet provider's customer service", role_fr: "un employé du service client de ton fournisseur d'accès",
     title: "Calling customer service", title_fr: "Appeler le service client",
     setting: "Your internet hasn't worked since yesterday. You call the customer service of your provider.", setting_fr: "Ton Internet ne marche plus depuis hier. Tu appelles le service client de ton fournisseur.",
     turns: [
@@ -246,7 +246,7 @@
       { p: "Selbstverständlich. Vielen Dank für Ihren Anruf!", en: "Of course. Thank you for your call!", fr: "Bien sûr. Merci pour votre appel !" },
       { y: ["Ich danke Ihnen. Auf Wiederhören!", "Ich danke Ihnen. Auf Wiedersehen am Telefon!", "Ich danke Sie. Auf Wiederhören!"], en: "Thank you. Goodbye!", fr: "Merci à vous. Au revoir !", why: "danken + dative: Ihnen; on the phone: Auf Wiederhören.", why_fr: "danken + datif : Ihnen ; au téléphone : Auf Wiederhören." }
     ] },
-  { id: "handyzeit", lesson: 38, level: "A2", icon: "messages-square", partner: "Mats", role: "a friend", role_fr: "un ami",
+  { id: "handyzeit", lesson: 38, level: "A2", icon: "smartphone", partner: "Mats", role: "a friend", role_fr: "un ami",
     title: "Too much screen time", title_fr: "Trop d'écran",
     setting: "Your friend Mats looks very tired. You talk about it and give him some advice.", setting_fr: "Ton ami Mats a l'air très fatigué. Vous en parlez et tu lui donnes quelques conseils.",
     turns: [
@@ -305,7 +305,7 @@
     plan: [["A subject line and a formal greeting.", "L'objet et la formule d'appel."], ["Why you're writing.", "Pourquoi tu écris."], ["Two polite questions with könnten or wäre.", "Deux questions polies avec könnten ou wäre."], ["Thank them in advance.", "Remercie d'avance."], ["The formal closing and your name.", "La formule de politesse et ton nom."]],
     marks: [["Sehr geehrte Damen und Herren,", "the formal greeting", "la formule d'appel formelle"], ["ich interessiere mich für", "a lower-case letter after the comma", "une minuscule après la virgule"], ["Könnten Sie mir bitte sagen", "a polite request (Konjunktiv II)", "une demande polie (Konjunktiv II)"], ["Wäre es auch möglich", "wäre: would it be", "wäre : serait-il"], ["einen Einstufungstest zu machen", "zu + infinitive", "zu + infinitif"], ["Vielen Dank im Voraus!", "thanks in advance", "merci d'avance"], ["Mit freundlichen Grüßen", "the formal closing, with no comma", "la formule finale, sans virgule"]] };
 
-  W.COURSE.push({ id: "a2-6", level: "A2", icon: "messages-square", title: "Media and communication", title_fr: "Médias et communication",
+  W.COURSE.push({ id: "a2-6", level: "A2", icon: "smartphone", title: "Media and communication", title_fr: "Médias et communication",
     intro: "In this unit, you'll learn to communicate politely: the Konjunktiv II for requests, wishes and advice (Könnten Sie…? Ich würde gern… Du solltest…), the infinitive with zu (Hast du Lust, … zu …?), and the phrases you need on the phone and in a formal email.",
     intro_fr: "Dans cette unité, tu vas apprendre à communiquer poliment : le Konjunktiv II pour les demandes, les souhaits et les conseils (Könnten Sie… ? Ich würde gern… Du solltest…), l'infinitif avec zu (Hast du Lust, … zu … ?), et les expressions qu'il te faut au téléphone et dans un e-mail formel.",
     can: ["Make polite requests and give advice with könnte, hätte, wäre, würde and sollte", "Use the infinitive with zu after verbs like versuchen, vergessen and Lust haben", "Make and answer a phone call, and leave a message", "Write a short formal email"],

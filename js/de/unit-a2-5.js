@@ -10,7 +10,7 @@
   const W = window;
 
   W.VOCAB.push(
-  { id: "festeDE", icon: "sparkles", title: "Celebrations", title_fr: "Les fêtes", level: "A2", words: [
+  { id: "festeDE", icon: "party-popper", title: "Celebrations", title_fr: "Les fêtes", level: "A2", words: [
     ["Weihnachten", "Christmas", "Noël", "Weihnachten feiern wir bei meinen Eltern."],
     ["der Heiligabend", "Christmas Eve", "le réveillon de Noël, le 24 décembre", "An Heiligabend gibt es die Geschenke."],
     ["Silvester", "New Year's Eve", "la Saint-Sylvestre", "An Silvester gibt es um Mitternacht ein Feuerwerk."],
@@ -182,7 +182,7 @@
     ]
   },
   {
-    id: 36, level: "A2", kind: "functional", icon: "sparkles",
+    id: 36, level: "A2", kind: "functional", icon: "party-popper",
     title: "Everyday German: celebrations and good wishes", title_fr: "L'allemand de tous les jours : les fêtes et les vœux",
     subtitle: "Christmas, New Year's Eve, Easter, birthdays: what Germans do, and what to say.", subtitle_fr: "Noël, la Saint-Sylvestre, Pâques, les anniversaires : ce que font les Allemands, et ce qu'il faut dire.",
     body: `
@@ -312,7 +312,7 @@
     plan: [["Thank your hosts warmly.", "Remercie chaleureusement tes hôtes."], ["What you liked about the evening.", "Ce qui t'a plu pendant la soirée."], ["Something you learnt about a tradition.", "Quelque chose que tu as appris sur une tradition."], ["A question with ob or a question word.", "Une question avec ob ou un mot interrogatif."], ["Good wishes and goodbye.", "Des vœux et au revoir."]],
     marks: [["Herzlichen Dank für den schönen Abend!", "warm thanks", "des remerciements chaleureux"], ["Das Essen war wunderbar", "war: the past of sein", "war : le passé de sein"], ["Ich wusste nicht, dass", "a new tradition", "une nouvelle tradition"], ["Könnt ihr mir sagen, wie man", "an indirect question", "une question indirecte"], ["guten Rutsch", "New Year wishes", "les vœux de Nouvel An"], ["Liebe Grüße", "a warm ending", "une fin chaleureuse"]] };
 
-  W.COURSE.push({ id: "a2-5", level: "A2", icon: "sparkles", title: "Celebrations and fairy tales", title_fr: "Fêtes et contes",
+  W.COURSE.push({ id: "a2-5", level: "A2", icon: "party-popper", title: "Celebrations and fairy tales", title_fr: "Fêtes et contes",
     intro: "In this unit, you'll discover German celebrations and fairy tales: indirect questions with ob and question words (Weißt du, wann…?), the Präteritum of written stories (Es war einmal… ging, kam, sah), and the traditions and good wishes of the year, from Advent to New Year's Eve.",
     intro_fr: "Dans cette unité, tu vas découvrir les fêtes et les contes allemands : les questions indirectes avec ob et les mots interrogatifs (Weißt du, wann… ?), le prétérit des récits écrits (Es war einmal… ging, kam, sah), et les traditions et les vœux de l'année, de l'Avent à la Saint-Sylvestre.",
     can: ["Ask polite indirect questions with ob and question words", "Recognise and use the Präteritum in stories", "Talk about German celebrations and traditions", "Give good wishes and thank people for a celebration"],

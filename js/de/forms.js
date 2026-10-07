@@ -112,4 +112,25 @@
   add("werfen", [["wirf", "imperative (du)", "impératif (du)"]]);
   /* sollte : le conseil (Konjunktiv II), qui a la même forme que le prétérit */
   "sollte solltest sollte sollten solltet sollten".split(" ").forEach((f, i) => put(f, ["sollen", `${P[i]} ${f} (should; also the simple past)`, `${P[i]} ${f} (devrait ; aussi le prétérit)`]));
+  /* B1-1 : prétérit des verbes irréguliers et mixtes */
+  prat("fahren", "fuhr fuhrst fuhr fuhren fuhrt fuhren");
+  prat("fliegen", "flog flogst flog flogen flogt flogen");
+  prat("lesen", "las last las lasen last lasen");
+  prat("liegen", "lag lagst lag lagen lagt lagen");
+  prat("sitzen", "saß saßt saß saßen saßt saßen");
+  prat("stehen", "stand standst stand standen standet standen");
+  prat("treffen", "traf trafst traf trafen traft trafen");
+  prat("trinken", "trank trankst trank tranken trankt tranken");
+  prat("ziehen", "zog zogst zog zogen zogt zogen");
+  prat("fallen", "fiel fielst fiel fielen fielt fielen");
+  prat("heißen", "hieß hießt hieß hießen hießt hießen");
+  prat("geschehen", "geschah geschahst geschah geschahen geschaht geschahen");
+  prat("riechen", "roch rochst roch rochen rocht rochen");
+  prat("kennen", "kannte kanntest kannte kannten kanntet kannten");
+  prat("denken", "dachte dachtest dachte dachten dachtet dachten");
+  prat("bringen", "brachte brachtest brachte brachten brachtet brachten");
+  prat("schreiben", "schrieb schriebst schrieb schrieben schriebt schrieben");
+  prat("finden", "fand fandest fand fanden fandet fanden");
+  pp("ziehen", "gezogen"); pp("bestehen", "bestanden"); pp("erschrecken", "erschrocken"); pp("verbrennen", "verbrannt"); pp("geschehen", "geschehen"); pp("riechen", "gerochen");
+  add("geben", [["gibt's", "es gibt (there is)", "es gibt (il y a)"]]);
 })();

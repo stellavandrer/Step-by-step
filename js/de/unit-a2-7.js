@@ -12,7 +12,7 @@
   const W = window;
 
   W.VOCAB.push(
-  { id: "wetterDE", icon: "sparkles", title: "The weather", title_fr: "La météo", level: "A2", words: [
+  { id: "wetterDE", icon: "cloud-sun", title: "The weather", title_fr: "La météo", level: "A2", words: [
     ["der Wetterbericht, -e", "the weather forecast", "la météo, le bulletin météo", "Laut Wetterbericht wird es morgen schön."],
     ["Wie wird das Wetter morgen?", "what will the weather be like tomorrow?", "quel temps fera-t-il demain ?", "Wie wird das Wetter morgen? — Sonnig!"],
     ["der Regen", "the rain", "la pluie", "Nach dem Regen kommt die Sonne."],
@@ -31,7 +31,7 @@
     ["… Grad", "… degrees", "… degrés", "Morgen werden es fünfundzwanzig Grad."],
     ["die Temperatur, -en", "the temperature", "la température", "Die Temperaturen liegen bei zehn Grad."]
   ] },
-  { id: "umweltDE", icon: "sparkles", title: "The environment", title_fr: "L'environnement", level: "A2", words: [
+  { id: "umweltDE", icon: "leaf", title: "The environment", title_fr: "L'environnement", level: "A2", words: [
     ["die Umwelt", "the environment", "l'environnement", "Was tust du für die Umwelt?"],
     ["die Natur", "nature", "la nature", "Am Wochenende sind wir gern in der Natur."],
     ["der Müll", "rubbish, waste", "les déchets, les ordures", "Bring bitte den Müll runter!"],
@@ -49,7 +49,7 @@
     ["das Klima", "the climate", "le climat", "Das Klima verändert sich."],
     ["schützen", "to protect", "protéger", "Wir müssen die Natur schützen."]
   ] },
-  { id: "zukunftDE", icon: "target", title: "The future", title_fr: "L'avenir", level: "A2", words: [
+  { id: "zukunftDE", icon: "sprout", title: "The future", title_fr: "L'avenir", level: "A2", words: [
     ["die Zukunft", "the future", "l'avenir, le futur", "Wie stellst du dir die Zukunft vor?"],
     ["sich vorstellen", "to imagine", "s'imaginer", "Ich kann mir ein Leben ohne Handy nicht vorstellen."],
     ["wahrscheinlich", "probably", "probablement", "Morgen regnet es wahrscheinlich."],
@@ -180,7 +180,7 @@
     ]
   },
   {
-    id: 42, level: "A2", kind: "functional", icon: "sparkles",
+    id: 42, level: "A2", kind: "functional", icon: "cloud-sun",
     title: "Everyday German: the weather and the environment", title_fr: "L'allemand de tous les jours : la météo et l'environnement",
     subtitle: "Talk about the weather, sort your rubbish like a German and get your bottle deposit back.", subtitle_fr: "Parler de la météo, trier tes déchets comme en Allemagne et récupérer la consigne de tes bouteilles.",
     body: `
@@ -238,7 +238,7 @@
   });
 
   W.ROLEPLAYS.push(
-  { id: "muelltrennung", lesson: 42, level: "A2", icon: "sparkles", partner: "Ole", role: "your new flatmate", role_fr: "ton nouveau colocataire",
+  { id: "muelltrennung", lesson: 42, level: "A2", icon: "leaf", partner: "Ole", role: "your new flatmate", role_fr: "ton nouveau colocataire",
     title: "Sorting the rubbish in the flat-share", title_fr: "Trier les déchets dans la colocation",
     setting: "You've just moved into a flat-share. Ole shows you how the rubbish is sorted.", setting_fr: "Tu viens d'emménager dans une colocation. Ole te montre comment on trie les déchets.",
     turns: [
@@ -310,7 +310,7 @@
     plan: [["A friendly greeting for the group.", "Une salutation amicale pour le groupe."], ["What you already do (present).", "Ce que tu fais déjà (présent)."], ["A thing or a habit, described with a relative clause.", "Une chose ou une habitude, décrite avec une relative."], ["What you will do (werden).", "Ce que tu feras (werden)."], ["A question for the others, and goodbye.", "Une question pour les autres, et au revoir."]],
     marks: [["Hallo zusammen,", "a friendly greeting for a group", "une salutation amicale pour un groupe"], ["ich trenne meinen Müll", "what you already do (present)", "ce que tu fais déjà (présent)"], ["Das Auto, das ich früher hatte,", "a relative clause, between commas", "une relative, entre virgules"], ["werde ich keine Flugreise machen", "the future with werden", "le futur avec werden"], ["Was macht ihr für die Umwelt?", "a question for the others", "une question pour les autres"], ["Viele Grüße", "a friendly ending", "une formule finale amicale"]] };
 
-  W.COURSE.push({ id: "a2-7", level: "A2", icon: "target", title: "Nature and the future", title_fr: "Nature et avenir",
+  W.COURSE.push({ id: "a2-7", level: "A2", icon: "leaf", title: "Nature and the future", title_fr: "Nature et avenir",
     intro: "In this last A2 unit, you'll talk about nature and the future: the future with werden (and the trap of ich will), relative clauses to describe people and things (der Mann, der… / den ich kenne), the weather, and how to sort your rubbish and get your bottle deposit back in Germany.",
     intro_fr: "Dans cette dernière unité du niveau A2, tu vas parler de la nature et de l'avenir : le futur avec werden (et le piège de ich will), les relatives pour décrire des personnes et des choses (der Mann, der… / den ich kenne), la météo, et comment trier tes déchets et récupérer la consigne de tes bouteilles en Allemagne.",
     can: ["Talk about the future, make predictions and promises with werden", "Describe people and things with relative clauses", "Talk about the weather and understand a forecast", "Sort rubbish and talk about the environment"],
