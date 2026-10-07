@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="course-de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schritt für Schritt — My German</title>
+<meta name="description" content="A German course from A1 to C2, for French and English speakers: units, lessons, vocabulary, reading, listening, speaking, writing and Goethe-Zertifikat preparation.">
+<meta name="theme-color" content="#1f2a44">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232f8f5b'/><text x='32' y='44' font-size='34' text-anchor='middle' font-family='Georgia' fill='white' font-weight='700'>De</text></svg>">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Schritt für Schritt">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#/">
+    <span class="brand-mark">De</span>
+    <span class="brand-name">Schritt für Schritt</span>
+  </a>
+  <nav class="nav" aria-label="Main navigation">
+    <a href="#/" data-nav="home" data-t="Home">Home</a>
+    <a href="#/cours" data-nav="cours" data-t="Course">Course</a>
+    <a href="#/vocabulaire" data-nav="vocabulaire" data-t="Words">Words</a>
+    <a href="#/lecture" data-nav="lecture" data-t="Reading">Reading</a>
+    <a href="#/oral" data-nav="oral" data-t="Speaking">Speaking</a>
+    <a href="#/plus" data-nav="plus" data-t="More">More</a>
+  </nav>
+  <a class="next-btn next-top" id="nextTop" hidden></a>
+  <div class="topbar-stats" id="topStats"></div>
+</header>
+<a class="next-btn next-fab" id="nextFab" hidden></a>
+
+<nav class="path-strip" id="pathStrip" hidden aria-label="Course"></nav>
+<main id="app" tabindex="-1"></main>
+<noscript><div class="card" style="margin:24px;padding:20px"><b>This site needs JavaScript.</b> In Tor Browser, choose the security level “Standard” (shield icon, then Settings) for this site. / <b>Ce site a besoin de JavaScript.</b> Dans Tor Browser, choisis le niveau de sécurité « Standard » (icône du bouclier, puis Paramètres).</div></noscript>
+
+<footer class="footer">
+  <a href="#/plus" data-t="All the tools">All the tools</a>
+  <a href="#/plus/settings" data-t="Settings">Settings</a>
+  <a href="#/methode" data-t="The method">The method</a>
+</footer>
+
+<nav class="tabbar" aria-label="Mobile navigation">
+  <a href="#/" data-nav="home" data-t="Home"><i data-lucide="house" class="ic"></i>Home</a>
+  <a href="#/cours" data-nav="cours" data-t="Course"><i data-lucide="graduation-cap" class="ic"></i>Course</a>
+  <a href="#/vocabulaire" data-nav="vocabulaire" data-t="Words"><i data-lucide="layers" class="ic"></i>Words</a>
+  <a href="#/lecture" data-nav="lecture" data-t="Reading"><i data-lucide="book-open-text" class="ic"></i>Reading</a>
+  <a href="#/oral" data-nav="oral" data-t="Speaking"><i data-lucide="mic" class="ic"></i>Speaking</a>
+  <a href="#/plus" data-nav="plus" data-t="More"><i data-lucide="layout-grid" class="ic"></i>More</a>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Icons: Lucide shapes (ISC licence), stored locally in js/icons.js: no external server needed -->
+<script src="js/icons.js"></script>
+<!-- The German course: the same engine (js/app.js), with its own settings and data, in English or in French -->
+<script src="js/de/config.js"></script>
+<script src="js/de/base.js"></script>
+<script src="js/de/levels.js"></script>
+<script src="js/data/cando.js"></script>
+<script src="js/de/forms.js"></script>
+<!-- Units: one file per unit, in course order -->
+<script src="js/de/unit-a1-1.js"></script>
+<script src="js/de/unit-a1-2.js"></script>
+<script src="js/de/dict.js"></script>
+<!-- Keeps the English or the French version of the content, according to the interface language -->
+<script src="js/de/localize.js"></script>
+<script src="js/i18n-fr.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

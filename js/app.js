@@ -18,23 +18,33 @@ const ic = (name, cls = "") => svgIcon(name, cls);
 
 /* ================= Which course this page is =================
    index.html is the English course (for French speakers); francais.html sets window.APP for the French course
-   (for English speakers). The engine is the same: only the target language, its voices, its dictionary and the
-   saved progress change. "target" is the language taught, "helper" the learner's own language. */
+   (for English speakers), allemand.html for the German course (for French or English speakers: the explanations and
+   translations follow the interface language, chosen by js/de/localize.js before the engine starts). The engine is
+   the same: only the target language, its voices, its dictionary and the saved progress change. "target" is the
+   language taught, "helper" the learner's own language. */
 const APP = Object.assign({
   id: "en", target: "en", helper: "fr", helperCode: "FR", key: "stepbystep.v1",
   voiceLang: "en-GB", srLang: "en-US", learner: "", hello: null
 }, window.APP || {});
 const TARGET_RE = new RegExp("^" + APP.target + "[-_]", "i");
 const FRENCH_COURSE = APP.target === "fr";
+const GERMAN_COURSE = APP.target === "de";
+/* A course whose interface is in the learner's own language, not in the language taught (French, German). */
+const FOREIGN = APP.target !== "en";
 /* The interface texts are written for the English course: in the French course, the two language names swap
-   ("from French to English" becomes "from English to French"), in English and in French. */
-const SWAP = FRENCH_COURSE ? [
+   ("from French to English" becomes "from English to French"), in English and in French. In the German course,
+   English becomes German, and in the English interface French (the helper of the English course) becomes English. */
+const SWAP_DE_EN = [[/\bEnglish\b/g, "German"], [/\bFrench\b/g, "English"], [/\bBritish and American\b/g, "regional"]];
+const SWAP_DE_FR = [[/\banglaise(s?)\b/g, "allemande$1"], [/\banglais\b/g, "allemand"], [/\bAnglais\b/g, "Allemand"], [/\banglophone(s?)\b/g, "germanophone$1"]];
+const SWAP_FR = FRENCH_COURSE ? [
   [/\bEnglish\b/g, "French"], [/\bFrench\b/g, "English"], [/\bBritish and American\b/g, "regional"],
   [/\bd'anglais\b/g, "de français"], [/\bde français\b/g, "d'anglais"], [/\bl'anglais\b/g, "le français"], [/\ble français\b/g, "l'anglais"],
   [/\banglaise(s?)\b/g, "française$1"], [/\bfrançaise(s?)\b/g, "anglaise$1"], [/\banglais\b/g, "français"], [/\bfrançais\b/g, "anglais"],
   [/\bAnglais\b/g, "Français"], [/\bFrançais\b/g, "Anglais"], [/\banglophone(s?)\b/g, "francophone$1"], [/\bfrancophone(s?)\b/g, "anglophone$1"]
 ] : [];
-function swapNames(t) {
+const swapList = () => (GERMAN_COURSE ? (isFr() ? SWAP_DE_FR : SWAP_DE_EN) : SWAP_FR);
+function swapNames(t, list) {
+  const SWAP = list || swapList();
   if (!SWAP.length || !t) return t;
   /* All at once, through placeholders, so a name swapped once isn't swapped back. */
   const marks = [];
@@ -48,7 +58,7 @@ function swapNames(t) {
    loc(obj, "title") gives obj.title_fr in French when it exists.
    instr(en, fr): an instruction in English with its FR button, or directly in French. */
 const LANGS = [["en", "English"], ["fr", "Français"]];
-const lang = () => (typeof S !== "undefined" && S.lang) || "en";
+const lang = () => (typeof S !== "undefined" && S.lang) || APP.defaultLang || "en";
 /* Immersion: the interface is in the language being learnt. */
 const immersion = () => lang() === APP.target;
 const isFr = () => lang() === "fr";
@@ -63,7 +73,8 @@ const Tn = (n, one, many, vars) => T(n > 1 ? many : one, Object.assign({ n }, va
 const loc = (o, k) => (o && lang() !== "en" && o[k + "_" + lang()]) || (o && o[k]);
 /* French quoted in an English instruction (« … ») isn't clickable: it isn't English. */
 const noTxQuotes = (h) => h.replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`);
-const instr = (en, f) => (isFr() && f ? `<span class="fr-ui">${esc(f)}</span>` : `${noTxQuotes(esc(en))}${fr(f)}`);
+/* In the German course, the English interface is for English speakers: no French version under each instruction. */
+const instr = (en, f) => (isFr() && f ? `<span class="fr-ui">${esc(f)}</span>` : GERMAN_COURSE ? noTxQuotes(esc(en)) : `${noTxQuotes(esc(en))}${fr(f)}`);
 const tg = (g) => { const k = "genre:" + g, v = T(k); return v === k ? g : v; };
 const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.replace(/ \d+$/, "")) + (p.match(/ \d+$/) || [""])[0] : p.replace(/^lesson (\d+)$/, (_, n) => T("lesson") + " " + n))).join(" · ");
 
@@ -116,7 +127,7 @@ const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.
   });
   RESOURCES.forEach((r, i) => { const e = (window.RESOURCES_EN || [])[i]; if (e) { r.title_fr = r.title; r.desc_fr = r.desc; r.title = e.title; r.desc = e.desc; } });
   /* The can-do grids are shared by both courses: in the French course, they speak of French. */
-  if (FRENCH_COURSE) CANDO.forEach((c) => Object.values(c.levels).forEach((arr) => arr.forEach((pair) => { pair[0] = swapNames(pair[0]); pair[1] = swapNames(pair[1]); })));
+  if (FOREIGN) CANDO.forEach((c) => Object.values(c.levels).forEach((arr) => arr.forEach((pair) => { pair[0] = swapNames(pair[0], GERMAN_COURSE ? SWAP_DE_EN : null); pair[1] = swapNames(pair[1], GERMAN_COURSE ? SWAP_DE_FR : null); })));
 })();
 const lnum = (l) => LESSONS.indexOf(l) + 1;
 const lessonById = (id) => LESSONS.find((l) => l.id === +id);
@@ -278,8 +289,8 @@ function reviewLesson(id, ratio) {
 const synth = window.speechSynthesis;
 let voices = [];
 const NOVELTY = /compact|eloquence|grandma|grandpa|bad news|bells|bubbles|cellos|jester|organ|trinoids|whisper|zarvox|albert|boing|fred|junior|ralph|wobble|superstar|good news|hysterical|bahh|eddy|flo\b|reed|rocko|sandy|shelley|kathy|nouvelles|bouffon|bulles|cloches|murmure|orgue|trino|violoncelles/i;
-const GOOD = /premium|enhanced|amélior|natural|neural|google|microsoft|siri|^(thomas|amélie|audrey|aurélie|marie|virginie|jacques|nicolas|juliette|samantha|daniel|karen|moira|tessa|rishi|aaron|arthur|catherine|gordon|martha|nicky|alex|fiona|veena|allison|ava|susan|tom|serena|kate|oliver|zoe|evan|nathan|joelle|noelle|jamie|matilda|lee|isha|sangeeta|stephanie)\b/i;
-const FEMALE = /amélie|amelie|audrey|aurélie|aurelie|marie|virginie|juliette|céline|celine|léa|lea\b|chantal|denise|sylvie|eloise|élise|samantha|karen|moira|tessa|martha|catherine|nicky|serena|ava|zoe|kate|fiona|allison|susan|joelle|noelle|matilda|isha|sangeeta|veena|stephanie|female|libby|sonia|jenny|aria|emma|amy/i;
+const GOOD = /premium|enhanced|amélior|natural|neural|google|microsoft|siri|^(anna|petra|markus|yannick|helena|martin|katja|conrad|thomas|amélie|audrey|aurélie|marie|virginie|jacques|nicolas|juliette|samantha|daniel|karen|moira|tessa|rishi|aaron|arthur|catherine|gordon|martha|nicky|alex|fiona|veena|allison|ava|susan|tom|serena|kate|oliver|zoe|evan|nathan|joelle|noelle|jamie|matilda|lee|isha|sangeeta|stephanie)\b/i;
+const FEMALE = /anna\b|petra|helena|katja|marlene|vicki|amélie|amelie|audrey|aurélie|aurelie|marie|virginie|juliette|céline|celine|léa|lea\b|chantal|denise|sylvie|eloise|élise|samantha|karen|moira|tessa|martha|catherine|nicky|serena|ava|zoe|kate|fiona|allison|susan|joelle|noelle|matilda|isha|sangeeta|veena|stephanie|female|libby|sonia|jenny|aria|emma|amy/i;
 function loadVoices() {
   if (!synth) return;
   const en = synth.getVoices().filter((v) => TARGET_RE.test(v.lang) && !NOVELTY.test(v.name));
@@ -290,7 +301,7 @@ if (synth) { loadVoices(); synth.onvoiceschanged = () => { loadVoices(); if (loc
 function voiceScore(v) {
   let s = 0;
   if (/premium|enhanced|amélior|natural|neural/i.test(v.name)) s += 10;
-  if (/^Google (UK|US) English|^Google français/i.test(v.name)) s += 6;
+  if (/^Google (UK|US) English|^Google français|^Google Deutsch/i.test(v.name)) s += 6;
   if (GOOD.test(v.name)) s += 4;
   if (new RegExp("^" + APP.voiceLang.replace("-", "[-_]"), "i").test(v.lang)) s += 2;
   if (/en[-_]US/i.test(v.lang)) s += 1;
@@ -307,8 +318,8 @@ function voiceByLang(l) {
   return ranked().find((v) => re.test(v.lang)) || null;
 }
 /* A different voice for each speaker in a dialogue (female names → female voice when possible). */
-const SPK_F = /^(W\b|W\d|Woman|Femme|Stella|Léa|Chloé|Manon|Julie|Camille|Claire|Inès|Élodie|Nathalie|Isabelle|Margaux|Lucie|Pauline|Amandine|Sabrina|Yasmine|Agathe|Mathilde|Océane|Zoé|Aurélie|Sandrine|Valérie|Jeanne|Louise|Alice|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i;
-const SPK_M = /^(M\b|M\d|Man|Homme|Serveur|Lucas|Hugo|Thomas|Julien|Nicolas|Antoine|Pierre|Louis|Karim|Mehdi|Théo|Bastien|Maxime|Romain|Kevin|Olivier|Benoît|Rémi|Yanis|Arthur|Gabriel|Raphaël|Mathis|Étienne|Vincent|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i;
+const SPK_F = /^(W\b|W\d|Woman|Femme|Frau|Lena|Jana|Katrin|Sabine|Ute|Birgit|Greta|Frieda|Hanna|Leonie|Marlene|Annika|Svenja|Johanna|Petra|Heike|Elke|Ingrid|Lotte|Paula|Nele|Merle|Ronja|Wiebke|Franziska|Monika|Ilse|Stella|Léa|Chloé|Manon|Julie|Camille|Claire|Inès|Élodie|Nathalie|Isabelle|Margaux|Lucie|Pauline|Amandine|Sabrina|Yasmine|Agathe|Mathilde|Océane|Zoé|Aurélie|Sandrine|Valérie|Jeanne|Louise|Alice|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i;
+const SPK_M = /^(M\b|M\d|Man|Homme|Serveur|Herr|Kellner|Jonas|Lukas|Felix|Tobias|Niklas|Florian|Stefan|Matthias|Jürgen|Klaus|Uwe|Moritz|Henrik|Finn|Elias|Kai|Sven|Dieter|Wolfgang|Bernd|Timo|Jan\b|Malte|Ole|Till|Lars|Torsten|Lucas|Hugo|Thomas|Julien|Nicolas|Antoine|Pierre|Louis|Karim|Mehdi|Théo|Bastien|Maxime|Romain|Kevin|Olivier|Benoît|Rémi|Yanis|Arthur|Gabriel|Raphaël|Mathis|Étienne|Vincent|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i;
 function voiceFor(speaker, i) {
   const r = ranked();
   if (!r.length) return null;
@@ -376,7 +387,7 @@ const looksFrench = (t) => /[àâçéèêëîïôûùœ]|\b(le|la|les|des|est|et
 const fr = (french) => {
   if (!french) return "";
   const toFr = FRENCH_COURSE && looksFrench(french);
-  const code = FRENCH_COURSE ? (toFr ? "FR" : "EN") : APP.helperCode;
+  const code = FRENCH_COURSE ? (toFr ? "FR" : "EN") : GERMAN_COURSE ? lang().toUpperCase() : APP.helperCode;
   return ` <button class="fr-btn" data-fr="${esc(french)}" aria-label="${code === "FR" ? "Traduction en français" : "English translation"}" title="${code === "FR" ? "Traduction" : "Translation"}">${code}</button>`;
 };
 const WORD_RE = /([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'’-]*[A-Za-zÀ-ÖØ-öø-ÿ]|[A-Za-zÀ-ÖØ-öø-ÿ])/;
@@ -390,6 +401,12 @@ function buildDict() {
     const fparts = f.split(" / ");
     parts.forEach((p, i) => {
       const tr = parts.length === fparts.length ? fparts[i] : f;
+      if (GERMAN_COURSE) {
+        /* "der Hund, -e", "die Stadt, ¨-e", "sich freuen": the word alone too. */
+        const k = p.replace(/,\s*(¨-?\S*|-\S*)\s*$/, "").replace(/\((m|f|n|pl|sg)\)/gi, "").replace(/[?!.…]/g, "").trim();
+        add(k, tr); add(k.replace(/^(?:der|die|das|ein|eine|sich)\s+/i, ""), tr);
+        return;
+      }
       if (FRENCH_COURSE) {
         /* "le pain", "l'eau", "se lever": the word alone too. */
         const k = p.replace(/\((m|f|m\.|f\.|pl)\)/gi, "").replace(/[?!.…]/g, "").trim();
@@ -460,13 +477,48 @@ function lookupFr(w) {
   if (w.includes("-")) { const bits = w.split("-").map((b) => lookupFr(b)).filter(Boolean); if (bits.length) return { base: w, fr: bits.map((b) => b.fr).join(" + ") }; }
   return null;
 }
+/* German: irregular forms (bin → sein, ging → gehen) from DE_FORMS, then plurals, adjective endings, verb endings,
+   past participles (gemacht → machen) and the umlaut of plurals (Häuser → Haus). */
+function lookupDe(w) {
+  if (DICT.has(w)) return { base: w, fr: DICT.get(w) };
+  const forms = window.DE_FORMS || {};
+  const f = forms[w];
+  /* "sein:v" points to the verb sein (to be), not the possessive sein (his): the part after ":" only picks the entry. */
+  if (f) { const base = f[0].split(":")[0]; return { base, fr: (DICT.get(f[0]) || DICT.get(base) || "") + (f[1] ? ` (${f[1]})` : "") }; }
+  const cands = [];
+  const push = (x) => { if (x && x.length > 1 && !cands.includes(x)) cands.push(x); };
+  const unUml = (x) => x.replace(/ä(?=[^äöü]*$)/, "a").replace(/ö(?=[^äöü]*$)/, "o").replace(/ü(?=[^äöü]*$)/, "u").replace(/äu/, "au");
+  /* numbers in one word: vierunddreißig → 34 */
+  const nm = w.match(/^(ein|zwei|drei|vier|fünf|sechs|sieben|acht|neun)und(zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig)$/);
+  if (nm) return { base: w, fr: String(DE_TENS.indexOf(nm[2]) * 10 + (nm[1] === "ein" ? 1 : DE_UNITS.indexOf(nm[1]))) };
+  /* plurals with an umlaut only: Brüder, Mütter, Väter; the du imperative is the bare stem: komm, erzähl, stell */
+  push(unUml(w)); push(w + "en"); push(w + "n");
+  /* every possible ending, longest first: nouns (Kinder, Häuser, Minuten, Autos, Ärztin, Lehrerinnen),
+     adjectives (kleinen, größeren, schönste), verbs (macht, machst, machte, arbeitet) */
+  const strip = (sufs, fn) => sufs.forEach((suf) => { if (w.endsWith(suf) && w.length > suf.length + 1) fn(w.slice(0, -suf.length)); });
+  push(w.replace(/innen$/, "in"));
+  strip(["innen", "nen", "ern", "en", "er", "es", "in", "e", "n", "s"], (m) => { push(m); push(unUml(m)); });
+  strip(["sten", "ster", "stes", "ste", "eren", "erer", "eres", "ere", "em", "en", "er", "es", "e"], (m) => { push(m); push(unUml(m)); });
+  strip(["teten", "test", "tet", "ten", "te", "est", "et", "st", "t", "e", "en", "n"], (m) => { push(m + "en"); push(m + "n"); push(unUml(m) + "en"); });
+  const pp = w.match(/^(.*?)ge(.+?)(e?t)$/);
+  if (pp) { push(pp[1] + pp[2] + "en"); push(pp[1] + pp[2] + "n"); }
+  const ppi = w.match(/^(.*?)ge(.+en)$/);
+  if (ppi) push(ppi[1] + ppi[2]);
+  for (const c of cands) if (DICT.has(c)) return { base: c, fr: DICT.get(c) };
+  if (w.includes("-")) { const bits = w.split("-").map((b) => lookupDe(b)).filter(Boolean); if (bits.length) return { base: w, fr: bits.map((b) => b.fr).join(" + ") }; }
+  return null;
+}
 /* English words that are also French forms: in the English interface of the French course, they stay plain text. */
 const EN_STOP = new Set("a an the on in is it as at to of for by or and but if me he she we you they us our your his her its my no not so do up be are was were has have had will can may all one two six an son pour".split(" "));
+/* German course: interface words that are also German words stay plain text outside the German itself. */
+const DE_STOP_EN = new Set("a an in so was will also man hat die bin bald war rot fast gift kind rat see hold bad arm hand last mist list art boot tag hut rock wink wand des best stand fall wind".split(" "));
+const DE_STOP_FR = new Set("des du es an en mit die la le sein man rose mode station film pause tour plus mais total sage elf".split(" "));
 buildDict();
 function lookup(raw, gloss) {
   const w = String(raw).toLowerCase().replace(/’/g, "'");
   if (gloss) { const g = gloss[w] || gloss[w.replace(/'s$/, "")] || (FRENCH_COURSE && gloss[w.replace(FR_ELISION, "")]); if (g) return { base: w, fr: g }; }
   if (FRENCH_COURSE) return lookupFr(w);
+  if (GERMAN_COURSE) return lookupDe(w);
   const cands = [w];
   const push = (x) => { if (x && x.length > 1 && !cands.includes(x)) cands.push(x); };
   push(w.replace(/'s$/, "")); push(w.replace(/s'$/, "s"));
@@ -494,12 +546,15 @@ const EN_MARK = new Set(("the and is are of to you your with this that it it's f
   "my there there's i'm i'll i've i'd you're he's she's we're they're isn't doesn't can't won't didn't do does did very also only just " +
   "some any more most how why who where here about after before because than then these those their them our us his him its no one two use say says like").split(" "));
 const FR_MARK = new Set("le la les des du est et une un je tu il elle nous vous ils elles que qui pas ne de à en dans pour avec sur au aux ce mon ma mes ton ta sa ses on se c'est".split(" "));
+const DE_MARK = new Set("der die das den dem des ein eine einen einem einer und ist sind nicht ich du er sie wir ihr es zu mit auf für von im am bei nach aus wie was wer wo auch noch schon sehr mein dein sein kein haben habe hast hat bin bist".split(" "));
 function englishPassage(text) {
-  if (!FRENCH_COURSE || immersion()) return false;
+  if (!FOREIGN || immersion()) return false;
+  /* The interface language (English, or French in the German course) against the language taught. */
+  const ui = GERMAN_COURSE && isFr() ? FR_MARK : EN_MARK, tl = GERMAN_COURSE ? DE_MARK : FR_MARK;
   let en = 0, fr = 0;
-  (text.toLowerCase().replace(/’/g, "'").match(/[a-zà-ÿœ']+/g) || []).forEach((w) => {
-    if (EN_MARK.has(w)) en++;
-    else if (FR_MARK.has(w) || /^(l|d|j|qu|c|n|s|m|t)'/.test(w)) fr++;
+  (text.toLowerCase().replace(/’/g, "'").match(/[a-zà-ÿœß']+/g) || []).forEach((w) => {
+    if (ui.has(w) || (ui === FR_MARK && /^(l|d|j|qu|c|n|s|m|t)'/.test(w))) en++;
+    else if (tl.has(w) || (tl === FR_MARK && /^(l|d|j|qu|c|n|s|m|t)'/.test(w))) fr++;
   });
   return en > fr;
 }
@@ -523,9 +578,11 @@ function wordify(root) {
     if (parts.length < 2) return;
     /* In a lesson, the French is rendered in <span class="en"> (from <s-fr>): the plain text around it is the English explanation. */
     const pe = n.parentElement;
-    const enText = englishPassage(n.nodeValue) || (FRENCH_COURSE && !immersion() && !pe.closest(".en") && !!pe.querySelector(":scope > span.en"));
     /* Inside the French itself (.en in the French course), on, pour, son or or are French words: EN_STOP doesn't apply. */
-    const frText = FRENCH_COURSE && !!pe.closest(".en");
+    const frText = FOREIGN && !!pe.closest(".en");
+    /* German marked as German is never an interface passage, even when short ("In Wien." looks English). */
+    const enText = !(GERMAN_COURSE && frText) && (englishPassage(n.nodeValue) || (FOREIGN && !immersion() && !pe.closest(".en") && !!pe.querySelector(":scope > span.en")));
+    const stop = GERMAN_COURSE ? (isFr() ? DE_STOP_FR : DE_STOP_EN) : EN_STOP;
     const frag = document.createDocumentFragment();
     /* Text left unwrapped stays in one node with its context (so "-tion" is still a suffix on the next pass),
        and a node where nothing is clickable isn't touched (no endless repaint). */
@@ -533,7 +590,7 @@ function wordify(root) {
     parts.forEach((part, k) => {
       if (!part) return;
       /* Interface in the learner's own language: only the words of the language learnt that we can translate are clickable. */
-      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (!enText && lookup(part) && !(FRENCH_COURSE && !frText && EN_STOP.has(part.toLowerCase()))))) {
+      if (k % 2 === 1 && !fragmentAt(parts, k) && (immersion() || (!enText && lookup(part) && !(FOREIGN && !frText && stop.has(part.toLowerCase()))))) {
         if (buf) { frag.appendChild(document.createTextNode(buf)); buf = ""; }
         const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); wrapped++;
       } else buf += part;
@@ -571,7 +628,7 @@ function showPop(w) {
       <button class="btn btn-sm" data-say="${esc(word)}" aria-label="${T("Listen")}">${ic("volume-2")}</button>
       <button class="btn btn-sm" id="addW" title="Ajouter à mes mots">${ic("plus")} ${T("My words")}</button>
       ${sentenceEl ? `<button class="btn btn-sm" id="popSent" title="Traduire la phrase">${ic("languages")} ${T("Sentence")}</button>` : ""}
-      <a class="btn btn-sm" href="https://www.wordreference.com/${FRENCH_COURSE ? "fren" : "enfr"}/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>
+      <a class="btn btn-sm" href="https://www.wordreference.com/${FRENCH_COURSE ? "fren" : GERMAN_COURSE ? (isFr() ? "defr" : "deen") : "enfr"}/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>
     </div>`;
   document.body.appendChild(pop);
   const rect = w.getBoundingClientRect();
@@ -758,7 +815,7 @@ function runQuiz(el, items, done) {
         ${q.big ? `<div class="prompt-fr no-tx">${esc(q.big)}</div>` : ""}
         ${q.say ? `<div class="row" style="gap:10px;margin-bottom:12px"><button type="button" class="btn" id="tPlay">${ic("volume-2")} ${T("Listen")}</button><button type="button" class="btn" id="tSlow">${ic("snail")} ${T("Slowly")}</button></div>` : ""}
         ${q.sent ? gapHtml(q.sent) : ""}
-        <form id="tForm" autocomplete="off"><input class="type-input" id="tAns" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" placeholder="${T("Type your answer in English…")}">
+        <form id="tForm" autocomplete="off"><input class="type-input" id="tAns" autocapitalize="off" autocorrect="off" spellcheck="false" lang="${APP.target}" placeholder="${T("Type your answer in English…")}">
           <div class="hint-line no-tx" id="tHintLine" hidden></div>
           <div class="row" style="margin-top:12px"><button class="btn btn-dark">${T("Check")}</button><button type="button" class="btn" id="tHint">${ic("lightbulb")} ${T("Hint")}</button><button type="button" class="btn" id="tSkip">${T("I don't know")}</button></div></form>
         <div class="fb"></div>`;
@@ -801,7 +858,7 @@ function runQuiz(el, items, done) {
       el.innerHTML = `${head}
         <div class="quiz-q">${T("Correct the mistake in this sentence.")}</div>
         <div class="gap-sentence wrong-sent">${esc(q.wrong)}</div>
-        <form id="xForm" autocomplete="off"><input class="type-input fix-input" id="xAns" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" value="${esc(q.wrong)}">
+        <form id="xForm" autocomplete="off"><input class="type-input fix-input" id="xAns" autocapitalize="off" autocorrect="off" spellcheck="false" lang="${APP.target}" value="${esc(q.wrong)}">
           <div class="row" style="margin-top:12px"><button class="btn btn-dark">${T("Check")}</button><button type="button" class="btn" id="xSkip">${T("Show me")}</button></div></form>
         <div class="fb"></div>`;
       const check = (given) => {
@@ -984,7 +1041,7 @@ function runQuiz(el, items, done) {
 const CONTR = [[/\bcan't\b/g, "can not"], [/\bcannot\b/g, "can not"], [/\bwon't\b/g, "will not"], [/\bshan't\b/g, "shall not"], [/n't\b/g, " not"], [/'m\b/g, " am"], [/'re\b/g, " are"], [/'ve\b/g, " have"], [/'ll\b/g, " will"], [/'d\b/g, " would"], [/\blet's\b/g, "let us"], [/\b(it|he|she|that|what|there|here|who|where|how)'s\b/g, "$1 is"]];
 function normAnswer(s) {
   let t = dictTokens(s).join(" ");
-  if (!FRENCH_COURSE) CONTR.forEach(([re, rep]) => { t = t.replace(re, rep); });
+  if (!FOREIGN) CONTR.forEach(([re, rep]) => { t = t.replace(re, rep); });
   return t.replace(/\s+/g, " ").trim();
 }
 /* Free production (role-plays): same words in the same order, contractions expanded,
@@ -1010,7 +1067,7 @@ function typedFromQuiz(q) {
   const ans = q.o[q.a];
   if (!ans || /[\/…]/.test(ans) || ans.split(/\s+/).length > 14) return null;
   const m = q.q.match(/^Translate:?\s*«\s*([\s\S]+?)\s*»/);
-  if (m) return { type: "type", q: "Write it in English:", q_fr: "Écris-le en anglais :", big: m[1], answer: ans, ex: q.ex, ex_fr: q.ex_fr };
+  if (m) return { type: "type", q: swapNames("Write it in English:"), q_fr: swapNames("Écris-le en anglais :"), big: m[1], answer: ans, ex: q.ex, ex_fr: q.ex_fr };
   if (/_{2,}/.test(q.q)) return { type: "type", q: q.q.replace(/^(Complete|Choose):?\s*/, "Write the missing word: "), q_fr: q.q_fr, answer: ans, ex: q.ex, ex_fr: q.ex_fr };
   return null;
 }
@@ -1111,10 +1168,21 @@ function frNum(n) {
   if (n < 80) return n === 71 ? "soixante et onze" : "soixante-" + FR_UNITS[n - 60];
   return n === 80 ? "quatre-vingts" : "quatre-vingt-" + FR_UNITS[n - 80];
 }
-const numWords = (n) => FRENCH_COURSE ? frNum(n) : n < 20 ? UNITS_W[n] : n < 100 ? TENS[Math.floor(n / 10)] + (n % 10 ? " " + UNITS_W[n % 10] : "") : String(n);
+/* German numbers in words, up to 99 (21 = einundzwanzig). */
+const DE_UNITS = ["null", "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf", "zwölf", "dreizehn", "vierzehn", "fünfzehn", "sechzehn", "siebzehn", "achtzehn", "neunzehn"];
+const DE_TENS = ["", "", "zwanzig", "dreißig", "vierzig", "fünfzig", "sechzig", "siebzig", "achtzig", "neunzig"];
+function deNum(n) {
+  if (n < 20) return DE_UNITS[n];
+  if (n >= 100) return String(n);
+  const t = DE_TENS[Math.floor(n / 10)], u = n % 10;
+  return u ? (u === 1 ? "ein" : DE_UNITS[u]) + "und" + t : t;
+}
+const numWords = (n) => FRENCH_COURSE ? frNum(n) : GERMAN_COURSE ? deNum(n) : n < 20 ? UNITS_W[n] : n < 100 ? TENS[Math.floor(n / 10)] + (n % 10 ? " " + UNITS_W[n % 10] : "") : String(n);
 /* French answers are compared without accents (ça = ca): typing them is hard on an English keyboard, and the right
    form is always shown afterwards. */
-const fold = (s) => FRENCH_COURSE ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").replace(/æ/g, "ae") : String(s);
+/* German answers too: ä, ö, ü can be typed a, o, u or ae, oe, ue, and ß as ss. */
+const fold = (s) => FRENCH_COURSE ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").replace(/æ/g, "ae")
+  : GERMAN_COURSE ? String(s).replace(/ß/g, "ss").replace(/ẞ/g, "SS").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/([aou])e/gi, "$1") : String(s);
 const dictTokens = (s) => fold(String(s).toLowerCase()).replace(/[’`]/g, "'").replace(/-/g, " ")
   .replace(/\d+/g, (d) => fold(numWords(+d))).replace(/[^a-z0-9' ]/g, " ").split(/\s+/).filter(Boolean);
 function lcsMatch(a, b) {
@@ -1204,9 +1272,9 @@ function viewHome() {
   const hour = new Date().getHours();
   const hello = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   /* The greeting is in the language learnt in the French course (Bonjour, Bonsoir), with the learner's name if known. */
-  const helloT = FRENCH_COURSE ? (hour < 18 ? "Bonjour" : "Bonsoir") : T(hello);
+  const helloT = FRENCH_COURSE ? (hour < 18 ? "Bonjour" : "Bonsoir") : GERMAN_COURSE ? (hour < 11 ? "Guten Morgen" : hour < 18 ? "Guten Tag" : "Guten Abend") : T(hello);
   const name = learnerName();
-  const greet = `${helloT}${name ? `, ${name}` : ""}${FRENCH_COURSE ? " !" : "!"}`;
+  const greet = `${helloT}${name ? `, ${name}` : ""}${FRENCH_COURSE ? " !" : "!"}`;  /* German: Guten Tag, Lena! */
   const first = S.xp === 0;
   const todayMin = Math.round(((log.sec || 0) / 60) + (log.ext || 0));
 
@@ -1214,7 +1282,7 @@ function viewHome() {
   <section class="hero">
     <div class="hero-main">
       <p class="small" style="margin:0 0 6px;opacity:.8">${new Date().toLocaleDateString(locale(), { weekday: "long", day: "numeric", month: "long" })}</p>
-      <h1>${esc(greet)} ${sayBtn(FRENCH_COURSE ? greet : hello + (name ? ", " + name : "") + "!")}</h1>
+      <h1>${esc(greet)} ${sayBtn(FOREIGN ? greet : hello + (name ? ", " + name : "") + "!")}</h1>
       <p>${first
         ? APP.welcome ? APP.welcome[lang()] || APP.welcome.en : (isFr() ? "Bienvenue dans ton cours d'anglais. L'interface est en français ; tout ce que tu apprends est en anglais : <b>clique sur un mot anglais</b> pour voir sa traduction, ou sur <b>FR</b> pour traduire une phrase entière. Tu peux passer l'interface en anglais en haut de la page." : `Welcome to your English course. Everything here is in English: <b>click on any word</b> to see its translation, or on <b>FR</b> to translate a whole sentence. Prefer the menus in French? Click <b>EN</b> at the top of the page.${fr("Bienvenue dans ton cours d'anglais. Tout est en anglais : clique sur n'importe quel mot pour voir sa traduction, ou sur FR pour traduire une phrase entière. Tu préfères les menus en français ? Clique sur EN en haut de la page.")}`)
         : allDone ? T("Today's programme is done. Well done! Anything extra is a bonus.")
@@ -1364,7 +1432,8 @@ function viewMore(part) {
   /* Written out in both interface languages, not through T(): the French course swaps the language names. */
   const courses = [
     ["index.html", "en", isFr() ? "Cours d'anglais" : "English course", isFr() ? "Du A1 au C2, pour les francophones" : "From A1 to C2, for French speakers", "graduation-cap", "B1"],
-    ["francais.html", "fr", isFr() ? "Cours de français" : "French course", isFr() ? "Du A1 au C2, pour les anglophones" : "From A1 to C2, for English speakers", "languages", "A2"]
+    ["francais.html", "fr", isFr() ? "Cours de français" : "French course", isFr() ? "Du A1 au C2, pour les anglophones" : "From A1 to C2, for English speakers", "languages", "A2"],
+    ["allemand.html", "de", isFr() ? "Cours d'allemand" : "German course", isFr() ? "Pour les francophones et les anglophones" : "For French and English speakers", "languages", "B2"]
   ];
   app.innerHTML = `
     <h1>${T("More")}</h1>
@@ -1408,7 +1477,7 @@ function settingsHtml() {
 function bindSettings() {
   $("#nameIn").onchange = (e) => { S.name = e.target.value.trim(); save(); toast(T("Saved")); };
   $("#langSel2").onchange = (e) => setLang(e.target.value);
-  $("#voiceSel").onchange = (e) => { S.voice = e.target.value; save(); speak(FRENCH_COURSE ? "Bonjour ! Voici ma voix." : "Hello Stella!"); };
+  $("#voiceSel").onchange = (e) => { S.voice = e.target.value; save(); speak(FRENCH_COURSE ? "Bonjour ! Voici ma voix." : GERMAN_COURSE ? "Hallo! Das ist meine Stimme." : "Hello Stella!"); };
   $("#rate").oninput = (e) => { S.rate = +e.target.value; $("#rateVal").textContent = S.rate; save(); };
   $("#exportBtn").onclick = () => {
     const blob = new Blob([JSON.stringify(S, null, 2)], { type: "application/json" });
@@ -1645,7 +1714,7 @@ function viewWriting(id) {
       <ol class="w-plan">${g.plan.map(([en, f], k) => `<li><span>${instr(en, f)}</span><input class="field" data-plan="${k}" value="${esc((us.plan || [])[k] || "")}" placeholder="${T("My ideas…")}" autocomplete="off"></li>`).join("")}</ol>
     </section>` : ""}
     <section class="card">
-      <textarea id="wText" class="field note" rows="10" placeholder="${T("Write here…")}" spellcheck="true" lang="en">${esc(us.writing || "")}</textarea>
+      <textarea id="wText" class="field note" rows="10" placeholder="${T("Write here…")}" spellcheck="true" lang="${APP.target}">${esc(us.writing || "")}</textarea>
       <div class="row" style="margin-top:10px">
         <span class="muted small" id="wCount">${T("{n} words", { n: count(us.writing || "") })}</span><span class="spacer"></span>
         <button class="btn btn-sm" id="wListen">${ic("volume-2")} ${T("Listen to my text")}</button>
@@ -1693,7 +1762,8 @@ function vocabMCQ(themes, n) {
   return words.slice(0, n).map((w) => {
     const others = shuffle(words.filter((x) => x.en !== w.en)).slice(0, 3).map((x) => x.en);
     const o = shuffle([w.en, ...others]);
-    return { type: "mcq", q: `How do you say « ${w.fr} » in English?`, q_fr: `Comment dit-on « ${w.fr} » en anglais ?`, o, a: o.indexOf(w.en), ex: `« ${w.fr} » = ${w.en}`, from: "Vocabulary" };
+    /* The language names are swapped before the word goes in: a translation such as "English" stays as it is. */
+    return { type: "mcq", q: swapNames("How do you say « {w} » in English?").replace("{w}", w.fr), q_fr: swapNames("Comment dit-on « {w} » en anglais ?").replace("{w}", w.fr), o, a: o.indexOf(w.en), ex: `« ${w.fr} » = ${w.en}`, from: "Vocabulary" };
   });
 }
 function grammarItems(lessons, n, written = 0) {
@@ -1796,9 +1866,9 @@ function viewCertificate(L) {
     ${back("#/cours", "Course")}
     <section class="cert">
       <div class="cert-badge">${L}</div>
-      <p class="small muted" style="margin:0">${FRENCH_COURSE ? "Pas à pas · French course" : T("Step by Step · English course")}</p>
+      <p class="small muted" style="margin:0">${FRENCH_COURSE ? "Pas à pas · French course" : GERMAN_COURSE ? (isFr() ? "Schritt für Schritt · cours d'allemand" : "Schritt für Schritt · German course") : T("Step by Step · English course")}</p>
       <h1 style="margin:8px 0">${T("Level {l} completed", { l: L })}</h1>
-      <p class="en" style="font-size:20px">${FRENCH_COURSE ? `${esc(learnerName() || "J'ai")}${learnerName() ? " a" : ""} terminé le niveau ${L} (${esc(lv.name)}) et réussi l'examen de niveau avec <b>${p} %</b>.` : `${esc(learnerName() || "I")} ${learnerName() ? "has" : "have"} completed level ${L} (${esc(lv.name)}) and passed the level exam with <b>${p}%</b>.`}</p>
+      <p class="en" style="font-size:20px">${GERMAN_COURSE ? `${esc(learnerName() || "Ich")} ${learnerName() ? "hat" : "habe"} das Niveau ${L} abgeschlossen und die Niveauprüfung mit <b>${p} %</b> bestanden.` : FRENCH_COURSE ? `${esc(learnerName() || "J'ai")}${learnerName() ? " a" : ""} terminé le niveau ${L} (${esc(lv.name)}) et réussi l'examen de niveau avec <b>${p} %</b>.` : `${esc(learnerName() || "I")} ${learnerName() ? "has" : "have"} completed level ${L} (${esc(lv.name)}) and passed the level exam with <b>${p}%</b>.`}</p>
       <ul class="checklist" style="text-align:left;max-width:520px;margin:16px auto">${loc(lv, "can").map((c) => `<li>${ic("check")}<span>${esc(c)}</span></li>`).join("")}</ul>
       <p class="muted small">${T("This is a personal record of your progress, not an official certificate. For an official result, take the TOEIC or a Cambridge exam.")}</p>
       ${next ? `<a class="btn btn-primary" href="#/cours">${T("Start level {l}", { l: next })} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/toeic">${T("Prepare the TOEIC")} ${ic("arrow-right")}</a>`}
@@ -1995,7 +2065,7 @@ function viewGrammarRef(lv) {
 
 function renderBody(html) {
   return html
-    .replace(/<s-(?:en|fr)>([\s\S]*?)<\/s-(?:en|fr)>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
+    .replace(/<s-(?:en|fr|de)>([\s\S]*?)<\/s-(?:en|fr|de)>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
     .replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`)
     .replace(/<st>/g, '<span class="st">').replace(/<\/st>/g, "</span>")
     .replace(/<ipa>([\s\S]*?)<\/ipa>/g, (_, t) => ipaSpan(t))
@@ -2039,7 +2109,7 @@ function viewLesson(id) {
       <h2>${ic("pen-line")} ${T("Your turn: write")}</h2>
       ${task ? `<p class="task-q">${instr(task[0], task[1])}</p>` : ""}
       <p class="muted small">${T("Write about <b>your own life</b> with today's lesson: we remember much better what concerns us. Then listen to your text and read it out loud.")}</p>
-      <textarea id="myNotes" class="field note" rows="5" placeholder="${T("Write here, in English…")}" spellcheck="true" lang="en">${esc(S.notes[l.id] || "")}</textarea>
+      <textarea id="myNotes" class="field note" rows="5" placeholder="${T("Write here, in English…")}" spellcheck="true" lang="${APP.target}">${esc(S.notes[l.id] || "")}</textarea>
       <div class="row" style="margin-top:10px">
         <button class="btn btn-sm" id="hearNotes">${ic("volume-2")} ${T("Listen to my text")}</button>
         ${task ? `<button class="btn btn-sm" id="showModel">${ic("eye")} ${T("Compare with a model")}</button>` : ""}
@@ -2346,7 +2416,8 @@ function viewFlash(mode, themeId) {
 const normAns = (s) => fold(s.toLowerCase()).replace(/[’`]/g, "'").replace(/\((uk|us)\)/g, "").replace(/[.?!,…]/g, "").replace(/\s+/g, " ").trim();
 function variants(en) {
   const out = new Set();
-  en.split(" / ").forEach((v) => { const n = normAns(v); out.add(n); out.add(n.replace(/^to /, "")); });
+  /* German nouns are written with their plural (der Hund, -e; die Mutter, ¨; die Eltern (pl)): the answer is the noun alone. */
+  en.split(" / ").forEach((v) => { const n = normAns(GERMAN_COURSE ? v.replace(/,\s*(¨-?\S*|-\S*)\s*$/, "").replace(/\((pl|sg)\)/gi, "") : v); out.add(n); out.add(n.replace(/^to /, "")); });
   return out;
 }
 function lev(a, b) {
@@ -2416,8 +2487,9 @@ function viewWrite(themeId) {
       const vs = variants(w.en);
       const exact = vs.has(g);
       const close = !exact && g.length > 3 && Array.from(vs).some((v) => lev(g, v) === 1);
-      /* French nouns: the right word without its article counts, but the article (which gives the gender) is shown. */
-      const noArt = FRENCH_COURSE && !exact && !close && Array.from(vs).some((v) => v.replace(/^(?:(?:les|le|la|une|un|des|du)\s+|l'|d')/, "") === g.replace(/^(?:(?:les|le|la|une|un|des|du)\s+|l'|d')/, ""));
+      /* French and German nouns: the right word without its article counts, but the article (which gives the gender) is shown. */
+      const ART = GERMAN_COURSE ? /^(?:der|die|das|ein|eine)\s+/ : /^(?:(?:les|le|la|une|un|des|du)\s+|l'|d')/;
+      const noArt = FOREIGN && !exact && !close && Array.from(vs).some((v) => v.replace(ART, "") === g.replace(ART, ""));
       return { ok: exact || close || noArt, say: w.en,
         html: `${exact ? ic("circle-check") + " " + T("Perfect!") : close ? ic("circle-check") + " " + T("Almost! Watch the spelling:") : noArt ? ic("circle-check") + " " + T("Good! Learn it with its article:") : ic("circle-x") + " " + T("The answer was:")} <b class="en">${esc(w.en)}</b> ${sayBtn(w.en)}${w.ex ? `<br><span class="small en" style="font-style:italic">${esc(w.ex)}</span>` : ""}` };
     },
@@ -2638,8 +2710,8 @@ function normSpeech(s) {
   return fold(s.toLowerCase()).replace(/[’`]/g, "'").replace(/-/g, " ")
     .replace(/\d+/g, (d) => fold(numWords(+d)))
     .replace(/[^a-z' ]/g, " ").split(/\s+/).filter(Boolean)
-    .flatMap((w) => (FRENCH_COURSE ? w : CONTRACTIONS[w] || w).split(" "))
-    .map((w) => (FRENCH_COURSE ? w : w.replace(/'s$/, "")).replace(/'/g, ""));
+    .flatMap((w) => (FOREIGN ? w : CONTRACTIONS[w] || w).split(" "))
+    .map((w) => (FOREIGN ? w : w.replace(/'s$/, "")).replace(/'/g, ""));
 }
 function compare(target, heard) {
   const t = normSpeech(target), h = normSpeech(heard);
@@ -2749,7 +2821,7 @@ function viewDialogue(id, mode) {
     box.innerHTML = `<p class="turn-label">${ic("message-circle")}<span>${T("Your turn. Say it in English:")}</span></p>
       <div class="prompt-fr no-tx">${esc(t.fr)}</div>
       ${SR ? `<div class="row rp-actions" style="justify-content:center"><button class="mic" id="rpMic" aria-label="${T("Speak")}">${ic("mic")}</button></div><div class="heard no-tx" id="rpHeard" style="text-align:center"></div>` : ""}
-      <form id="rpForm" autocomplete="off" class="row" style="margin-top:12px;flex-wrap:nowrap"><input class="field" id="rpType" lang="en" autocapitalize="off" spellcheck="false" placeholder="${T(SR ? "Or type it here…" : "Type it here…")}" style="flex:1"><button class="btn btn-dark">${T("Check")}</button></form>
+      <form id="rpForm" autocomplete="off" class="row" style="margin-top:12px;flex-wrap:nowrap"><input class="field" id="rpType" lang="${APP.target}" autocapitalize="off" spellcheck="false" placeholder="${T(SR ? "Or type it here…" : "Type it here…")}" style="flex:1"><button class="btn btn-dark">${T("Check")}</button></form>
       <div class="row" style="margin-top:10px"><button type="button" class="btn btn-sm" id="rpShow">${ic("eye")} ${T("Show me")}</button></div>
       <div class="fb"></div>`;
     const resolve = (ok, note) => {
@@ -3387,8 +3459,8 @@ function viewAcadChapter(id) {
       <p class="muted small">${T("Listen once without writing, then a second time while taking notes: your notes in the large box, key words and questions in the small one (the Cornell method). Answer the questions of the practice before reading the transcript.")}</p>
       <div class="row" style="gap:8px"><button class="btn btn-dark" id="lecPlay">${ic("play")} ${T("Play the lecture")}</button><button class="btn" id="lecSlow">${ic("snail")} ${T("Slowly")}</button><button class="btn" id="lecStop">${ic("square")} ${T("Stop")}</button></div>
       <div class="cornell">
-        <textarea id="lecCues" class="field note" rows="6" placeholder="${T("Key words and questions")}" spellcheck="true" lang="en">${esc(lec.cues || "")}</textarea>
-        <textarea id="lecNotes" class="field note" rows="9" placeholder="${T("Notes")}" spellcheck="true" lang="en">${esc(lec.notes || "")}</textarea>
+        <textarea id="lecCues" class="field note" rows="6" placeholder="${T("Key words and questions")}" spellcheck="true" lang="${APP.target}">${esc(lec.cues || "")}</textarea>
+        <textarea id="lecNotes" class="field note" rows="9" placeholder="${T("Notes")}" spellcheck="true" lang="${APP.target}">${esc(lec.notes || "")}</textarea>
       </div>
       <details class="cx-saved" style="margin-top:12px"><summary><b>${T("Transcript")}</b></summary><div class="reader">${c.lecture.paras.map((p) => `<p>${esc(p)}</p>`).join("")}</div></details>
     </section>` : ""}
@@ -3413,7 +3485,7 @@ function viewAcadChapter(id) {
       <h2>${ic(tk.speak ? "mic" : "pen-line")} ${T("Your task")}</h2>
       <p style="font-size:18px;margin:0"><b>${instr(tk.task, tk.task_fr)}</b></p>
       <p class="muted small" style="margin:8px 0 12px">${T("Length: {n} words.", { n: tk.words })}${tk.speak ? " " + T("Then say it out loud and record yourself.") : ""}</p>
-      <textarea id="aText" class="field note" rows="10" placeholder="${T("Write here…")}" spellcheck="true" lang="en">${esc(S.notes[key] || "")}</textarea>
+      <textarea id="aText" class="field note" rows="10" placeholder="${T("Write here…")}" spellcheck="true" lang="${APP.target}">${esc(S.notes[key] || "")}</textarea>
       <div class="row" style="margin-top:10px">
         <span class="muted small" id="aCount"></span><span class="spacer"></span>
         <button class="btn btn-sm" id="aListen">${ic("volume-2")} ${T("Listen to my text")}</button>
@@ -3638,7 +3710,7 @@ function viewLexis(id) {
     ${L.idioms ? `<section class="card">
       <h2 style="margin-top:0">${ic("sparkles")} ${T("Idioms and phrasal verbs")}</h2>
       <p class="muted small">${T("Their meaning can't be guessed from the words: learn each one with its example. Use them sparingly in writing, more freely when you speak.")}</p>
-      <div class="lex-list">${L.idioms.map(([e, m, f, ex]) => `<div class="lex-item"><div class="row" style="gap:8px;flex-wrap:wrap"><b class="en">${esc(e)}</b>${sayBtn(e)}</div><p class="small" style="margin:4px 0 0">${isFr() && !FRENCH_COURSE ? `<span class="no-tx">${esc(f)}</span>` : isFr() ? `<span class="en">${esc(m)}</span>` : `<span class="en">${esc(m)}</span> <span class="muted no-tx">· ${esc(f)}</span>`}</p><p class="en small" style="margin:4px 0 0">${esc(ex)} ${sayBtn(ex)}</p></div>`).join("")}</div>
+      <div class="lex-list">${L.idioms.map(([e, m, f, ex]) => `<div class="lex-item"><div class="row" style="gap:8px;flex-wrap:wrap"><b class="en">${esc(e)}</b>${sayBtn(e)}</div><p class="small" style="margin:4px 0 0">${isFr() && !FOREIGN ? `<span class="no-tx">${esc(f)}</span>` : isFr() ? `<span class="en">${esc(m)}</span>` : `<span class="en">${esc(m)}</span> <span class="muted no-tx">· ${esc(f)}</span>`}</p><p class="en small" style="margin:4px 0 0">${esc(ex)} ${sayBtn(ex)}</p></div>`).join("")}</div>
     </section>` : ""}
     <section class="card">
       <h2 style="margin-top:0">${ic("layers")} ${T("Word formation")}</h2>
@@ -4155,7 +4227,7 @@ function viewPlaceProduce(sec, chosen) {
       <h2 style="margin:16px 0 6px">${T("Your task")} ${levelTag(L)}</h2>
       <p class="en" style="font-size:18px">${instr(tk.task, tk.task_fr)}</p>
       ${W ? `<p class="muted small">${T("Length: {w} words. Write without a dictionary or translator: the aim is to see your real level.", { w: tk.words })}</p>
-        <textarea class="field note" id="pwText" rows="12" lang="en" spellcheck="false" placeholder="${T("Write your text here…")}">${esc(S.notes[key] || "")}</textarea>
+        <textarea class="field note" id="pwText" rows="12" lang="${APP.target}" spellcheck="false" placeholder="${T("Write your text here…")}">${esc(S.notes[key] || "")}</textarea>
         <p class="muted small" id="pwCount"></p>` : `<ol class="steps-list">
           <li>${T("Take one minute to prepare: note three or four key words, no full sentences.")}</li>
           <li>${T("Record yourself doing the task, without stopping. Then listen: where did you hesitate? Which words were missing?")}</li>
@@ -4892,7 +4964,7 @@ function viewConversation(a, b) {
       <div class="row"><label class="small">${T("With")} <select id="cvWho" class="field" style="width:auto"><option value="claude">Claude</option><option value="person">${T("a person")}</option></select></label>
         <label class="small">${T("Minutes")} <select id="cvMin" class="field" style="width:auto">${[5, 10, 15, 20, 30, 45, 60].map((m) => `<option ${m === mins ? "selected" : ""}>${m}</option>`).join("")}</select></label></div>
       <input id="cvTopic" class="field" style="margin-top:10px" placeholder="${T("What did you talk about?")}">
-      <textarea id="cvNotes" class="field note" rows="4" style="margin-top:10px" placeholder="${T("Corrections and new expressions to remember…")}" lang="en"></textarea>
+      <textarea id="cvNotes" class="field note" rows="4" style="margin-top:10px" placeholder="${T("Corrections and new expressions to remember…")}" lang="${APP.target}"></textarea>
       <div class="row" style="margin-top:10px"><button class="btn btn-dark btn-sm" id="cvSave">${ic("save")} ${T("Save this conversation")}</button></div>
     </section>
     <div class="stack" style="margin-top:12px">${(S.convos || []).slice(0, 30).map((c) => `<details class="card"><summary><b>${esc(c.title || T("Conversation"))}</b> <span class="muted small">${esc(c.date)} · ${c.who === "person" ? T("with a person") : "Claude"} · ${c.min} min</span></summary>${c.notes ? `<div class="model cx-text no-tx" style="margin-top:10px">${esc(c.notes)}</div>` : `<p class="muted small" style="margin:10px 0 0">${T("No notes.")}</p>`}</details>`).join("")}</div>`;
@@ -5168,6 +5240,7 @@ function applyStatic() {
 function setLang(l) {
   if (!LANGS.some(([k]) => k === l)) return;
   S.lang = l; save();
+  if (APP.reloadOnLang) { location.reload(); return; }
   route();
   toast(T("Interface language changed"));
 }
