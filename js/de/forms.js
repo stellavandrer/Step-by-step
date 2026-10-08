@@ -142,4 +142,9 @@
   add("werden", [["worden", "participle in the passive (ist … worden)", "participe du passif (ist … worden)"]]);
   pp("stehlen", "gestohlen"); pp("werfen", "geworfen");
   pres("stehlen", "stehle stiehlst stiehlt stehlen stehlt stehlen");
+  /* B1-4 */
+  add("gymnasium", [["gymnasien", "plural", "pluriel"]]);
+  add("studium", [["studien", "plural", "pluriel"]]);
+  pres("halten", "halte hältst hält halten haltet halten");
+  pp("nachdenken", "nachgedacht");
 })();
