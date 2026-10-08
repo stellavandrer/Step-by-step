@@ -154,4 +154,14 @@
   pres("treffen", "treffe triffst trifft treffen trefft treffen");
   pp("verlieren", "verloren");
   add("fit", [["fitter", "fitter (comparative)", "plus en forme (comparatif)"], ["fitteste", "the fittest", "le plus en forme"]]);
+  /* B1-7 : Konjunktiv II écrit, pluriels et e qui tombe */
+  k2("kommen", "käme kämest käme kämen kämet kämen");
+  k2("gehen", "ginge gingest ginge gingen ginget gingen");
+  k2("müssen", "müsste müsstest müsste müssten müsstet müssten");
+  k2("dürfen", "dürfte dürftest dürfte dürften dürftet dürften");
+  k2("wissen", "wüsste wüsstest wüsste wüssten wüsstet wüssten");
+  k2("brauchen", "bräuchte bräuchtest bräuchte bräuchten bräuchtet bräuchten");
+  add("konto", [["konten", "plural", "pluriel"]]);
+  add("teuer", [["teure", "expensive (teuer + -e)", "cher (teuer + -e)"], ["teures", "expensive (teuer + -es)", "cher (teuer + -es)"], ["teuren", "expensive (teuer + -en)", "cher (teuer + -en)"], ["teurem", "expensive (teuer + -em)", "cher (teuer + -em)"]]);
+  pp("geben", "gegeben"); pp("überziehen", "überzogen");
 })();
