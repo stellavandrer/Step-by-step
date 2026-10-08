@@ -150,4 +150,8 @@
   /* B1-5 */
   pres("werfen", "werfe wirfst wirft werfen werft werfen");
   pp("kaputtgehen", "kaputtgegangen");
+  /* B1-6 */
+  pres("treffen", "treffe triffst trifft treffen trefft treffen");
+  pp("verlieren", "verloren");
+  add("fit", [["fitter", "fitter (comparative)", "plus en forme (comparatif)"], ["fitteste", "the fittest", "le plus en forme"]]);
 })();
