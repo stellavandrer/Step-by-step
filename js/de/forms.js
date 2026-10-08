@@ -147,4 +147,7 @@
   add("studium", [["studien", "plural", "pluriel"]]);
   pres("halten", "halte hältst hält halten haltet halten");
   pp("nachdenken", "nachgedacht");
+  /* B1-5 */
+  pres("werfen", "werfe wirfst wirft werfen werft werfen");
+  pp("kaputtgehen", "kaputtgegangen");
 })();
