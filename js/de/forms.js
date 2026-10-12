@@ -164,4 +164,6 @@
   add("konto", [["konten", "plural", "pluriel"]]);
   add("teuer", [["teure", "expensive (teuer + -e)", "cher (teuer + -e)"], ["teures", "expensive (teuer + -es)", "cher (teuer + -es)"], ["teuren", "expensive (teuer + -en)", "cher (teuer + -en)"], ["teurem", "expensive (teuer + -em)", "cher (teuer + -em)"]]);
   pp("geben", "gegeben"); pp("überziehen", "überzogen");
+  /* B1-8 */
+  pres("gelten", "gelte giltst gilt gelten geltet gelten");
 })();

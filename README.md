@@ -60,4 +60,4 @@ word finds its base form (plurals, umlauts, verb endings, participles, irregular
 ordinals), and the dictionary js/de/dict.js gives the English and French meanings. Nouns are taught with their article
 and plural (der Hund, -e). Characters have German first names, and cultural facts are checked (sources in each unit
 file's header). Done: level A1 (7 units, lessons 1 to 21, writing tasks of 30 to 50 words as in the Goethe A1) and A2
-(7 units, lessons 22 to 42, writing tasks of 40 to 60 words). B1 in progress, following the Goethe-Zertifikat B1 (writing tasks of about 80 words, speaking tasks: planning together, a presentation, a discussion): units 1 to 7 (lessons 43 to 63). Then B2 to C2 (10 units each).
+(7 units, lessons 22 to 42, writing tasks of 40 to 60 words). B1 in progress, following the Goethe-Zertifikat B1 (writing tasks of about 80 words, speaking tasks: planning together, a presentation, a discussion): units 1 to 8 (lessons 43 to 66). Then B2 to C2 (10 units each).
