@@ -910,5 +910,7 @@ mark.wm sup { font: 700 11px var(--font); color: var(--ink-soft); margin-left: 2
 .course-de { --accent: #2f8f5b; --accent-soft: #e3f3ea; }
 @media (prefers-color-scheme: dark) { .course-de { --accent: #56c08a; --accent-soft: #1c3328; } }
 .course-de .hero-main::after { content: "Hallo"; }
+/* German compounds (Wohnungsgeberbestätigung) may wrap when they don't fit on a phone line. */
+.course-de main { overflow-wrap: anywhere; }
 /* "Schritt für Schritt" is longer than "Pas à pas": on a phone, it goes on two lines so the counters still fit. */
 @media (max-width: 480px) { .course-de .brand-name { white-space: normal; max-width: 6.5em; font-size: 15px; line-height: 1.1; } }

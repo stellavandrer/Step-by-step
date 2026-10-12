@@ -170,4 +170,9 @@
   prat("lassen", "ließ ließt ließ ließen ließt ließen");
   prat("verlieren", "verlor verlorst verlor verloren verlort verloren");
   pp("lesen", "gelesen"); pp("backen", "gebacken"); pp("streichen", "gestrichen"); pp("beeindrucken", "beeindruckt");
+  /* B1-10 : génitifs de la n-Deklination */
+  add("name", [["namens", "genitive (des Namens)", "génitif (des Namens)"]]);
+  add("gedanke", [["gedankens", "genitive (des Gedankens)", "génitif (des Gedankens)"]]);
+  add("herz", [["herzens", "genitive (des Herzens)", "génitif (des Herzens)"], ["herzen", "dative (dem Herzen)", "datif (dem Herzen)"]]);
+  pp("vorschlagen", "vorgeschlagen");
 })();
