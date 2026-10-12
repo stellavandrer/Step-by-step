@@ -166,4 +166,8 @@
   pp("geben", "gegeben"); pp("überziehen", "überzogen");
   /* B1-8 */
   pres("gelten", "gelte giltst gilt gelten geltet gelten");
+  /* B1-9 */
+  prat("lassen", "ließ ließt ließ ließen ließt ließen");
+  prat("verlieren", "verlor verlorst verlor verloren verlort verloren");
+  pp("lesen", "gelesen"); pp("backen", "gebacken"); pp("streichen", "gestrichen"); pp("beeindrucken", "beeindruckt");
 })();

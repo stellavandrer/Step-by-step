@@ -545,6 +545,9 @@ function lookupDe(w) {
   const f = forms[w];
   /* "sein:v" points to the verb sein (to be), not the possessive sein (his): the part after ":" only picks the entry. */
   if (f) { const base = f[0].split(":")[0]; return { base, fr: (DICT.get(f[0]) || DICT.get(base) || "") + (f[1] ? ` (${f[1]})` : "") }; }
+  /* an irregular form with an adjective ending: die gestohlenen Bilder → gestohlen → stehlen */
+  const adjBase = w.replace(/(e|er|es|en|em)$/, "");
+  if (adjBase !== w && forms[adjBase]) { const g = forms[adjBase], base = g[0].split(":")[0]; return { base, fr: (DICT.get(g[0]) || DICT.get(base) || "") + (g[1] ? ` (${g[1]})` : "") }; }
   /* a separable verb in a subordinate clause or in the participle: ankam → ankommen, aufgeschrieben → aufschreiben */
   const sep = /^(zurück|zusammen|weiter|vorbei|heraus|herein|hinaus|ab|an|auf|aus|ein|mit|nach|vor|zu|weg|los|fest|her|hin|um)(.{3,})$/.exec(w);
   if (sep && forms[sep[2]]) {
@@ -576,6 +579,11 @@ function lookupDe(w) {
   strip(["teten", "test", "tet", "ten", "te", "est", "et", "st", "t", "e", "en", "n"], (m) => { push(m + "en"); push(m + "n"); push(unUml(m) + "en"); });
   const pp = w.match(/^(.*?)ge(.+?)(e?t)$/);
   if (pp) { push(pp[1] + pp[2] + "en"); push(pp[1] + pp[2] + "n"); }
+  /* Partizip I (das schlafende Kind, lachend, lächelnd) and strong Partizip II with an ending (das gelesene Buch) */
+  const p1 = w.match(/^(.+(?:en|[lr]n))d(e|er|es|en|em)?$/);
+  if (p1) push(p1[1]);
+  const p2 = w.match(/^(.*?)ge(.+en)(e|er|es|en|em)$/);
+  if (p2) push(p2[1] + p2[2]);
   /* a participle used as an adjective: die gebuchte Führung, das gekaufte Buch */
   const ppa = w.match(/^(.*?)ge(.+?)t(e|en|er|es|em)$/);
   if (ppa) push(ppa[1] + ppa[2] + "en");
