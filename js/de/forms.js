@@ -175,4 +175,8 @@
   add("gedanke", [["gedankens", "genitive (des Gedankens)", "génitif (des Gedankens)"]]);
   add("herz", [["herzens", "genitive (des Herzens)", "génitif (des Herzens)"], ["herzen", "dative (dem Herzen)", "datif (dem Herzen)"]]);
   pp("vorschlagen", "vorgeschlagen");
+  /* B2-1 */
+  pp("auffallen", "aufgefallen"); pp("ausdenken", "ausgedacht"); pp("beweisen", "bewiesen");
+  prat("brechen", "brach brachst brach brachen bracht brachen");
+  add("beitrag", [["beiträge", "plural", "pluriel"], ["beiträgen", "dative plural", "datif pluriel"]]);
 })();
