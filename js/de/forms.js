@@ -186,4 +186,6 @@
   pres("leiden", "leide leidest leidet leiden leidet leiden");
   /* B2-3 : climat et environnement */
   pp("ergreifen", "ergriffen"); pp("streiten", "gestritten"); pp("sinken", "gesunken"); pp("beschreiben", "beschrieben");
+  /* B2-4 : sciences et technique */
+  pres("messen", "messe misst misst messen messt messen");
 })();
