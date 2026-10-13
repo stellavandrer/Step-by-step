@@ -190,4 +190,6 @@
   pres("messen", "messe misst misst messen messt messen");
   /* B2-5 : santé et bien-être */
   pp("anstecken", "angesteckt"); pp("verschreiben", "verschrieben"); prat("erhalten", "erhielt erhieltst erhielt erhielten erhieltet erhielten"); prat("halten", "hielt hieltst hielt hielten hieltet hielten"); prat("übernehmen", "übernahm übernahmst übernahm übernahmen übernahmt übernahmen"); pres("aufwachen", "wache wachst wacht wachen wacht wachen"); pres("grübeln", "grüble grübelst grübelt grübeln grübelt grübeln"); pp("überhören", "überhört");
+  /* B2-6 : économie et consommation */
+  pp("wenden", "gewandt"); pp("wenden", "gewendet"); pp("überstehen", "überstanden"); pres("wechseln", "wechsle wechselst wechselt wechseln wechselt wechseln"); pres("abpumpen", "pumpe pumpst pumpt pumpen pumpt pumpen"); add("zerstören", [["zerstöre", "Konjunktiv I (er zerstöre)", "Konjunktiv I (er zerstöre)"]]);
 })();
