@@ -184,4 +184,6 @@
   pres("übernehmen", "übernehme übernimmst übernimmt übernehmen übernehmt übernehmen");
   pres("vertreten", "vertrete vertrittst vertritt vertreten vertretet vertreten");
   pres("leiden", "leide leidest leidet leiden leidet leiden");
+  /* B2-3 : climat et environnement */
+  pp("ergreifen", "ergriffen"); pp("streiten", "gestritten"); pp("sinken", "gesunken"); pp("beschreiben", "beschrieben");
 })();
