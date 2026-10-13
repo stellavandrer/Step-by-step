@@ -212,4 +212,6 @@
   pp("zusetzen", "zugesetzt"); pp("durchschauen", "durchschaut"); pp("durchschauen", "durchgeschaut"); pres("durchschauen", "durchschaue durchschaust durchschaut durchschauen durchschaut durchschauen"); pp("umfahren", "umgefahren"); pres("umfahren", "umfahre umfährst umfährt umfahren umfahrt umfahren"); pres("unterhalten", "unterhalte unterhältst unterhält unterhalten unterhaltet unterhalten"); pres("enthalten", "enthalte enthältst enthält enthalten enthaltet enthalten"); pres("sterben", "sterbe stirbst stirbt sterben sterbt sterben"); pres("schreiten", "schreite schreitest schreitet schreiten schreitet schreiten");
   /* C1-5 : médias et espace public */
   prat("verbringen", "verbrachte verbrachtest verbrachte verbrachten verbrachtet verbrachten"); prat("weichen", "wich wichst wich wichen wicht wichen"); pp("nachhaken", "nachgehakt"); pres("empören", "empöre empörst empört empören empört empören");
+  /* C1-6 : économie et entreprise */
+  pp("abkühlen", "abgekühlt"); pp("pleitegehen", "pleitegegangen"); prat("beharren", "beharrte beharrtest beharrte beharrten beharrtet beharrten"); add("verlieren", [["verlören", "would lose (Konjunktiv II)", "perdraient (Konjunktiv II)"]]); add("stehen", [["ständen", "would stand (Konjunktiv II, variant of stünden)", "se tiendraient (Konjunktiv II, variante de stünden)"]]); pp("stattfinden", "stattgefunden");
 })();
