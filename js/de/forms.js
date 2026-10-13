@@ -188,4 +188,6 @@
   pp("ergreifen", "ergriffen"); pp("streiten", "gestritten"); pp("sinken", "gesunken"); pp("beschreiben", "beschrieben");
   /* B2-4 : sciences et technique */
   pres("messen", "messe misst misst messen messt messen");
+  /* B2-5 : santé et bien-être */
+  pp("anstecken", "angesteckt"); pp("verschreiben", "verschrieben"); prat("erhalten", "erhielt erhieltst erhielt erhielten erhieltet erhielten"); prat("halten", "hielt hieltst hielt hielten hieltet hielten"); prat("übernehmen", "übernahm übernahmst übernahm übernahmen übernahmt übernahmen"); pres("aufwachen", "wache wachst wacht wachen wacht wachen"); pres("grübeln", "grüble grübelst grübelt grübeln grübelt grübeln"); pp("überhören", "überhört");
 })();
