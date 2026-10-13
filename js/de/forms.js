@@ -210,4 +210,6 @@
   pp("ablösen", "abgelöst"); pp("antreten", "angetreten"); pp("anreisen", "angereist"); pp("einzahlen", "eingezahlt"); add("abhängen", [["abhinge", "would depend (Konjunktiv II)", "dépendrait (Konjunktiv II)"]]);
   /* C1-4 : développement durable */
   pp("zusetzen", "zugesetzt"); pp("durchschauen", "durchschaut"); pp("durchschauen", "durchgeschaut"); pres("durchschauen", "durchschaue durchschaust durchschaut durchschauen durchschaut durchschauen"); pp("umfahren", "umgefahren"); pres("umfahren", "umfahre umfährst umfährt umfahren umfahrt umfahren"); pres("unterhalten", "unterhalte unterhältst unterhält unterhalten unterhaltet unterhalten"); pres("enthalten", "enthalte enthältst enthält enthalten enthaltet enthalten"); pres("sterben", "sterbe stirbst stirbt sterben sterbt sterben"); pres("schreiten", "schreite schreitest schreitet schreiten schreitet schreiten");
+  /* C1-5 : médias et espace public */
+  prat("verbringen", "verbrachte verbrachtest verbrachte verbrachten verbrachtet verbrachten"); prat("weichen", "wich wichst wich wichen wicht wichen"); pp("nachhaken", "nachgehakt"); pres("empören", "empöre empörst empört empören empört empören");
 })();
