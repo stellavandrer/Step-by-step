@@ -179,4 +179,9 @@
   pp("auffallen", "aufgefallen"); pp("ausdenken", "ausgedacht"); pp("beweisen", "bewiesen");
   prat("brechen", "brach brachst brach brachen bracht brachen");
   add("beitrag", [["beiträge", "plural", "pluriel"], ["beiträgen", "dative plural", "datif pluriel"]]);
+  /* B2-2 */
+  pp("festhalten", "festgehalten"); pp("verschieben", "verschoben"); pp("übernehmen", "übernommen");
+  pres("übernehmen", "übernehme übernimmst übernimmt übernehmen übernehmt übernehmen");
+  pres("vertreten", "vertrete vertrittst vertritt vertreten vertretet vertreten");
+  pres("leiden", "leide leidest leidet leiden leidet leiden");
 })();
