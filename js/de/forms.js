@@ -204,4 +204,6 @@
   prat("bitten", "bat batest bat baten batet baten"); prat("bestreiten", "bestritt bestrittst bestritt bestritten bestrittet bestritten"); pp("einwenden", "eingewandt"); prat("treten", "trat tratst trat traten tratet traten"); pp("verschweigen", "verschwiegen"); pp("kriegen", "gekriegt"); pp("erwerben", "erworben"); pp("reformieren", "reformiert"); prat("raten", "riet rietst riet rieten rietet rieten"); pres("verraten", "verrate verrätst verrät verraten verratet verraten"); add("verstehen", [["verstünden", "would understand (Konjunktiv II, old form)", "comprendraient (Konjunktiv II, forme ancienne)"]]);
   /* C1-1 : compléments */
   prat("tragen", "trug trugst trug trugen trugt trugen"); pres("widersprechen", "widerspreche widersprichst widerspricht widersprechen widersprecht widersprechen");
+  /* C1-2 : sciences et éthique */
+  pp("abbrechen", "abgebrochen"); pp("abschließen", "abgeschlossen"); pp("erheben", "erhoben"); pp("schönen", "geschönt"); pres("erhalten", "erhalte erhältst erhält erhalten erhaltet erhalten"); pres("klären", "kläre klärst klärt klären klärt klären"); pres("wiegen", "wiege wiegst wiegt wiegen wiegt wiegen"); pp("übergehen", "übergangen"); prat("umfassen", "umfasste umfasstest umfasste umfassten umfasstet umfassten");
 })();
