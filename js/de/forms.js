@@ -214,4 +214,6 @@
   prat("verbringen", "verbrachte verbrachtest verbrachte verbrachten verbrachtet verbrachten"); prat("weichen", "wich wichst wich wichen wicht wichen"); pp("nachhaken", "nachgehakt"); pres("empören", "empöre empörst empört empören empört empören");
   /* C1-6 : économie et entreprise */
   pp("abkühlen", "abgekühlt"); pp("pleitegehen", "pleitegegangen"); prat("beharren", "beharrte beharrtest beharrte beharrten beharrtet beharrten"); add("verlieren", [["verlören", "would lose (Konjunktiv II)", "perdraient (Konjunktiv II)"]]); add("stehen", [["ständen", "would stand (Konjunktiv II, variant of stünden)", "se tiendraient (Konjunktiv II, variante de stünden)"]]); pp("stattfinden", "stattgefunden");
+  /* C1-7 : droit et justice */
+  pp("ablesen", "abgelesen"); pp("abwägen", "abgewogen"); pp("entscheiden", "entschieden"); pp("entziehen", "entzogen"); pp("freisprechen", "freigesprochen"); pp("filmen", "gefilmt"); pp("bohren", "gebohrt"); pp("zurückzahlen", "zurückgezahlt"); prat("widersprechen", "widersprach widersprachst widersprach widersprachen widerspracht widersprachen"); pres("beifügen", "füge fügst fügt fügen fügt fügen");
 })();
