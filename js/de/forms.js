@@ -194,4 +194,6 @@
   pp("wenden", "gewandt"); pp("wenden", "gewendet"); pp("überstehen", "überstanden"); pres("wechseln", "wechsle wechselst wechselt wechseln wechselt wechseln"); pres("abpumpen", "pumpe pumpst pumpt pumpen pumpt pumpen"); add("zerstören", [["zerstöre", "Konjunktiv I (er zerstöre)", "Konjunktiv I (er zerstöre)"]]);
   /* B2-7 : éducation et études */
   pp("besprechen", "besprochen"); pp("benennen", "benannt"); pp("zurechtfinden", "zurechtgefunden");
+  /* B2-8 : art et culture */
+  pres("befinden", "befinde befindest befindet befinden befindet befinden"); pres("benehmen", "benehme benimmst benimmt benehmen benehmt benehmen"); prat("bestehen", "bestand bestandest bestand bestanden bestandet bestanden"); pp("entwerfen", "entworfen"); add("sein", [["war's", "it was (war es)", "c'était (war es)"]]);
 })();
