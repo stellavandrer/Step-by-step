@@ -198,4 +198,6 @@
   pres("befinden", "befinde befindest befindet befinden befindet befinden"); pres("benehmen", "benehme benimmst benimmt benehmen benehmt benehmen"); prat("bestehen", "bestand bestandest bestand bestanden bestandet bestanden"); pp("entwerfen", "entworfen"); add("sein", [["war's", "it was (war es)", "c'était (war es)"]]);
   /* B2-9 : vivre ensemble */
   pp("anerkennen", "anerkannt"); pp("treten", "getreten"); prat("wachsen", "wuchs wuchsest wuchs wuchsen wuchst wuchsen"); pp("wachsen", "gewachsen");
+  /* B2-10 : politique et Europe */
+  pp("austreten", "ausgetreten"); pres("treten", "trete trittst tritt treten tretet treten"); pres("weisen", "weise weist weist weisen weist weisen"); pp("senken", "gesenkt");
 })();
