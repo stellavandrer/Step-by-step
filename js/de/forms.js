@@ -208,4 +208,6 @@
   pp("abbrechen", "abgebrochen"); pp("abschließen", "abgeschlossen"); pp("erheben", "erhoben"); pp("schönen", "geschönt"); pres("erhalten", "erhalte erhältst erhält erhalten erhaltet erhalten"); pres("klären", "kläre klärst klärt klären klärt klären"); pres("wiegen", "wiege wiegst wiegt wiegen wiegt wiegen"); pp("übergehen", "übergangen"); prat("umfassen", "umfasste umfasstest umfasste umfassten umfasstet umfassten");
   /* C1-3 : générations et société */
   pp("ablösen", "abgelöst"); pp("antreten", "angetreten"); pp("anreisen", "angereist"); pp("einzahlen", "eingezahlt"); add("abhängen", [["abhinge", "would depend (Konjunktiv II)", "dépendrait (Konjunktiv II)"]]);
+  /* C1-4 : développement durable */
+  pp("zusetzen", "zugesetzt"); pp("durchschauen", "durchschaut"); pp("durchschauen", "durchgeschaut"); pres("durchschauen", "durchschaue durchschaust durchschaut durchschauen durchschaut durchschauen"); pp("umfahren", "umgefahren"); pres("umfahren", "umfahre umfährst umfährt umfahren umfahrt umfahren"); pres("unterhalten", "unterhalte unterhältst unterhält unterhalten unterhaltet unterhalten"); pres("enthalten", "enthalte enthältst enthält enthalten enthaltet enthalten"); pres("sterben", "sterbe stirbst stirbt sterben sterbt sterben"); pres("schreiten", "schreite schreitest schreitet schreiten schreitet schreiten");
 })();
