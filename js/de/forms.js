@@ -206,4 +206,6 @@
   prat("tragen", "trug trugst trug trugen trugt trugen"); pres("widersprechen", "widerspreche widersprichst widerspricht widersprechen widersprecht widersprechen");
   /* C1-2 : sciences et éthique */
   pp("abbrechen", "abgebrochen"); pp("abschließen", "abgeschlossen"); pp("erheben", "erhoben"); pp("schönen", "geschönt"); pres("erhalten", "erhalte erhältst erhält erhalten erhaltet erhalten"); pres("klären", "kläre klärst klärt klären klärt klären"); pres("wiegen", "wiege wiegst wiegt wiegen wiegt wiegen"); pp("übergehen", "übergangen"); prat("umfassen", "umfasste umfasstest umfasste umfassten umfasstet umfassten");
+  /* C1-3 : générations et société */
+  pp("ablösen", "abgelöst"); pp("antreten", "angetreten"); pp("anreisen", "angereist"); pp("einzahlen", "eingezahlt"); add("abhängen", [["abhinge", "would depend (Konjunktiv II)", "dépendrait (Konjunktiv II)"]]);
 })();
