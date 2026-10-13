@@ -196,4 +196,6 @@
   pp("besprechen", "besprochen"); pp("benennen", "benannt"); pp("zurechtfinden", "zurechtgefunden");
   /* B2-8 : art et culture */
   pres("befinden", "befinde befindest befindet befinden befindet befinden"); pres("benehmen", "benehme benimmst benimmt benehmen benehmt benehmen"); prat("bestehen", "bestand bestandest bestand bestanden bestandet bestanden"); pp("entwerfen", "entworfen"); add("sein", [["war's", "it was (war es)", "c'était (war es)"]]);
+  /* B2-9 : vivre ensemble */
+  pp("anerkennen", "anerkannt"); pp("treten", "getreten"); prat("wachsen", "wuchs wuchsest wuchs wuchsen wuchst wuchsen"); pp("wachsen", "gewachsen");
 })();
