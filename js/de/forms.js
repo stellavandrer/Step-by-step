@@ -200,4 +200,8 @@
   pp("anerkennen", "anerkannt"); pp("treten", "getreten"); prat("wachsen", "wuchs wuchsest wuchs wuchsen wuchst wuchsen"); pp("wachsen", "gewachsen");
   /* B2-10 : politique et Europe */
   pp("austreten", "ausgetreten"); pres("treten", "trete trittst tritt treten tretet treten"); pres("weisen", "weise weist weist weisen weist weisen"); pp("senken", "gesenkt");
+  /* C1-1 : langue et communication */
+  prat("bitten", "bat batest bat baten batet baten"); prat("bestreiten", "bestritt bestrittst bestritt bestritten bestrittet bestritten"); pp("einwenden", "eingewandt"); prat("treten", "trat tratst trat traten tratet traten"); pp("verschweigen", "verschwiegen"); pp("kriegen", "gekriegt"); pp("erwerben", "erworben"); pp("reformieren", "reformiert"); prat("raten", "riet rietst riet rieten rietet rieten"); pres("verraten", "verrate verrätst verrät verraten verratet verraten"); add("verstehen", [["verstünden", "would understand (Konjunktiv II, old form)", "comprendraient (Konjunktiv II, forme ancienne)"]]);
+  /* C1-1 : compléments */
+  prat("tragen", "trug trugst trug trugen trugt trugen"); pres("widersprechen", "widerspreche widersprichst widerspricht widersprechen widersprecht widersprechen");
 })();
