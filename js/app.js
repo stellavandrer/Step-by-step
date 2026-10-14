@@ -29,12 +29,6 @@ const APP = Object.assign({
 const TARGET_RE = new RegExp("^" + APP.target + "[-_]", "i");
 const FRENCH_COURSE = APP.target === "fr";
 const GERMAN_COURSE = APP.target === "de";
-/* The Korean course (coreen.html): like the German course, for French or English speakers; js/ko/hangul.js gives the
-   engine the Revised Romanization, the conjugated forms and the Korean keyboard. */
-const KOREAN_COURSE = APP.target === "ko";
-const KO = window.KO || null;
-/* Courses whose explanations exist in English and in French, chosen by the learner (German, Korean). */
-const BI = GERMAN_COURSE || KOREAN_COURSE;
 /* A course whose interface is in the learner's own language, not in the language taught (French, German). */
 const FOREIGN = APP.target !== "en";
 /* The interface texts are written for the English course: in the French course, the two language names swap
@@ -42,12 +36,6 @@ const FOREIGN = APP.target !== "en";
    English becomes German, and in the English interface French (the helper of the English course) becomes English. */
 const SWAP_DE_EN = [[/\bEnglish\b/g, "German"], [/\bFrench\b/g, "English"], [/\bBritish and American\b/g, "regional"]];
 const SWAP_DE_FR = [[/\banglaise(s?)\b/g, "allemande$1"], [/\banglais\b/g, "allemand"], [/\bAnglais\b/g, "Allemand"], [/\banglophone(s?)\b/g, "germanophone$1"]];
-const SWAP_KO_EN = [[/\bEnglish\b/g, "Korean"], [/\bFrench\b/g, "English"], [/\bBritish and American\b/g, "regional"]];
-/* "coréen" starts with a consonant: d'anglais becomes de coréen, l'anglais le coréen. */
-const SWAP_KO_FR = [[/\bd['’]anglais\b/g, "de coréen"], [/\bl['’]anglais\b/g, "le coréen"], [/\bL['’]anglais\b/g, "Le coréen"], [/\bd['’]anglophone(s?)\b/g, "de coréanophone$1"], [/\banglaise(s?)\b/g, "coréenne$1"], [/\banglais\b/g, "coréen"], [/\bAnglais\b/g, "Coréen"], [/\banglophone(s?)\b/g, "coréanophone$1"]];
-/* The two swaps of the bilingual courses: the explanations in English, or in French. */
-const SWAP_T_EN = KOREAN_COURSE ? SWAP_KO_EN : SWAP_DE_EN;
-const SWAP_T_FR = KOREAN_COURSE ? SWAP_KO_FR : SWAP_DE_FR;
 const SWAP_FR = FRENCH_COURSE ? [
   [/\bEnglish\b/g, "French"], [/\bFrench\b/g, "English"], [/\bBritish and American\b/g, "regional"],
   [/\bd'anglais\b/g, "de français"], [/\bde français\b/g, "d'anglais"], [/\bl'anglais\b/g, "le français"], [/\ble français\b/g, "l'anglais"],
@@ -57,7 +45,7 @@ const SWAP_FR = FRENCH_COURSE ? [
 /* Course content (English or French) and the German interface: two different swaps. The German interface names the
    English course's languages ("Englisch", "Französisch"); in the French course they swap, in the German course
    English becomes German and French (the English course's helper) becomes the learner's own language. */
-const contentSwap = () => (BI ? (isFr() ? SWAP_T_FR : SWAP_T_EN) : SWAP_FR);
+const contentSwap = () => (GERMAN_COURSE ? (isFr() ? SWAP_DE_FR : SWAP_DE_EN) : SWAP_FR);
 const SWAP_UI_DE = FRENCH_COURSE ? [[/Englisch/g, "Französisch"], [/englisch/g, "französisch"], [/Französisch/g, "Englisch"], [/französisch/g, "englisch"]]
   : GERMAN_COURSE ? [[/Englisch/g, "Deutsch"], [/englisch/g, "deutsch"]] : [];
 const SWAP_UI_DE_HELP_EN = [[/Französisch/g, "Englisch"], [/französisch/g, "englisch"]];
@@ -76,8 +64,7 @@ function swapNames(t, list) {
    T("English text", {vars}) gives the text in the chosen language (English if no translation).
    loc(obj, "title") gives obj.title_fr in French when it exists.
    instr(en, fr): an instruction in English with its FR button, or directly in French. */
-/* The Korean course has no German interface (its texts exist in English and French only). */
-const LANGS = KOREAN_COURSE ? [["en", "English"], ["fr", "Français"]] : [["en", "English"], ["fr", "Français"], ["de", "Deutsch"]];
+const LANGS = [["en", "English"], ["fr", "Français"], ["de", "Deutsch"]];
 const lang = () => (typeof S !== "undefined" && S.lang) || APP.defaultLang || "en";
 /* Language of explanations and translations: the interface language, except with the German interface, where they
    stay in English (the course content exists in English and French only). In the German course, German is
@@ -89,14 +76,14 @@ const ui3 = (en, f, de) => (lang() === "de" ? de : lang() === "fr" ? f : en);
 const immersion = () => lang() === APP.target;
 /* Everything on the page is in the language taught (the French course in French). In the German course, the German
    interface still has explanations in English or French: only the German is clickable there. */
-const fullImmersion = () => immersion() && !BI;
+const fullImmersion = () => immersion() && !GERMAN_COURSE;
 const isFr = () => helpLang() === "fr";
 function T(s, vars) {
   const d = (window.UI_TEXT || {})[lang()];
   const own = ((APP.ui || {})[lang()] || {})[s];
   /* No German version yet: the English text, with the English swap of the language names. */
   const tr = d && d[s];
-  let out = own || (tr || lang() !== "de" ? swapNames(tr || s) : swapNames(s, BI ? SWAP_T_EN : SWAP_FR));
+  let out = own || (tr || lang() !== "de" ? swapNames(tr || s) : swapNames(s, GERMAN_COURSE ? SWAP_DE_EN : SWAP_FR));
   if (vars) out = out.replace(/\{(\w+)\}/g, (_, k) => (vars[k] != null ? vars[k] : ""));
   return out;
 }
@@ -105,7 +92,7 @@ const loc = (o, k) => (o && lang() === "de" && o[k + "_de"]) || (o && helpLang()
 /* French quoted in an English instruction (« … ») isn't clickable: it isn't English. */
 const noTxQuotes = (h) => h.replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`);
 /* In the German course, the English interface is for English speakers: no French version under each instruction. */
-const instr = (en, f) => (isFr() && f ? `<span class="fr-ui">${esc(f)}</span>` : BI ? noTxQuotes(esc(en)) : `${noTxQuotes(esc(en))}${fr(f)}`);
+const instr = (en, f) => (isFr() && f ? `<span class="fr-ui">${esc(f)}</span>` : GERMAN_COURSE ? noTxQuotes(esc(en)) : `${noTxQuotes(esc(en))}${fr(f)}`);
 /* The button that switches an explanation between English and French. */
 const toggleLabel = (showFr) => (lang() === "de" ? (showFr ? "Auf Englisch" : "Auf Französisch") : showFr ? (isFr() ? "En anglais" : "In English") : "En français");
 const tg = (g) => { const k = "genre:" + g, v = T(k); return v === k ? g : v; };
@@ -160,7 +147,7 @@ const tFrom = (f) => String(f || "").split(" · ").map((p, i) => (i === 0 ? T(p.
   });
   RESOURCES.forEach((r, i) => { const e = (window.RESOURCES_EN || [])[i]; if (e) { r.title_fr = r.title; r.desc_fr = r.desc; r.title = e.title; r.desc = e.desc; } });
   /* The can-do grids are shared by both courses: in the French course, they speak of French. */
-  if (FOREIGN) CANDO.forEach((c) => Object.values(c.levels).forEach((arr) => arr.forEach((pair) => { pair[0] = swapNames(pair[0], BI ? SWAP_T_EN : SWAP_FR); pair[1] = swapNames(pair[1], BI ? SWAP_T_FR : SWAP_FR); })));
+  if (FOREIGN) CANDO.forEach((c) => Object.values(c.levels).forEach((arr) => arr.forEach((pair) => { pair[0] = swapNames(pair[0], GERMAN_COURSE ? SWAP_DE_EN : SWAP_FR); pair[1] = swapNames(pair[1], GERMAN_COURSE ? SWAP_DE_FR : SWAP_FR); })));
 })();
 const lnum = (l) => LESSONS.indexOf(l) + 1;
 const lessonById = (id) => LESSONS.find((l) => l.id === +id);
@@ -322,8 +309,8 @@ function reviewLesson(id, ratio) {
 const synth = window.speechSynthesis;
 let voices = [];
 const NOVELTY = /compact|eloquence|grandma|grandpa|bad news|bells|bubbles|cellos|jester|organ|trinoids|whisper|zarvox|albert|boing|fred|junior|ralph|wobble|superstar|good news|hysterical|bahh|eddy|flo\b|reed|rocko|sandy|shelley|kathy|nouvelles|bouffon|bulles|cloches|murmure|orgue|trino|violoncelles/i;
-const GOOD = /premium|enhanced|amélior|natural|neural|google|microsoft|siri|^(anna|petra|markus|yannick|helena|martin|katja|conrad|thomas|amélie|audrey|aurélie|marie|virginie|jacques|nicolas|juliette|samantha|daniel|karen|moira|tessa|rishi|aaron|arthur|catherine|gordon|martha|nicky|alex|fiona|veena|allison|ava|susan|tom|serena|kate|oliver|zoe|evan|nathan|joelle|noelle|jamie|matilda|lee|isha|sangeeta|stephanie|yuna|sora|minsu|jian|suhyun|heami|sunhi|injoon|hyunsu|seoyeon)\b/i;
-const FEMALE = /yuna|sora\b|heami|sunhi|seoyeon|suhyun|한국의|anna\b|petra|helena|katja|marlene|vicki|amélie|amelie|audrey|aurélie|aurelie|marie|virginie|juliette|céline|celine|léa|lea\b|chantal|denise|sylvie|eloise|élise|samantha|karen|moira|tessa|martha|catherine|nicky|serena|ava|zoe|kate|fiona|allison|susan|joelle|noelle|matilda|isha|sangeeta|veena|stephanie|female|libby|sonia|jenny|aria|emma|amy/i;
+const GOOD = /premium|enhanced|amélior|natural|neural|google|microsoft|siri|^(anna|petra|markus|yannick|helena|martin|katja|conrad|thomas|amélie|audrey|aurélie|marie|virginie|jacques|nicolas|juliette|samantha|daniel|karen|moira|tessa|rishi|aaron|arthur|catherine|gordon|martha|nicky|alex|fiona|veena|allison|ava|susan|tom|serena|kate|oliver|zoe|evan|nathan|joelle|noelle|jamie|matilda|lee|isha|sangeeta|stephanie)\b/i;
+const FEMALE = /anna\b|petra|helena|katja|marlene|vicki|amélie|amelie|audrey|aurélie|aurelie|marie|virginie|juliette|céline|celine|léa|lea\b|chantal|denise|sylvie|eloise|élise|samantha|karen|moira|tessa|martha|catherine|nicky|serena|ava|zoe|kate|fiona|allison|susan|joelle|noelle|matilda|isha|sangeeta|veena|stephanie|female|libby|sonia|jenny|aria|emma|amy/i;
 function loadVoices() {
   if (!synth) return;
   const en = synth.getVoices().filter((v) => TARGET_RE.test(v.lang) && !NOVELTY.test(v.name));
@@ -351,8 +338,8 @@ function voiceByLang(l) {
   return ranked().find((v) => re.test(v.lang)) || null;
 }
 /* A different voice for each speaker in a dialogue (female names → female voice when possible). */
-const SPK_F = /^(민지|수진|지영|서연|하은|유나|은지|혜진|소희|미나|지수|수아|예진|윤아|선영|미영|할머니|어머니|엄마|누나|언니|Minji|Sujin|Jiyeong|Seoyeon|Haeun|Yuna|Eunji|Hyejin|Sohui|Mina|Jisu|Sua|Yejin|Yuna|Seonyeong|Miyeong|W\b|W\d|Woman|Femme|Frau|Lena|Jana|Katrin|Sabine|Ute|Birgit|Greta|Frieda|Hanna|Leonie|Marlene|Annika|Svenja|Johanna|Petra|Heike|Elke|Ingrid|Lotte|Paula|Nele|Merle|Ronja|Wiebke|Franziska|Monika|Ilse|Stella|Léa|Chloé|Manon|Julie|Camille|Claire|Inès|Élodie|Nathalie|Isabelle|Margaux|Lucie|Pauline|Amandine|Sabrina|Yasmine|Agathe|Mathilde|Océane|Zoé|Aurélie|Sandrine|Valérie|Jeanne|Louise|Alice|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i;
-const SPK_M = /^(민수|준호|현우|성민|동현|지훈|재민|상우|영호|민호|준서|도윤|태호|우진|할아버지|아버지|아빠|형|오빠|Minsu|Junho|Hyeonu|Seongmin|Donghyeon|Jihun|Jaemin|Sangu|Yeongho|Minho|Junseo|Doyun|Taeho|Ujin|M\b|M\d|Man|Homme|Serveur|Herr|Kellner|Jonas|Lukas|Felix|Tobias|Niklas|Florian|Stefan|Matthias|Jürgen|Klaus|Uwe|Moritz|Henrik|Finn|Elias|Kai|Sven|Dieter|Wolfgang|Bernd|Timo|Jan\b|Malte|Ole|Till|Lars|Torsten|Lucas|Hugo|Thomas|Julien|Nicolas|Antoine|Pierre|Louis|Karim|Mehdi|Théo|Bastien|Maxime|Romain|Kevin|Olivier|Benoît|Rémi|Yanis|Arthur|Gabriel|Raphaël|Mathis|Étienne|Vincent|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i;
+const SPK_F = /^(W\b|W\d|Woman|Femme|Frau|Lena|Jana|Katrin|Sabine|Ute|Birgit|Greta|Frieda|Hanna|Leonie|Marlene|Annika|Svenja|Johanna|Petra|Heike|Elke|Ingrid|Lotte|Paula|Nele|Merle|Ronja|Wiebke|Franziska|Monika|Ilse|Stella|Léa|Chloé|Manon|Julie|Camille|Claire|Inès|Élodie|Nathalie|Isabelle|Margaux|Lucie|Pauline|Amandine|Sabrina|Yasmine|Agathe|Mathilde|Océane|Zoé|Aurélie|Sandrine|Valérie|Jeanne|Louise|Alice|Kate|Lou|Rita|Hannah|Mei|Amy|Helen|Sophie|Lisa|Karen|Laura|Jess|Emma|Anna|Maria|Sofia|Jenna|Olivia|Reader|Nadia|Clara|Julia|Sarah|Lucy|Mia|Zoe|Grace|Chloe)/i;
+const SPK_M = /^(M\b|M\d|Man|Homme|Serveur|Herr|Kellner|Jonas|Lukas|Felix|Tobias|Niklas|Florian|Stefan|Matthias|Jürgen|Klaus|Uwe|Moritz|Henrik|Finn|Elias|Kai|Sven|Dieter|Wolfgang|Bernd|Timo|Jan\b|Malte|Ole|Till|Lars|Torsten|Lucas|Hugo|Thomas|Julien|Nicolas|Antoine|Pierre|Louis|Karim|Mehdi|Théo|Bastien|Maxime|Romain|Kevin|Olivier|Benoît|Rémi|Yanis|Arthur|Gabriel|Raphaël|Mathis|Étienne|Vincent|Waiter|Clerk|Sam|Raj|Ben|Tom|Paul|Ken|Mark|Marc|David|James|Leo|Dan|Max|Jack|Oliver|Chris|Pete|Joe)/i;
 function voiceFor(speaker, i) {
   const r = ranked();
   if (!r.length) return null;
@@ -365,40 +352,13 @@ function voiceFor(speaker, i) {
   return r[i % r.length];
 }
 let playingBtn = null, playSeq = 0;
-/* Korean course: words and phrases recorded with natural voices (js/ko/audio.js lists them, files in audio/ko/);
-   everything else is read by the browser's voice. One <audio> element for everything (Safari unlocks it once). */
-const KO_AUDIO = KOREAN_COURSE ? window.KO_AUDIO || {} : {};
-let koAudioEl = null;
-const koFile = (text) => { const t = String(text || "").trim(); return KO_AUDIO[t] || KO_AUDIO[t.replace(/[.!?…~,]+$/, "")] || null; };
-function playKoFile(file, btn, opts) {
-  if (!koAudioEl) koAudioEl = new Audio();
-  const a = koAudioEl;
-  return new Promise((resolve) => {
-    let done = false;
-    const end = () => { if (done) return; done = true; a.onended = a.onerror = null; if (btn) btn.classList.remove("playing"); resolve(true); };
-    a.onended = end;
-    a.onerror = () => { if (done) return; done = true; a.onended = a.onerror = null; resolve(false); };
-    a.src = "audio/ko/" + file;
-    a.playbackRate = opts.rate && opts.rate < 0.8 ? 0.75 : 1;
-    a.preservesPitch = true;
-    if (btn) { btn.classList.add("playing"); playingBtn = btn; }
-    const p = a.play();
-    if (p && p.catch) p.catch(() => { if (!done) { done = true; resolve(false); } });
-  });
-}
 function stopAudio() {
   playSeq++;
-  if (koAudioEl) { try { koAudioEl.pause(); } catch (e) { /* nothing playing */ } }
   if (synth) synth.cancel();
   if (playingBtn) playingBtn.classList.remove("playing");
   playingBtn = null;
 }
 function speak(text, btn, opts = {}) {
-  const kf = KOREAN_COURSE && !opts.tts && koFile(text);
-  if (kf) {
-    if (!opts.keep) stopAudio();
-    return playKoFile(kf, btn, opts).then((ok) => (ok ? undefined : speak(text, btn, Object.assign({}, opts, { tts: true, keep: true }))));
-  }
   if (!synth) { toast("Your browser can't read text aloud"); return Promise.resolve(); }
   if (!opts.keep) stopAudio();
   return new Promise((resolve) => {
@@ -450,27 +410,18 @@ const fr = (french) => {
   const code = FRENCH_COURSE ? (toFr ? "FR" : "EN") : APP.helperCode;
   return ` <button class="fr-btn" data-fr="${esc(french)}" aria-label="${code === "FR" ? "Traduction en français" : "English translation"}" title="${code === "FR" ? "Traduction" : "Translation"}">${code}</button>`;
 };
-/* Korean: a word is a run of Hangul syllables (particles and endings included: 학교에서, 갔어요). */
-const WORD_RE = KOREAN_COURSE ? /([가-힣]+)/ : /([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'’-]*[A-Za-zÀ-ÖØ-öø-ÿ]|[A-Za-zÀ-ÖØ-öø-ÿ])/;
+const WORD_RE = /([A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'’-]*[A-Za-zÀ-ÖØ-öø-ÿ]|[A-Za-zÀ-ÖØ-öø-ÿ])/;
 let DICT = new Map();
 const IRR_FORMS = {};
 const DE_CASE = new Map();
-/* Korean: conjugated forms of the verbs and adjectives of the course (갔어요 → 가다), built from the dictionary. */
-let KO_FORMS = new Map();
 function buildDict() {
   DICT = new Map();
-  KO_FORMS = new Map();
   const add = (k, v) => { k = String(k).toLowerCase().replace(/’/g, "'").trim(); if (k && v && !DICT.has(k)) DICT.set(k, v); };
   VOCAB.forEach((t) => t.words.forEach(([en, f]) => {
     const parts = en.split(" / ");
     const fparts = f.split(" / ");
     parts.forEach((p, i) => {
       const tr = parts.length === fparts.length ? fparts[i] : f;
-      if (KOREAN_COURSE) {
-        /* "안녕하세요!", "한국 사람": without the punctuation; a phrase also counts as one entry. */
-        add(p.replace(/[?!.…~]/g, "").trim(), tr);
-        return;
-      }
       if (GERMAN_COURSE) {
         /* "der Hund, -e", "die Stadt, ¨-e", "sich freuen": the word alone too. */
         const k = p.replace(/,\s*(¨-?\S*|-\S*|[A-ZÄÖÜ][a-zäöüß]+)\s*$/, "").replace(/\((m|f|n|pl|sg)\)/gi, "").replace(/[?!.…]/g, "").trim();
@@ -501,47 +452,6 @@ function buildDict() {
   S.myWords.forEach((w) => add(w.en, w.fr));
   /* General dictionary last: the course's own translations always win. */
   Object.entries(window.DICT_TARGET || window.DICT_EN_FR || {}).forEach(([k, v]) => add(k, v));
-  if (KOREAN_COURSE && KO) {
-    /* explicit irregular forms first (계세요 → 계시다, 아니에요 → 아니다), then every form of every verb and adjective */
-    Object.entries(window.KO_FORMS_FIXED || {}).forEach(([k, v]) => KO_FORMS.set(k, v));
-    const pred = window.KO_PRED || {};
-    DICT.forEach((v, k) => {
-      if (!pred[k] || !/다$/.test(k)) return;
-      KO.forms(k, pred[k] === "adj").forEach(([f, c]) => { if (!KO_FORMS.has(f)) KO_FORMS.set(f, [k, c]); });
-    });
-  }
-}
-/* Korean: particles and the copula after a noun (학교에서, 학생이에요), longest first. [particle, English, French] */
-const KO_PARTICLES = [
-  ["이었습니다", "was (formal)", "était (formel)"], ["이었어요", "was", "était"], ["였습니다", "was (formal)", "était (formel)"], ["였어요", "was", "était"], ["이에요", "is, am, are", "c'est, être"], ["입니다", "is, am, are (formal)", "c'est, être (formel)"], ["입니까", "is it…? (formal)", "est-ce… ? (formel)"], ["이요", "polite", "poli"],
-  ["이라서", "because it is", "comme c'est"], ["이지만", "it is, but", "c'est, mais"], ["이라고", "called, that it is", "appelé, que c'est"], ["이니까", "since it is", "puisque c'est"], ["이랑", "and, with", "et, avec"], ["예요", "is, am, are", "c'est, être"], ["이고", "it is, and", "c'est, et"], ["이야", "is (informal)", "c'est (familier)"], ["인데", "it is (background)", "c'est (contexte)"],
-  ["에서는", "at, in (topic)", "à, dans (thème)"], ["에서도", "at, in, too", "à, dans, aussi"], ["에게서", "from (a person)", "de la part de"], ["한테서", "from (a person)", "de la part de"], ["으로는", "by, towards (topic)", "par, vers (thème)"],
-  ["에서", "at, in (where it happens); from", "à, dans (lieu de l'action) ; depuis"], ["에게", "to (a person)", "à (une personne)"], ["한테", "to (a person)", "à (une personne)"], ["께서", "subject (honorific)", "sujet (honorifique)"], ["까지", "until, up to", "jusqu'à"], ["부터", "from (a time)", "à partir de"],
-  ["으로", "by, with (means); towards", "en, avec (moyen) ; vers"], ["보다", "than", "que (comparaison)"], ["처럼", "like", "comme"], ["마다", "every", "chaque"], ["하고", "and, with", "et, avec"], ["밖에", "only (+ negative)", "ne… que"], ["라서", "because it is", "comme c'est"], ["라고", "called, that it is", "appelé, que c'est"],
-  ["에는", "at, in (topic)", "à, dans (thème)"], ["에도", "at, in, too", "à, dans, aussi"], ["께", "to (honorific)", "à (honorifique)"], ["랑", "and, with", "et, avec"],
-  ["은", "topic", "thème"], ["는", "topic", "thème"], ["이", "subject", "sujet"], ["가", "subject", "sujet"], ["을", "object", "complément d'objet"], ["를", "object", "complément d'objet"], ["에", "at, to, in (place, time)", "à, vers, dans (lieu, temps)"],
-  ["의", "'s, of", "de (possession)"], ["도", "too, also", "aussi"], ["만", "only", "seulement"], ["와", "and, with", "et, avec"], ["과", "and, with", "et, avec"], ["로", "by, with (means); towards", "en, avec (moyen) ; vers"], ["요", "polite", "poli"], ["야", "(calling someone)", "(pour appeler quelqu'un)"], ["아", "(calling someone)", "(pour appeler quelqu'un)"], ["나", "or", "ou"], ["고", "it is, and", "c'est, et"], ["다", "is (written style)", "c'est (style écrit)"]
-];
-const koLabel = (c) => { const l = (KO && KO.FORM_LABELS[c]) || null; return l ? l[isFr() ? 1 : 0] : ""; };
-function lookupKo(w, depth = 0) {
-  if (DICT.has(w)) return { base: w, fr: DICT.get(w) };
-  const f = KO_FORMS.get(w);
-  if (f) { const note = f[2] != null ? f[isFr() ? 2 : 1] : koLabel(f[1]); return { base: f[0], fr: (DICT.get(f[0]) || "") + (note ? ` (${note})` : "") }; }
-  const n = KO && KO.number(w);
-  if (n != null) return { base: w, fr: String(n) };
-  if (depth < 2) {
-    for (const [p, en, fr] of KO_PARTICLES) {
-      if (!w.endsWith(p) || w.length <= p.length) continue;
-      const r = lookupKo(w.slice(0, -p.length), depth + 1);
-      if (r) return { base: r.base, fr: `${r.fr} + ${p}: ${isFr() ? fr : en}` };
-    }
-    /* a noun + 하다 (공부해요 → 공부 + 하다) when the verb itself isn't in the dictionary */
-    for (let i = 1; i < w.length; i++) {
-      const g = KO_FORMS.get(w.slice(i)) || (w.slice(i) === "하다" ? ["하다", ""] : null);
-      if (g && g[0] === "하다" && DICT.has(w.slice(0, i))) return { base: w.slice(0, i) + "하다", fr: `${DICT.get(w.slice(0, i))} + 하다 (${isFr() ? "faire" : "to do"})${g[1] ? `, ${koLabel(g[1])}` : ""}` };
-    }
-  }
-  return null;
 }
 /* French: elided words (l'eau, j'habite), plurals, feminine forms, verb endings, and irregular forms (suis → être). */
 const FR_ELISION = /^(l|d|j|m|t|s|n|c|qu|jusqu|lorsqu|puisqu|quoiqu)'/;
@@ -694,7 +604,6 @@ function lookup(raw, gloss) {
   if (gloss) { const g = gloss[w] || gloss[w.replace(/'s$/, "")] || (FRENCH_COURSE && gloss[w.replace(FR_ELISION, "")]); if (g) return { base: w, fr: g }; }
   if (FRENCH_COURSE) return lookupFr(w);
   if (GERMAN_COURSE) return lookupDe(w);
-  if (KOREAN_COURSE) return lookupKo(w);
   const cands = [w];
   const push = (x) => { if (x && x.length > 1 && !cands.includes(x)) cands.push(x); };
   push(w.replace(/'s$/, "")); push(w.replace(/s'$/, "s"));
@@ -726,7 +635,7 @@ const DE_MARK = new Set("der die das den dem des ein eine einen einem einer und 
 let DE_EN_MARK = null;
 function englishPassage(text) {
   const deUi = lang() === "de";
-  if (KOREAN_COURSE || fullImmersion() || (!FOREIGN && !deUi)) return false;
+  if (fullImmersion() || (!FOREIGN && !deUi)) return false;
   /* The language of the explanations (English, or French in the German course, whatever the menus) against the
      language taught. With the German interface, German passages are interface too in the English and French courses,
      and so are the English explanations of the French course. */
@@ -751,7 +660,7 @@ const fragmentAt = (parts, k) => (/^[b-hj-z]$/i.test(parts[k]) && !(FRENCH_COURS
 function wordify(root) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode: (n) => {
-      if (!(KOREAN_COURSE ? /[가-힣]/ : /[A-Za-z]/).test(n.nodeValue)) return NodeFilter.FILTER_REJECT;
+      if (!/[A-Za-z]/.test(n.nodeValue)) return NodeFilter.FILTER_REJECT;
       const p = n.parentElement;
       if (!p || p.closest(SKIP)) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
@@ -776,12 +685,9 @@ function wordify(root) {
     parts.forEach((part, k) => {
       if (!part) return;
       /* Interface in the learner's own language: only the words of the language learnt that we can translate are clickable. */
-      /* Korean: every Hangul word is clickable (its romanization at least), with or without a translation. */
-      if (k % 2 === 1 && (KOREAN_COURSE || (!fragmentAt(parts, k) && (fullImmersion() || (!enText && lookup(part) && !(FOREIGN && !frText && stop.has(part.toLowerCase()))))))) {
+      if (k % 2 === 1 && !fragmentAt(parts, k) && (fullImmersion() || (!enText && lookup(part) && !(FOREIGN && !frText && stop.has(part.toLowerCase()))))) {
         if (buf) { frag.appendChild(document.createTextNode(buf)); buf = ""; }
-        const s = document.createElement("span"); s.className = "w"; s.textContent = part;
-        if (KOREAN_COURSE) { s.dataset.rr = KO ? KO.rr(part) : ""; if (!lookup(part)) s.classList.add("w-unk"); }
-        frag.appendChild(s); wrapped++;
+        const s = document.createElement("span"); s.className = "w"; s.textContent = part; frag.appendChild(s); wrapped++;
       } else buf += part;
     });
     if (!wrapped) return;
@@ -795,22 +701,7 @@ function paint() {
   paintQueued = false;
   document.querySelectorAll("i[data-lucide]").forEach((el) => { el.outerHTML = svgIcon(el.dataset.lucide, el.getAttribute("class") || ""); });
   wordify(app);
-  if (KOREAN_COURSE) rrPaint(app);
 }
-/* Korean: the romanization of Hangul that isn't clickable (buttons, choices, labels), shown after it when the
-   romanization is on. It lives in data-rr and CSS, never in the text itself. */
-const RR_SKIP = "input, textarea, select, option, script, style, .w, .no-rr, .hint-line, .popover, .fr-text, .fr-ui";
-function rrPaint(root) {
-  if (!KO) return;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    acceptNode: (n) => (/[가-힣]/.test(n.nodeValue) && n.parentElement && !n.parentElement.closest(RR_SKIP) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT)
-  });
-  const els = new Set();
-  while (walker.nextNode()) els.add(walker.currentNode.parentElement);
-  els.forEach((el) => { if (el.querySelector(".w")) return; const t = el.textContent.trim(); if (t && el.dataset.rrOf !== t) { el.dataset.rrOf = t; el.dataset.rrx = KO.rr(t); } });
-}
-/* Romanization on: always, never, or automatically at level A1 (the default). */
-const rrOn = () => KOREAN_COURSE && (S.rr === "on" || (S.rr !== "off" && currentLevel() === "A1"));
 new MutationObserver(() => { if (!paintQueued) { paintQueued = true; setTimeout(paint, 0); } }).observe(document.body, { childList: true, subtree: true });
 
 let pop = null;
@@ -826,14 +717,13 @@ function showPop(w) {
   speak(word);
   pop = document.createElement("div");
   pop.className = "popover";
-  const rrLine = KOREAN_COURSE && KO ? `<span class="pop-rr">${esc(KO.rr(word))}</span>` : "";
-  pop.innerHTML = `<b>${esc(word)}</b>${rrLine}${res ? `<span>${esc(res.fr)}</span>${res.base !== word.toLowerCase() ? `<span class="small" style="opacity:.7;display:block">${T("from “{w}”", { w: esc(DE_CASE.get(res.base) || res.base) })}</span>` : ""}` : `<span style="opacity:.75">${T("No translation yet for this word.")}</span>`}
+  pop.innerHTML = `<b>${esc(word)}</b>${res ? `<span>${esc(res.fr)}</span>${res.base !== word.toLowerCase() ? `<span class="small" style="opacity:.7;display:block">${T("from “{w}”", { w: esc(DE_CASE.get(res.base) || res.base) })}</span>` : ""}` : `<span style="opacity:.75">${T("No translation yet for this word.")}</span>`}
     ${sentenceEl ? `<div class="pop-sentence" hidden>${esc(sentenceEl.dataset.fr)}</div>` : ""}
     <div class="row">
       <button class="btn btn-sm" data-say="${esc(word)}" aria-label="${T("Listen")}">${ic("volume-2")}</button>
       <button class="btn btn-sm" id="addW" title="Ajouter à mes mots">${ic("plus")} ${T("My words")}</button>
       ${sentenceEl ? `<button class="btn btn-sm" id="popSent" title="Traduire la phrase">${ic("languages")} ${T("Sentence")}</button>` : ""}
-      ${KOREAN_COURSE ? `<a class="btn btn-sm" href="https://${isFr() ? "fr" : "en"}.wiktionary.org/w/index.php?search=${encodeURIComponent(res ? res.base : word)}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>` : `<a class="btn btn-sm" href="https://www.wordreference.com/${FRENCH_COURSE ? "fren" : GERMAN_COURSE ? (isFr() ? "defr" : "deen") : lang() === "de" ? "ende" : "enfr"}/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>`}
+      <a class="btn btn-sm" href="https://www.wordreference.com/${FRENCH_COURSE ? "fren" : GERMAN_COURSE ? (isFr() ? "defr" : "deen") : lang() === "de" ? "ende" : "enfr"}/${encodeURIComponent(word.toLowerCase())}" target="_blank" rel="noopener">${T("Dictionary")} ${ic("external-link")}</a>
     </div>`;
   document.body.appendChild(pop);
   const rect = w.getBoundingClientRect();
@@ -856,7 +746,7 @@ function showPop(w) {
 }
 document.addEventListener("click", (e) => {
   const say = e.target.closest("[data-say]");
-  if (say) { e.preventDefault(); const o = say.dataset.slow ? { rate: 0.6 } : {}; if (say.dataset.lang) o.voice = voiceByLang(say.dataset.lang) || undefined; if (say.dataset.tts) o.tts = true; speak(say.dataset.say, say, o); return; }
+  if (say) { e.preventDefault(); const o = say.dataset.slow ? { rate: 0.6 } : {}; if (say.dataset.lang) o.voice = voiceByLang(say.dataset.lang) || undefined; speak(say.dataset.say, say, o); return; }
   const frb = e.target.closest(".fr-btn");
   if (frb) {
     e.preventDefault(); e.stopPropagation();
@@ -936,7 +826,6 @@ function renderPathStrip() {
   return ctx;
 }
 function renderTopStats() {
-  if (KOREAN_COURSE) document.body.classList.toggle("show-rr", rrOn());
   renderNext();
   const ctx = renderPathStrip();
   if (ctx) $$("[data-nav]").forEach((l) => l.classList.toggle("active", l.dataset.nav === "cours"));
@@ -1246,8 +1135,6 @@ function runQuiz(el, items, done) {
    produce (write). Producing the answer is harder than recognising it, and that's why it sticks. */
 const CONTR = [[/\bcan't\b/g, "can not"], [/\bcannot\b/g, "can not"], [/\bwon't\b/g, "will not"], [/\bshan't\b/g, "shall not"], [/n't\b/g, " not"], [/'m\b/g, " am"], [/'re\b/g, " are"], [/'ve\b/g, " have"], [/'ll\b/g, " will"], [/'d\b/g, " would"], [/\blet's\b/g, "let us"], [/\b(it|he|she|that|what|there|here|who|where|how)'s\b/g, "$1 is"]];
 function normAnswer(s) {
-  /* Korean: spacing (띄어쓰기) is hard for learners, so answers are compared without spaces. */
-  if (KOREAN_COURSE) return dictTokens(s).join("");
   let t = dictTokens(s).join(" ");
   if (!FOREIGN) CONTR.forEach(([re, rep]) => { t = t.replace(re, rep); });
   return t.replace(/\s+/g, " ").trim();
@@ -1255,7 +1142,7 @@ function normAnswer(s) {
 /* Free production (role-plays): same words in the same order, contractions expanded,
    one-letter typos forgiven in longer words. Returns a percentage. */
 function looseScore(target, given) {
-  const t = KOREAN_COURSE ? Array.from(normAnswer(target)) : normAnswer(target).split(" ").filter(Boolean), g = KOREAN_COURSE ? Array.from(normAnswer(given)) : normAnswer(given).split(" ").filter(Boolean);
+  const t = normAnswer(target).split(" ").filter(Boolean), g = normAnswer(given).split(" ").filter(Boolean);
   if (!t.length || !g.length) return 0;
   const same = (a, b) => a === b || (a.length > 4 && lev(a, b) <= 1);
   const dp = Array.from({ length: t.length + 1 }, () => new Array(g.length + 1).fill(0));
@@ -1266,10 +1153,9 @@ function looseScore(target, given) {
 /* Hint 1: first letter of each word. Hint 2: half of each word. */
 function hintFor(answer, level) {
   return answer.split(/\s+/).map((w) => {
-    const L = KOREAN_COURSE ? /[가-힣]/g : /[A-Za-z]/g;
-    const keep = level >= 2 ? Math.max(1, Math.ceil((w.match(L) || []).length / 2)) : 1;
+    const keep = level >= 2 ? Math.max(1, Math.ceil(w.replace(/[^A-Za-z]/g, "").length / 2)) : 1;
     let n = 0;
-    return w.replace(L, (ch) => (n++ < keep ? ch : "_"));
+    return w.replace(/[A-Za-z]/g, (ch) => (n++ < keep ? ch : "_"));
   }).join("  ");
 }
 function typedFromQuiz(q) {
@@ -1386,13 +1272,13 @@ function deNum(n) {
   const t = DE_TENS[Math.floor(n / 10)], u = n % 10;
   return u ? (u === 1 ? "ein" : DE_UNITS[u]) + "und" + t : t;
 }
-const numWords = (n) => KOREAN_COURSE ? String(n) : FRENCH_COURSE ? frNum(n) : GERMAN_COURSE ? deNum(n) : n < 20 ? UNITS_W[n] : n < 100 ? TENS[Math.floor(n / 10)] + (n % 10 ? " " + UNITS_W[n % 10] : "") : String(n);
+const numWords = (n) => FRENCH_COURSE ? frNum(n) : GERMAN_COURSE ? deNum(n) : n < 20 ? UNITS_W[n] : n < 100 ? TENS[Math.floor(n / 10)] + (n % 10 ? " " + UNITS_W[n % 10] : "") : String(n);
 /* French answers are compared without accents (ça = ca): typing them is hard on an English keyboard, and the right
    form is always shown afterwards. */
 /* German answers too: ä, ö, ü can be typed a, o, u or ae, oe, ue, and ß as ss. */
 const fold = (s) => FRENCH_COURSE ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").replace(/æ/g, "ae")
-  : GERMAN_COURSE ? String(s).replace(/ß/g, "ss").replace(/ẞ/g, "SS").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/([aou])e/gi, "$1") : KOREAN_COURSE ? String(s).normalize("NFC") : String(s);
-const dictTokens = (s) => KOREAN_COURSE ? fold(String(s).toLowerCase()).replace(/[^가-힣ㄱ-ㅣa-z0-9 ]/g, " ").split(/\s+/).filter(Boolean) : fold(String(s).toLowerCase()).replace(/[’`]/g, "'").replace(/-/g, " ")
+  : GERMAN_COURSE ? String(s).replace(/ß/g, "ss").replace(/ẞ/g, "SS").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/([aou])e/gi, "$1") : String(s);
+const dictTokens = (s) => fold(String(s).toLowerCase()).replace(/[’`]/g, "'").replace(/-/g, " ")
   .replace(/\d+/g, (d) => fold(numWords(+d))).replace(/[^a-z0-9' ]/g, " ").split(/\s+/).filter(Boolean);
 function lcsMatch(a, b) {
   const dp = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
@@ -1405,20 +1291,8 @@ function lcsMatch(a, b) {
   }
   return { okA, okB };
 }
-/* Korean: the words are shown as written, but compared syllable by syllable (a wrong particle isn't a wrong word),
-   whatever the spacing. A word counts as right when all its syllables are. */
-function koCompare(tw, gw) {
-  const sy = (ws) => { const s = [], at = []; ws.forEach((w, i) => Array.from(w).forEach((c) => { s.push(c); at.push(i); })); return [s, at]; };
-  const [ts, ta] = sy(tw), [gs, ga] = sy(gw);
-  const m = lcsMatch(ts, gs);
-  const okA = tw.map((_, i) => ta.every((wi, k) => wi !== i || m.okA[k])), okB = gw.map((_, i) => ga.every((wi, k) => wi !== i || m.okB[k]));
-  const n = m.okA.filter(Boolean).length;
-  const pct = ts.length ? Math.round((n / ts.length) * 100 * (gs.length > ts.length ? ts.length / gs.length : 1)) : 0;
-  return { pct, okA, okB };
-}
 function dictCompare(target, given) {
   const tw = dictTokens(target), gw = dictTokens(given || "");
-  if (KOREAN_COURSE) { const k = koCompare(tw, gw); return { pct: k.pct, tw, gw, okA: k.okA, okB: k.okB }; }
   const { okA, okB } = lcsMatch(tw, gw);
   const p = tw.length ? Math.round((okA.filter(Boolean).length / tw.length) * 100 * (gw.length > tw.length ? tw.length / gw.length : 1)) : 0;
   return { pct: p, tw, gw, okA, okB };
@@ -1493,10 +1367,9 @@ function viewHome() {
   const hour = new Date().getHours();
   const hello = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   /* The greeting is in the language learnt in the French course (Bonjour, Bonsoir), with the learner's name if known. */
-  const helloT = KOREAN_COURSE ? "안녕하세요" : FRENCH_COURSE ? (hour < 18 ? "Bonjour" : "Bonsoir") : GERMAN_COURSE ? (hour < 11 ? "Guten Morgen" : hour < 18 ? "Guten Tag" : "Guten Abend") : T(hello);
+  const helloT = FRENCH_COURSE ? (hour < 18 ? "Bonjour" : "Bonsoir") : GERMAN_COURSE ? (hour < 11 ? "Guten Morgen" : hour < 18 ? "Guten Tag" : "Guten Abend") : T(hello);
   const name = learnerName();
-  /* Korean: 안녕하세요, Lena 씨! (씨, the polite way to say someone's name) */
-  const greet = `${helloT}${name ? `, ${name}${KOREAN_COURSE ? " 씨" : ""}` : ""}${FRENCH_COURSE ? " !" : "!"}`;  /* German: Guten Tag, Lena! */
+  const greet = `${helloT}${name ? `, ${name}` : ""}${FRENCH_COURSE ? " !" : "!"}`;  /* German: Guten Tag, Lena! */
   const first = S.xp === 0;
   const todayMin = Math.round(((log.sec || 0) / 60) + (log.ext || 0));
 
@@ -1655,8 +1528,7 @@ function viewMore(part) {
   const courses = [
     ["index.html", "en", ui3("English course", "Cours d'anglais", "Englischkurs"), ui3("From A1 to C2, for French speakers", "Du A1 au C2, pour les francophones", "Von A1 bis C2, für Französischsprachige"), "graduation-cap", "B1"],
     ["francais.html", "fr", ui3("French course", "Cours de français", "Französischkurs"), ui3("From A1 to C2, for English speakers", "Du A1 au C2, pour les anglophones", "Von A1 bis C2, für Englischsprachige"), "languages", "A2"],
-    ["allemand.html", "de", ui3("German course", "Cours d'allemand", "Deutschkurs"), ui3("For French and English speakers", "Pour les francophones et les anglophones", "Für Französisch- und Englischsprachige"), "languages", "B2"],
-    ["coreen.html", "ko", ui3("Korean course", "Cours de coréen", "Koreanischkurs"), ui3("For French and English speakers, with TOPIK landmarks", "Pour les francophones et les anglophones, avec les repères du TOPIK", "Für Französisch- und Englischsprachige, mit TOPIK-Bezug"), "languages", "C1"]
+    ["allemand.html", "de", ui3("German course", "Cours d'allemand", "Deutschkurs"), ui3("For French and English speakers", "Pour les francophones et les anglophones", "Für Französisch- und Englischsprachige"), "languages", "B2"]
   ];
   app.innerHTML = `
     <h1>${T("More")}</h1>
@@ -1686,12 +1558,8 @@ function settingsHtml() {
       </select>
       <label class="small muted" for="rate">${T("Speed:")} <b id="rateVal">${S.rate}</b></label>
       <input type="range" id="rate" min="0.5" max="1.2" step="0.05" value="${S.rate}" style="width:100%">
-      <div class="row"><button class="btn btn-sm" data-say="${KOREAN_COURSE ? "안녕하세요! 제 목소리예요. 속도가 괜찮아요?" : "Hello! This is how I sound. Is this speed OK for you?"}" data-tts="1">${ic("volume-2")} ${T("Test")}</button></div>
-      ${KOREAN_COURSE ? `<p class="small muted">${isFr() ? "Les mots et expressions du cours sont lus par des voix naturelles enregistrées ; les phrases, par la voix coréenne de ton appareil. Sur Mac, une voix bien plus naturelle est disponible : Réglages Système → Accessibilité → Contenu énoncé → Voix du système → Gérer les voix, puis dans « Coréen », choisis Yuna (Premium ou Améliorée). Quitte puis relance le navigateur." : "The course's words and phrases are read by natural recorded voices; sentences, by your device's Korean voice. On a Mac, a much more natural voice is available: System Settings → Accessibility → Spoken Content → System Voice → Manage Voices, then under “Korean”, choose Yuna (Premium or Enhanced). Quit and restart the browser."}</p>
-      <hr class="sep">
-      <label class="small muted" for="rrSel">${isFr() ? "Romanisation (le coréen en lettres latines)" : "Romanization (Korean in Latin letters)"}</label>
-      <select id="rrSel" class="field">${[["auto", isFr() ? "Automatique : affichée au niveau A1, puis seulement au clic" : "Automatic: shown at level A1, then only on click"], ["on", isFr() ? "Toujours affichée" : "Always shown"], ["off", isFr() ? "Seulement au clic sur un mot" : "Only when you click a word"]].map(([k, n]) => `<option value="${k}" ${(S.rr || "auto") === k ? "selected" : ""}>${n}</option>`).join("")}</select>
-      <p class="small muted" style="margin:0">${isFr() ? "La romanisation révisée officielle de la Corée du Sud. Une béquille pour débuter : le plus tôt tu lis le hangeul sans elle, le mieux c'est." : "South Korea's official Revised Romanization. A crutch for the start: the sooner you read Hangul without it, the better."}</p>` : `<p class="small muted fr">Sur Mac, des voix bien plus naturelles sont disponibles : Réglages Système → Accessibilité → Contenu énoncé → Voix du système → Gérer les voix, puis dans « Anglais », choisis une voix « Premium » ou « Améliorée » (Ava, Zoe, Serena, Jamie…). Quitte puis relance le navigateur.</p>`}
+      <div class="row"><button class="btn btn-sm" data-say="Hello! This is how I sound. Is this speed OK for you?">${ic("volume-2")} ${T("Test")}</button></div>
+      <p class="small muted fr">Sur Mac, des voix bien plus naturelles sont disponibles : Réglages Système → Accessibilité → Contenu énoncé → Voix du système → Gérer les voix, puis dans « Anglais », choisis une voix « Premium » ou « Améliorée » (Ava, Zoe, Serena, Jamie…). Quitte puis relance le navigateur.</p>
       <hr class="sep">
       <div class="row">
         <button class="btn btn-sm" id="exportBtn">${ic("save")} ${T("Save my progress")}</button>
@@ -1704,8 +1572,7 @@ function settingsHtml() {
 function bindSettings() {
   $("#nameIn").onchange = (e) => { S.name = e.target.value.trim(); save(); toast(T("Saved")); };
   $("#langSel2").onchange = (e) => setLang(e.target.value);
-  $("#voiceSel").onchange = (e) => { S.voice = e.target.value; save(); speak(KOREAN_COURSE ? "안녕하세요! 제 목소리예요." : FRENCH_COURSE ? "Bonjour ! Voici ma voix." : GERMAN_COURSE ? "Hallo! Das ist meine Stimme." : "Hello Stella!", null, { tts: true }); };
-  if ($("#rrSel")) $("#rrSel").onchange = (e) => { S.rr = e.target.value; save(); renderTopStats(); toast(T("Saved")); };
+  $("#voiceSel").onchange = (e) => { S.voice = e.target.value; save(); speak(FRENCH_COURSE ? "Bonjour ! Voici ma voix." : GERMAN_COURSE ? "Hallo! Das ist meine Stimme." : "Hello Stella!"); };
   $("#rate").oninput = (e) => { S.rate = +e.target.value; $("#rateVal").textContent = S.rate; save(); };
   $("#exportBtn").onclick = () => {
     const blob = new Blob([JSON.stringify(S, null, 2)], { type: "application/json" });
@@ -2094,9 +1961,9 @@ function viewCertificate(L) {
     ${back("#/cours", "Course")}
     <section class="cert">
       <div class="cert-badge">${L}</div>
-      <p class="small muted" style="margin:0">${KOREAN_COURSE ? `한 걸음씩 · ${ui3("Korean course", "cours de coréen", "Koreanischkurs")}` : FRENCH_COURSE ? `Pas à pas · ${ui3("French course", "French course", "Französischkurs")}` : GERMAN_COURSE ? `Schritt für Schritt · ${ui3("German course", "cours d'allemand", "Deutschkurs")}` : T("Step by Step · English course")}</p>
+      <p class="small muted" style="margin:0">${FRENCH_COURSE ? `Pas à pas · ${ui3("French course", "French course", "Französischkurs")}` : GERMAN_COURSE ? `Schritt für Schritt · ${ui3("German course", "cours d'allemand", "Deutschkurs")}` : T("Step by Step · English course")}</p>
       <h1 style="margin:8px 0">${T("Level {l} completed", { l: L })}</h1>
-      <p class="en" style="font-size:20px">${KOREAN_COURSE ? `${learnerName() ? esc(learnerName()) + " · " : "저는 "}${L} 단계를 마치고 단계 시험을 <b>${p}%</b>로 통과했습니다.` : GERMAN_COURSE ? `${esc(learnerName() || "Ich")} ${learnerName() ? "hat" : "habe"} das Niveau ${L} abgeschlossen und die Niveauprüfung mit <b>${p} %</b> bestanden.` : FRENCH_COURSE ? `${esc(learnerName() || "J'ai")}${learnerName() ? " a" : ""} terminé le niveau ${L} (${esc(lv.name)}) et réussi l'examen de niveau avec <b>${p} %</b>.` : `${esc(learnerName() || "I")} ${learnerName() ? "has" : "have"} completed level ${L} (${esc(lv.name)}) and passed the level exam with <b>${p}%</b>.`}</p>
+      <p class="en" style="font-size:20px">${GERMAN_COURSE ? `${esc(learnerName() || "Ich")} ${learnerName() ? "hat" : "habe"} das Niveau ${L} abgeschlossen und die Niveauprüfung mit <b>${p} %</b> bestanden.` : FRENCH_COURSE ? `${esc(learnerName() || "J'ai")}${learnerName() ? " a" : ""} terminé le niveau ${L} (${esc(lv.name)}) et réussi l'examen de niveau avec <b>${p} %</b>.` : `${esc(learnerName() || "I")} ${learnerName() ? "has" : "have"} completed level ${L} (${esc(lv.name)}) and passed the level exam with <b>${p}%</b>.`}</p>
       <ul class="checklist" style="text-align:left;max-width:520px;margin:16px auto">${loc(lv, "can").map((c) => `<li>${ic("check")}<span>${esc(c)}</span></li>`).join("")}</ul>
       <p class="muted small">${T("This is a personal record of your progress, not an official certificate. For an official result, take the TOEIC or a Cambridge exam.")}</p>
       ${next ? `<a class="btn btn-primary" href="#/cours">${T("Start level {l}", { l: next })} ${ic("arrow-right")}</a>` : `<a class="btn btn-primary" href="#/toeic">${T("Prepare the TOEIC")} ${ic("arrow-right")}</a>`}
@@ -2293,7 +2160,7 @@ function viewGrammarRef(lv) {
 
 function renderBody(html) {
   return html
-    .replace(/<s-(?:en|fr|de|ko)>([\s\S]*?)<\/s-(?:en|fr|de|ko)>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
+    .replace(/<s-(?:en|fr|de)>([\s\S]*?)<\/s-(?:en|fr|de)>/g, (_, t) => `<span class="en${/<st>/.test(t) ? " no-tx" : ""}"><b>${t}</b></span> ${sayBtn(t.replace(/<[^>]+>/g, "").replace(/[↗↘|‖]/g, "").replace(/\s+([,.?!])/g, "$1").replace(/\s+/g, " ").trim())}`)
     .replace(/«[^»]*»/g, (m) => `<span class="no-tx">${m}</span>`)
     .replace(/<st>/g, '<span class="st">').replace(/<\/st>/g, "</span>")
     .replace(/<ipa>([\s\S]*?)<\/ipa>/g, (_, t) => ipaSpan(t))
@@ -2363,7 +2230,7 @@ function viewLesson(id) {
     $("#frToggle").innerHTML = `${ic("languages")} ${toggleLabel(showFr)}`;
   };
   let tm;
-  const countWords = () => { const n = ($("#myNotes").value.match(/[A-Za-zÀ-ÿ가-힣'’-]+/g) || []).length; $("#wordCount").textContent = n ? Tn(n, "{n} word", "{n} words") + " · " : ""; };
+  const countWords = () => { const n = ($("#myNotes").value.match(/[A-Za-zÀ-ÿ'’-]+/g) || []).length; $("#wordCount").textContent = n ? Tn(n, "{n} word", "{n} words") + " · " : ""; };
   countWords();
   $("#myNotes").oninput = (e) => { countWords(); clearTimeout(tm); tm = setTimeout(() => { S.notes[l.id] = e.target.value; save(); $("#noteSaved").textContent = T("Saved"); }, 500); };
   if ($("#showModel")) $("#showModel").onclick = () => {
@@ -2641,7 +2508,7 @@ function viewFlash(mode, themeId) {
   onCleanup(() => document.removeEventListener("keydown", onKey));
   render();
 }
-const normAns = (s) => (KOREAN_COURSE ? fold(s).replace(/[.?!,…~\s]/g, "") : fold(s.toLowerCase()).replace(/[’`]/g, "'").replace(/\((uk|us)\)/g, "").replace(/[.?!,…]/g, "").replace(/\s+/g, " ").trim());
+const normAns = (s) => fold(s.toLowerCase()).replace(/[’`]/g, "'").replace(/\((uk|us)\)/g, "").replace(/[.?!,…]/g, "").replace(/\s+/g, " ").trim();
 function variants(en) {
   const out = new Set();
   /* German nouns are written with their plural (der Hund, -e; die Mutter, ¨; die Eltern (pl)): the answer is the noun alone. */
@@ -2717,7 +2584,7 @@ function viewWrite(themeId) {
       const close = !exact && g.length > 3 && Array.from(vs).some((v) => lev(g, v) === 1);
       /* French and German nouns: the right word without its article counts, but the article (which gives the gender) is shown. */
       const ART = GERMAN_COURSE ? /^(?:der|die|das|ein|eine)\s+/ : /^(?:(?:les|le|la|une|un|des|du)\s+|l'|d')/;
-      const noArt = FOREIGN && !KOREAN_COURSE && !exact && !close && Array.from(vs).some((v) => v.replace(ART, "") === g.replace(ART, ""));
+      const noArt = FOREIGN && !exact && !close && Array.from(vs).some((v) => v.replace(ART, "") === g.replace(ART, ""));
       return { ok: exact || close || noArt, say: w.en,
         html: `${exact ? ic("circle-check") + " " + T("Perfect!") : close ? ic("circle-check") + " " + T("Almost! Watch the spelling:") : noArt ? ic("circle-check") + " " + T("Good! Learn it with its article:") : ic("circle-x") + " " + T("The answer was:")} <b class="en">${esc(w.en)}</b> ${sayBtn(w.en)}${w.ex ? `<br><span class="small en" style="font-style:italic">${esc(w.ex)}</span>` : ""}` };
     },
@@ -2849,7 +2716,7 @@ function tokenize(text, gloss) {
     if (/^[b-hj-z]$/i.test(part)) return esc(part); /* a lone letter (the m of a.m.) isn't a word */
     const key = part.toLowerCase().replace(/’/g, "'");
     const has = gloss[key] || gloss[key.replace(/'s$/, "")];
-    return `<span class="w ${has ? "gloss" : ""}" data-w="${esc(part)}"${KOREAN_COURSE && KO ? ` data-rr="${esc(KO.rr(part))}"` : ""}>${esc(part)}</span>`;
+    return `<span class="w ${has ? "gloss" : ""}" data-w="${esc(part)}">${esc(part)}</span>`;
   }).join("");
 }
 function viewReading(id, mode) {
@@ -2942,7 +2809,6 @@ function normSpeech(s) {
     .map((w) => (FOREIGN ? w : w.replace(/'s$/, "")).replace(/'/g, ""));
 }
 function compare(target, heard) {
-  if (KOREAN_COURSE) { const tw = dictTokens(target), k = koCompare(tw, dictTokens(heard)); return { score: k.pct, words: tw, ok: k.okA }; }
   const t = normSpeech(target), h = normSpeech(heard);
   const { okA } = lcsMatch(t, h);
   const n = okA.filter(Boolean).length;

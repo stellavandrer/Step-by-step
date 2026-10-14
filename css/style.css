@@ -914,31 +914,3 @@ mark.wm sup { font: 700 11px var(--font); color: var(--ink-soft); margin-left: 2
 .course-de main { overflow-wrap: anywhere; }
 /* "Schritt für Schritt" is longer than "Pas à pas": on a phone, it goes on two lines so the counters still fit. */
 @media (max-width: 480px) { .course-de .brand-name { white-space: normal; max-width: 6.5em; font-size: 15px; line-height: 1.1; } }
-/* The Korean course (coreen.html): purple. Hangul comes from the system's Korean fonts, after the Latin ones. */
-.course-ko {
-  --accent: #7a4fd0; --accent-soft: #efe8fc;
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", serif;
-  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
-}
-@media (prefers-color-scheme: dark) { .course-ko { --accent: #a685ee; --accent-soft: #2a2140; } }
-.course-ko .hero-main::after { content: "안녕하세요"; }
-/* Korean lines break between words (어절), never inside one. */
-.course-ko main { word-break: keep-all; overflow-wrap: anywhere; }
-/* Romanization: under each clickable word, after the Hangul of buttons and choices. It lives in data-rr, never in the text. */
-.show-rr .w[data-rr] { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.25; }
-.show-rr .w[data-rr]::after { content: attr(data-rr); font: 400 .6em/1.2 var(--font); color: var(--ink-soft); letter-spacing: 0; white-space: nowrap; }
-.show-rr [data-rrx]::after { content: " · " attr(data-rrx); font: 400 .8em var(--font); color: var(--ink-soft); }
-.pop-rr { display: block; font-size: 15px; font-style: italic; opacity: .8; margin: 2px 0 4px; }
-/* The Korean keyboard (두벌식): the 한글 button appears with any answer box. */
-.hkb-btn { position: fixed; right: 20px; bottom: 20px; z-index: 65; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); font: 700 16px var(--font); border-radius: 999px; padding: 9px 14px; box-shadow: var(--shadow); cursor: pointer; }
-.hkb-btn.on { display: none; }
-.hkb { position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(31,42,68,.12); padding: 6px 6px calc(8px + env(safe-area-inset-bottom)); }
-.hkb-row { display: flex; justify-content: center; gap: 5px; margin: 5px auto; max-width: 620px; }
-.hkb-k { flex: 1 1 0; min-width: 0; max-width: 56px; height: 46px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: 500 20px var(--font); cursor: pointer; padding: 0; touch-action: manipulation; }
-.hkb-k:active { background: var(--accent-soft); }
-.hkb-wide { flex: 1.5 1 0; max-width: 80px; font-size: 18px; }
-.hkb-space { flex: 5 1 0; max-width: 320px; font-size: 15px; }
-.hkb-k.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-body.hkb-open { padding-bottom: 250px; }
-@media (max-width: 1180px) { .hkb-btn { right: 12px; bottom: calc(76px + env(safe-area-inset-bottom)); } }
-@media (max-width: 640px) { .hkb-btn { bottom: calc(120px + env(safe-area-inset-bottom)); } .hkb-k { height: 44px; font-size: 19px; } }
