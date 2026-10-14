@@ -6,7 +6,8 @@
      règle des noms, de loin les plus fréquents dans ce cas.
    - KO.forms(verbe) : les formes conjuguées d'un verbe ou d'un adjectif (가다 → 가요, 갔어요, 갑니다, 가는, 갈…),
      pour la traduction au clic. Irréguliers en ㅂ, ㄷ, ㅅ, ㅎ, 르, et radicaux en ㄹ.
-   - KO.number(mot) : les nombres écrits en lettres, sino-coréens (이십오 → 25) ou coréens (스물다섯 → 25).
+   - KO.number(mot) : les nombres écrits en lettres, sino-coréens (이십오 → 25) ou coréens (스물다섯 → 25), et les
+     numéros dits chiffre par chiffre (공일공 → 010).
    - Le clavier coréen à l'écran (disposition standard à deux séries, 두벌식), qui sert aussi à taper le hangeul
      avec un clavier latin : chaque touche correspond à la même place que sur un clavier coréen. */
 (function () {
@@ -30,6 +31,8 @@
   const ASP = { "ㄱ": "ㅋ", "ㄷ": "ㅌ", "ㅈ": "ㅊ" };
   function rrWord(word) {
     const s = Array.from(word).map((c) => { const [l, v, t] = dec(c); return { l, v, t, li: null, lf: null }; });
+    /* nombres : un ㄴ s'insère devant 육 après 십, 백, 천, 만 (십육 → [심뉵] simnyuk) */
+    if (/^[일이삼사오육칠팔구십백천만]+$/.test(word)) s.forEach((x, i) => { if (i && x.l === "ㅇ" && x.v === "ㅠ" && x.t === "ㄱ" && /[십백천만]/.test(word[i - 1])) x.l = "ㄴ"; });
     for (let i = 0; i < s.length - 1; i++) {
       const a = s[i], b = s[i + 1], f = a.t;
       if (!f) continue;
@@ -240,7 +243,10 @@
     }
     return null;
   }
-  const number = (w) => { const n = sino(w); return n != null ? n : native(w); };
+  /* une suite de chiffres, dite chiffre par chiffre (numéros de téléphone : 공일공 → 010) */
+  const DIG = { "공": 0, "영": 0, "일": 1, "이": 2, "삼": 3, "사": 4, "오": 5, "육": 6, "칠": 7, "팔": 8, "구": 9 };
+  const digits = (w) => (w.length >= 3 && Array.from(w).every((c) => c in DIG) ? Array.from(w).map((c) => DIG[c]).join("") : null);
+  const number = (w) => { const n = sino(w); if (n != null) return n; const d = digits(w); return d != null ? d : native(w); };
 
   /* ================= Clavier coréen ================= */
   const VCOMB = { "ㅗㅏ": "ㅘ", "ㅗㅐ": "ㅙ", "ㅗㅣ": "ㅚ", "ㅜㅓ": "ㅝ", "ㅜㅔ": "ㅞ", "ㅜㅣ": "ㅟ", "ㅡㅣ": "ㅢ" };

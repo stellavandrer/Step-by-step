@@ -77,5 +77,6 @@ keyboard (standard two-set layout, 두벌식) that appears with every answer box
 Korean one. Answers are compared without spaces (Korean spacing is hard for learners) and dictations syllable by
 syllable. Words and phrases recorded with natural voices for Korean Stories are reused (js/ko/audio.js, files in
 audio/ko/, converted to light AAC by dev/ko_audio.py, run after each new unit); everything else is read by the
-browser's Korean voice. The course text itself is written new. Done: unit A1-1 (lessons 1 to 3: greetings, Hangul
-blocks and vowels, consonants and loanwords).
+browser's Korean voice. The course text itself is written new. Done: units A1-1 and A1-2 (lessons 1 to 6: greetings,
+all of Hangul with final consonants, linking and compound vowels, 이 / 그 / 저 and 아니에요, Sino-Korean numbers,
+prices and phone numbers).
