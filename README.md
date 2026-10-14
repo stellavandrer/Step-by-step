@@ -1,6 +1,6 @@
 # Step by Step
 
-My personal language course. For now: **English, from A1 to C2**, with TOEIC preparation. Other languages will be added later.
+My personal language course: **English, from A1 to C2**, with TOEIC preparation, and on the same engine French and German (A1 to C2) and Korean (in progress).
 
 ## What's inside
 
@@ -61,3 +61,21 @@ ordinals), and the dictionary js/de/dict.js gives the English and French meaning
 and plural (der Hund, -e). Characters have German first names, and cultural facts are checked (sources in each unit
 file's header). Done: level A1 (7 units, lessons 1 to 21, writing tasks of 30 to 50 words as in the Goethe A1) and A2
 (7 units, lessons 22 to 42, writing tasks of 40 to 60 words). B1 complete, following the Goethe-Zertifikat B1 (10 units, lessons 43 to 72: writing tasks of about 80 words in the three exam formats, speaking tasks: planning together, a presentation, a discussion). B2 complete, following the Goethe-Zertifikat B2 (10 units, lessons 73 to 102: reported speech, the passive and its alternatives, the nominal style, participle phrases, assumptions and the future II, formal conditions, contrast and concession, noun-verb combinations, unreal comparisons, modal particles, regrets with the double infinitive, prepositional adverbs, describing charts and pictures, summaries, forum opinions of 150 to 180 words, formal messages of about 100 words, discussions, and a language workshop in every unit). C1 complete, following the Goethe-Zertifikat C1 (10 units, lessons 103 to 132: reported speech in all tenses, registers, decoding academic noun phrases, advanced infinitive constructions, nuanced connectors, adjectives as nouns, function verb constructions, separable and inseparable prefixes, word order for emphasis, cohesion, hypotheses, compounds, impersonal passives, legal prepositions, participle clauses, tenses of narration, verbs and adjectives with the genitive, the Konjunktiv I in set phrases, anglicisms in German grammar, formal concession, talks with questions, moderating discussions, interviews, negotiating, letters to the editor, formal objections, summaries of literary texts, interviewing contemporary witnesses, taking minutes, argued texts of 220 to 260 words). C2 complete, following the Goethe-Zertifikat C2 (10 units, lessons 133 to 162: stylistic levels, old forms still alive in modern German, rewriting a text in another register, rhetorical devices, cleft sentences, speeches for an occasion, cause and effect in academic German, hedging, quoting and paraphrasing sources, subject and object clauses, the language of reasoning, clarifying concepts in a discussion, narrative techniques, the scope of negation, interpreting a literary text, irony and understatement, words whose gender or plural changes with the meaning, anecdotes and humour, framing and loaded words, hiding the agent, asking critical questions, decoding officialese, plain language and Easy Language, explaining an official letter, Austrian and Swiss German, regional and colloquial grammar, getting by among dialect speakers, false friends and translation, commonly confused words, proofreading, essays of 300 to 350 words).
+
+## Korean course for French and English speakers (coreen.html), in progress
+
+A fourth course on the same engine: Korean from A1 to C2, with TOPIK landmarks (each level gives its approximate
+TOPIK equivalent, A1 ≈ level 1 up to C2 ≈ level 6, an unofficial correspondence), its own page (coreen.html), data
+(js/ko/) and saved progress. Like the German course, it serves French AND English speakers (js/ko/localize.js keeps
+the interface language; no German interface). Hangul is always the main text. js/ko/hangul.js teaches the engine
+Hangul: South Korea's official Revised Romanization, applied to the pronunciation (liaison, nasalization, ㄹ
+assimilation, aspiration, palatalization), shown under every Korean word at level A1, then only when you click a word
+(setting "Romanization": automatic, always, or on click); the conjugated forms of every verb and adjective of the
+dictionary (갔어요 → 가다, with ㅂ, ㄷ, ㅅ, ㅎ, 르 and ㄹ irregulars), so a click on any form gives its base and what the
+ending does; particles and the copula after a noun (학교에서 → 학교 + 에서); numbers in words; and an on-screen Korean
+keyboard (standard two-set layout, 두벌식) that appears with every answer box and also turns a Latin keyboard into a
+Korean one. Answers are compared without spaces (Korean spacing is hard for learners) and dictations syllable by
+syllable. Words and phrases recorded with natural voices for Korean Stories are reused (js/ko/audio.js, files in
+audio/ko/, converted to light AAC by dev/ko_audio.py, run after each new unit); everything else is read by the
+browser's Korean voice. The course text itself is written new. Done: unit A1-1 (lessons 1 to 3: greetings, Hangul
+blocks and vowels, consonants and loanwords).
