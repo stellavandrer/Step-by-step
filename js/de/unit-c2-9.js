@@ -319,7 +319,7 @@
       ["unter Heimweh leiden", "to suffer from homesickness", "avoir le mal du pays", "Anfangs litt er unter Heimweh.", "litt", ["lag", "ließ"]],
       ["mit einem Akzent sprechen", "to speak with an accent", "parler avec un accent", "Sie spricht mit einem leichten Wiener Akzent.", "spricht", ["sagt", "erzählt"]],
       ["jemandem auf die Sprünge helfen", "to help someone along", "mettre quelqu'un sur la voie", "Die Kollegin half mir beim Schweizerdeutsch auf die Sprünge.", "half", ["gab", "machte"]],
-      ["eine Sprache beherrschen", "to master a language", "maîtriser une langue", "Sie beherrscht drei Sprachen fließend.", "beherrscht", ["beherbergt", "beherzigt"]],
+      ["sich in einer Sprache zurechtfinden", "to find one's way around a language", "s'y retrouver dans une langue", "Nach einem Jahr fand sie sich im Schweizerdeutschen gut zurecht.", "fand", ["nahm", "gab"]],
       ["einen Ausdruck aufschnappen", "to pick up an expression", "attraper une expression au vol", "In Wien habe ich viele neue Ausdrücke aufgeschnappt.", "aufgeschnappt", ["aufgeschnallt", "aufgeschlagen"]],
       ["sich an den Klang gewöhnen", "to get used to the sound", "s'habituer à la sonorité", "Man gewöhnt sich schnell an den Klang des Dialekts.", "gewöhnt", ["gewährt", "gewinnt"]]
     ],
